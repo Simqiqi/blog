@@ -1142,3 +1142,198 @@ body.bounce-end {
   50% { transform: scaleY(0.99); transform-origin: bottom; }
   100% { transform: scaleY(1); transform-origin: bottom; }
 }
+
+/* ===== 暗黑模式切换 ===== */
+:root {
+  --transition-theme: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
+.nav-inner, .social-btn, .cta-btn, footer, .tag-cloud .tag, .stats-row span {
+  transition: var(--transition-theme);
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f5;
+  --bg-card: rgba(0, 0, 0, 0.03);
+  --border: rgba(99, 102, 241, 0.2);
+  --accent: #6366f1;
+  --accent2: #a855f7;
+  --text: #1a1a2e;
+  --text-dim: #999;
+}
+
+[data-theme="light"] body::before {
+  opacity: 0.08;
+}
+
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .hero-card,
+[data-theme="light"] .post-card,
+[data-theme="light"] .moment-inner,
+[data-theme="light"] .about-card,
+[data-theme="light"] .thanks-card {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .social-btn {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .social-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .cta-btn {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] footer {
+  color: var(--text-dim);
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  margin-left: 12px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.theme-toggle i {
+  font-size: 1rem;
+  color: var(--accent);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
+
+.theme-toggle .fa-sun {
+  position: absolute;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle .fa-moon {
+  position: absolute;
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+[data-theme="light"] .theme-toggle .fa-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+[data-theme="light"] .theme-toggle .fa-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ===== 回到顶部火箭 ===== */
+.rocket-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 32px;
+  z-index: 998;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(22, 22, 38, 0.6);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+[data-theme="light"] .rocket-to-top {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.rocket-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.rocket-to-top:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.3);
+  transform: translateY(-4px);
+}
+
+.rocket-to-top i {
+  font-size: 1.15rem;
+  color: var(--accent);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.rocket-to-top:hover i {
+  transform: translateY(-2px);
+}
+
+/* 火箭发射粒子 */
+.rocket-particle {
+  position: fixed;
+  z-index: 997;
+  pointer-events: none;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: rocketBurst 0.7s ease-out forwards;
+}
+
+@keyframes rocketBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--rx), var(--ry)) scale(0);
+  }
+}
+
+/* 火箭发射尾迹 */
+.rocket-trail {
+  position: fixed;
+  z-index: 997;
+  pointer-events: none;
+  width: 2px;
+  background: linear-gradient(to top, transparent, var(--accent));
+  border-radius: 1px;
+  animation: trailFade 0.6s ease-out forwards;
+}
+
+@keyframes trailFade {
+  0% { opacity: 0.8; height: 40px; }
+  100% { opacity: 0; height: 0px; }
+}
