@@ -28,6 +28,18 @@
     <div class="floating-orb orb-1"></div>
     <div class="floating-orb orb-2"></div>
     <div class="floating-orb orb-3"></div>
+
+    <!-- 纸飞机 -->
+    <svg class="paper-plane" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="planeGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#a78bfa"/>
+        </linearGradient>
+      </defs>
+      <path d="M38 2L20 14L2 2L18 20L2 38L20 26L38 38L22 20Z" fill="url(#planeGrad)" opacity="0.85"/>
+    </svg>
+
     <div class="hero-card">
       <div class="avatar-wrapper">
         <div class="avatar">
@@ -114,6 +126,16 @@
       <span class="tag">电影</span>
       <span class="tag">跑步</span>
       <span class="tag">探索 AI</span>
+    </div>
+  </section>
+
+  <section class="moment-card">
+    <div class="moment-inner">
+      <div class="moment-label">此刻 · Now</div>
+      <div class="moment-clock" id="liveClock">--</div>
+      <div class="moment-date" id="liveDate">----.--.--</div>
+      <div class="moment-mood" id="liveMood">☀️</div>
+      <div class="moment-words" id="liveWords">--</div>
     </div>
   </section>
 
