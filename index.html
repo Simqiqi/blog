@@ -179,6 +179,12 @@
     <p class="trail-text" id="trailText">某个深夜，有人在这里看了很久</p>
   </section>
 
+    <section class="globe-section">
+    <div class="globe-label">VISITORS AROUND THE WORLD</div>
+    <div class="globe-container" id="globeContainer"></div>
+    <div class="globe-visitors" id="globeVisitors">来自世界各地的足迹</div>
+  </section>
+
   <footer>
     <p>&copy; 2026 柒柒. Powered by curiosity.</p>
   </footer>
@@ -199,6 +205,25 @@
   <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
     <i class="fa-solid fa-rocket"></i>
   </button>
+
+  <!-- 迷你音乐播放器 -->
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" aria-label="音乐播放器">
+      <i class="fa-solid fa-music"></i>
+    </button>
+    <div class="music-panel" id="musicPanel">
+      <div class="track-info">
+        <div class="track-name" id="trackName">星空漫步</div>
+        <div class="track-mood" id="trackMood">安静 · 治愈</div>
+      </div>
+      <div class="music-controls">
+        <button class="ctrl-btn" id="musicPrev"><i class="fa-solid fa-backward"></i></button>
+        <button class="ctrl-btn main-btn" id="musicPlay"><i class="fa-solid fa-play"></i></button>
+        <button class="ctrl-btn" id="musicNext"><i class="fa-solid fa-forward"></i></button>
+      </div>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="0.5" step="0.01" value="0.15">
+    </div>
+  </div>
 
 </body>
 </html>
