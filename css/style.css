@@ -286,6 +286,60 @@ footer {
   transform: translateX(4px);
 }
 
+/* ===== 关于页 ===== */
+.about-page {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 100px 24px 60px;
+}
+
+.about-page h2 {
+  font-size: 1.6rem;
+  margin-bottom: 32px;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-card {
+  padding: 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  line-height: 1.9;
+}
+
+.about-card p {
+  margin-bottom: 18px;
+  color: var(--text);
+}
+
+.about-card p:last-child {
+  margin-bottom: 0;
+}
+
+.about-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.about-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+
+.about-links a:hover {
+  color: var(--accent);
+}
+
 .post-card .post-date {
   font-size: 0.78rem;
   color: var(--text-dim);
