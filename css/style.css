@@ -1,4 +1,9 @@
 /* ===== 基础变量 ===== */
+html {
+  opacity: 0;
+  transition: opacity 0.7s ease-out;
+}
+
 :root {
   --bg: #06060e;
   --bg-card: rgba(255, 255, 255, 0.025);
