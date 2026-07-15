@@ -98,6 +98,52 @@ body::before {
   box-shadow: 0 0 8px var(--accent);
 }
 
+/* ===== 悬浮装饰球 ===== */
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb-1 {
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.08), transparent);
+  top: 15%; left: 8%;
+  animation: orbFloat1 8s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.06), transparent);
+  top: 60%; right: 10%;
+  animation: orbFloat2 10s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.1), transparent);
+  top: 35%; left: 70%;
+  animation: orbFloat3 7s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.15); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, -30px) scale(1.2); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(20px, -50px) scale(0.85); }
+  75% { transform: translate(-30px, 30px) scale(1.1); }
+}
+
 /* ===== Hero ===== */
 .hero {
   position: relative;
@@ -197,17 +243,47 @@ body::before {
 .name {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #fff 30%, var(--accent));
+  background: linear-gradient(135deg, var(--accent), #fff 40%, var(--accent) 60%, #fff);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: nameShine 4s linear infinite;
   margin-bottom: 8px;
+}
+
+@keyframes nameShine {
+  to { background-position: 200% center; }
 }
 
 .tagline {
   color: var(--text-dim);
   font-size: 0.95rem;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
+}
+
+.status-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+}
+
+.dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  display: inline-block;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
 }
 
 /* ===== 社交链接 ===== */
