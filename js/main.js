@@ -164,3 +164,58 @@ function hideWechat() {
     observer.observe(el);
   });
 })();
+
+// ===== 鼠标跟随光晕 =====
+(function() {
+  var spotlight = document.getElementById('spotlight');
+  if (!spotlight) return;
+
+  document.addEventListener('mousemove', function(e) {
+    spotlight.style.left = e.clientX + 'px';
+    spotlight.style.top = e.clientY + 'px';
+    spotlight.style.opacity = '1';
+  });
+})();
+
+// ===== Hero Card 3D 倾斜 =====
+(function() {
+  var hero = document.querySelector('.hero');
+  var card = document.querySelector('.hero-card');
+  if (!hero || !card) return;
+
+  hero.addEventListener('mousemove', function(e) {
+    var rect = hero.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+
+    var centerX = rect.width / 2;
+    var centerY = rect.height / 2;
+
+    var rotateY = ((x - centerX) / centerX) * 5;
+    var rotateX = -((y - centerY) / centerY) * 5;
+
+    card.style.transform = 'rotateY(' + rotateY + 'deg) rotateX(' + rotateX + 'deg)';
+  });
+
+  hero.addEventListener('mouseleave', function() {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  });
+})();
+
+// ===== 回到顶部 =====
+(function() {
+  var btn = document.getElementById('backToTop');
+  if (!btn) return;
+
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
