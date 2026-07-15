@@ -219,3 +219,27 @@ function hideWechat() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
+
+// ===== 滚动进度条 + 导航栏模糊 + 提示隐藏 =====
+(function() {
+  var bar = document.getElementById('progressBar');
+  var nav = document.querySelector('.navbar');
+  var hint = document.querySelector('.scroll-hint');
+
+  window.addEventListener('scroll', function() {
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    var scrolled = window.scrollY;
+    var pct = docH > 0 ? (scrolled / docH) * 100 : 0;
+    if (bar) bar.style.width = Math.min(pct, 100) + '%';
+
+    if (nav) {
+      if (scrolled > 10) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+
+    if (hint) {
+      if (scrolled > 80) hint.classList.add('hidden');
+      else hint.classList.remove('hidden');
+    }
+  });
+})();
