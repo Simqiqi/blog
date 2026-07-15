@@ -1869,3 +1869,173 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
   opacity: 0.6;
   margin-top: 4px;
 }
+
+/* ===== 导航栏一言签名条 ===== */
+.nav-motto {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  opacity: 0.55;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  margin-right: auto;
+  margin-left: 14px;
+  transition: opacity 0.5s;
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+  .nav-motto { display: none; }
+}
+
+/* ===== 导航栏搜索按钮 ===== */
+.nav-search {
+  position: relative;
+  margin-right: 4px;
+}
+
+.search-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  position: relative;
+  z-index: 102;
+}
+
+.search-toggle:hover {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--bg-card);
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 300px;
+  background: rgba(22, 22, 38, 0.97);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 101;
+}
+
+[data-theme="light"] .search-dropdown {
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.search-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+}
+
+.search-results {
+  margin-top: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.search-result {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.search-result:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.search-result .result-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.search-result .result-meta {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+.search-empty {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  padding: 16px 0;
+}
+
+/* ===== 导航栏小红点 ===== */
+.nav-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  margin-left: 2px;
+  vertical-align: super;
+  animation: dotPulse 2s ease-in-out infinite;
+  position: relative;
+  top: -4px;
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* ===== 导航栏实时时钟 ===== */
+.nav-clock {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  opacity: 0.75;
+  margin-right: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+  .nav-clock { display: none; }
+}
