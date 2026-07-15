@@ -243,3 +243,43 @@ function hideWechat() {
     }
   });
 })();
+
+// ===== 实时时钟 =====
+(function() {
+  var clock = document.getElementById('liveClock');
+  var dateEl = document.getElementById('liveDate');
+  var moodEl = document.getElementById('liveMood');
+  var wordsEl = document.getElementById('liveWords');
+
+  var moods = [
+    { h: 0,  emoji: '🌙', words: '夜深了，该睡了' },
+    { h: 6,  emoji: '🌅', words: '早安，新的一天' },
+    { h: 8,  emoji: '☀️', words: '元气满满地开始吧' },
+    { h: 10, emoji: '💻', words: '专注的上午最有生产力' },
+    { h: 12, emoji: '🍜', words: '午饭时间，记得吃饱' },
+    { h: 14, emoji: '☕', words: '午后困意来袭，来杯咖啡' },
+    { h: 17, emoji: '🌆', words: '夕阳西下，一天快结束了' },
+    { h: 19, emoji: '📖', words: '夜晚是最好的阅读时光' },
+    { h: 21, emoji: '🎧', words: '戴上耳机，进入自己的世界' },
+    { h: 23, emoji: '🌙', words: '夜深了，该睡了' }
+  ];
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function tick() {
+    var now = new Date();
+    if (clock) clock.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    if (dateEl) dateEl.textContent = now.getFullYear() + '.' + pad(now.getMonth()+1) + '.' + pad(now.getDate()) + ' ' + ['日','一','二','三','四','五','六'][now.getDay()];
+    var h = now.getHours();
+    for (var i = moods.length-1; i >= 0; i--) {
+      if (h >= moods[i].h) {
+        if (moodEl) moodEl.textContent = moods[i].emoji;
+        if (wordsEl) wordsEl.textContent = moods[i].words;
+        break;
+      }
+    }
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
