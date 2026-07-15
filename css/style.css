@@ -1337,3 +1337,238 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
   0% { opacity: 0.8; height: 40px; }
   100% { opacity: 0; height: 0px; }
 }
+
+/* ===== 随机一言弹幕墙 ===== */
+.barrage-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.barrage-item {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  font-style: italic;
+  padding: 6px 18px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  animation: barrageFly 14s linear forwards;
+  opacity: 0;
+}
+
+@keyframes barrageFly {
+  0%   { transform: translateX(105vw); opacity: 0; }
+  5%   { opacity: 0.75; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateX(-120%); opacity: 0; }
+}
+
+/* 弹幕颜色主题适配 */
+.barrage-item.theme-dark-barrage {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.barrage-item.theme-light-barrage {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: rgba(30, 30, 50, 0.75);
+}
+
+/* ===== 迷你音乐播放器 ===== */
+.music-player {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 997;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(22, 22, 38, 0.6);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .music-toggle {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.music-toggle:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+  transform: scale(1.08);
+}
+
+.music-toggle i {
+  font-size: 1.1rem;
+  color: var(--accent);
+  transition: transform 0.3s;
+}
+
+.music-toggle.playing i {
+  animation: musicPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.music-panel {
+  position: absolute;
+  right: 0;
+  bottom: 60px;
+  background: rgba(22, 22, 38, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+[data-theme="light"] .music-panel {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.music-panel.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.music-panel .track-info {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.music-panel .track-name {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.music-panel .track-mood {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.music-panel .music-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.music-panel .ctrl-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.music-panel .ctrl-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.music-panel .ctrl-btn.main-btn {
+  width: 44px;
+  height: 44px;
+  font-size: 1rem;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.music-panel .volume-slider {
+  width: 100%;
+  margin-top: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+
+.music-panel .volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+/* ===== 3D 地球容器 ===== */
+.globe-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.globe-container {
+  width: 280px;
+  height: 280px;
+  position: relative;
+  cursor: grab;
+}
+
+.globe-container:active {
+  cursor: grabbing;
+}
+
+.globe-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.globe-visitors {
+  font-size: 0.72rem;
+  color: var(--accent);
+  opacity: 0.7;
+  margin-top: 8px;
+  text-align: center;
+}
