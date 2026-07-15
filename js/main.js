@@ -1226,3 +1226,83 @@ function hideWechat() {
     }
   }
 })();
+
+// ===== 16. 底部跑马灯 =====
+(function() {
+  var bar = document.getElementById('marqueeBar');
+  if (!bar) return;
+
+  var messages = [
+    '欢迎来到柒柒的小角落',
+    '种一棵树最好的时间是十年前，其次是现在',
+    '保持好奇，保持愚蠢',
+    '慢慢来，会更快',
+    '愿你被这世界温柔以待',
+    '所有的为时已晚，都是恰逢其时',
+    '世界是自己的，与他人毫无关系'
+  ];
+
+  // 构建重复两次以保证无缝滚动
+  var track = bar.querySelector('.marquee-track');
+  if (!track) return;
+
+  var html = '';
+  for (var r = 0; r < 2; r++) {
+    for (var i = 0; i < messages.length; i++) {
+      html += '<span>' + messages[i] + '</span>';
+      if (i < messages.length - 1 || r < 1) {
+        html += '<span class="marquee-sep">·</span>';
+      }
+    }
+    if (r === 0) html += '<span class="marquee-sep">·</span>';
+  }
+  track.innerHTML = html;
+})();
+
+// ===== 17. 文章点赞飘心 =====
+(function() {
+  var btn = document.getElementById('likeBtn');
+  if (!btn) return;
+
+  var countEl = document.getElementById('likeCount');
+  var count = parseInt(localStorage.getItem('blog_like_count') || '0');
+  var liked = localStorage.getItem('blog_liked') === 'true';
+
+  if (countEl) countEl.textContent = count;
+  if (liked) btn.classList.add('liked');
+
+  var hearts = ['❤️', '💕', '💖', '💗', '💝', '💘', '✨', '💫'];
+
+  btn.addEventListener('click', function(e) {
+    if (btn.classList.contains('liked')) return;
+
+    liked = true;
+    count++;
+    localStorage.setItem('blog_liked', 'true');
+    localStorage.setItem('blog_like_count', count);
+    btn.classList.add('liked');
+    if (countEl) countEl.textContent = count;
+
+    // 产生飘心粒子
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+
+    for (var i = 0; i < 8; i++) {
+      var heart = document.createElement('span');
+      heart.className = 'floating-heart';
+      heart.textContent = hearts[i];
+      heart.style.left = cx + 'px';
+      heart.style.top = cy + 'px';
+
+      var angle = (Math.PI * 2 * i) / 8 + (Math.random() - 0.5) * 0.4;
+      var dist = 30 + Math.random() * 50;
+      heart.style.setProperty('--hx', Math.cos(angle) * dist + 'px');
+      heart.style.setProperty('--hy', Math.sin(angle) * dist + 'px');
+      heart.style.setProperty('--hr', (Math.random() - 0.5) * 60 + 'deg');
+
+      document.body.appendChild(heart);
+      setTimeout(function(h) { h.remove(); }, 1500, heart);
+    }
+  });
+})();
