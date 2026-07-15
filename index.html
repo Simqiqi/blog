@@ -21,7 +21,10 @@
         <a href="about.html">关于</a>
         <a href="thanks.html">致谢</a>
       </div>
-      <span class="nav-clock" id="navClock"></span>
+      <div class="nav-clock-wrap">
+        <span class="nav-clock" id="navClock"></span>
+        <span class="nav-tagline">A little spark of curiosity.</span>
+      </div>
       <div class="nav-search">
         <button class="search-toggle" id="searchToggle" aria-label="搜索">
           <i class="fa-solid fa-magnifying-glass"></i>
@@ -39,6 +42,8 @@
   </nav>
 
   <main class="hero">
+    <canvas id="rainCanvas"></canvas>
+    <div class="rain-ripples" id="rainRipples"></div>
     <div class="spotlight" id="spotlight"></div>
     <div class="floating-orb orb-1"></div>
     <div class="floating-orb orb-2"></div>
