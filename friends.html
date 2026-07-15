@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>友情链接 | 柒柒的个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html" class="active">友链</a>
+      </div>
+      <div class="nav-clock-wrap">
+        <span class="nav-clock" id="navClock"></span>
+        <span class="nav-tagline">A little spark of curiosity.</span>
+      </div>
+      <div class="nav-search">
+        <button class="search-toggle" id="searchToggle" aria-label="搜索">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="search-dropdown" id="searchDropdown">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <main class="friends-page">
+    <h1 class="friends-title">友情链接</h1>
+    <p class="friends-subtitle">一些值得去看看的地方</p>
+
+    <div class="friends-grid">
+      <!-- 卡片 1 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+              <i class="fa-solid fa-feather"></i>
+            </div>
+            <h3>清风小筑</h3>
+            <span class="friend-domain">qingfeng.blog</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">一个写字的地方，记录生活里的微光与诗意。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 2 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <h3>代码杂货铺</h3>
+            <span class="friend-domain">code-misc.dev</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">前端开发者的碎碎念，偶尔写点有意思的小工具。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 3 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+            <h3>快门日记</h3>
+            <span class="friend-domain">shutter-diary.com</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">用镜头捕捉街角的光影，每张照片都有一个故事。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 4 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #fad0c4, #ffd1ff);">
+              <i class="fa-solid fa-music"></i>
+            </div>
+            <h3>耳机里的宇宙</h3>
+            <span class="friend-domain">ear-universe.fm</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">独立音乐推荐 & 私人歌单，耳朵的旅行从未停止。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 5 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <h3>纸上行旅</h3>
+            <span class="friend-domain">paper-journey.cc</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">读书笔记与书评，在字里行间寻找另一个世界。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 6 -->
+      <div class="friend-card">
+        <div class="friend-card-inner">
+          <div class="friend-card-front">
+            <div class="friend-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+              <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <h3>像素游乐场</h3>
+            <span class="friend-domain">pixel-play.io</span>
+          </div>
+          <div class="friend-card-back">
+            <p class="friend-desc">独立游戏测评 & 开发日记，像素里的无限可能。</p>
+            <a href="#" class="friend-visit">去看看 <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="friends-cta">
+      <p>想交换友链？<a href="mailto:simqiqi@example.com">给我发邮件</a>，带上你的博客链接和一句话介绍。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-social">
+      <a href="https://github.com/Simqiqi" target="_blank" class="ft-github" title="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://weibo.com/u/7878583139" target="_blank" class="ft-weibo" title="微博"><i class="fa-brands fa-weibo"></i></a>
+      <a href="https://space.bilibili.com" target="_blank" class="ft-bilibili" title="B站"><i class="fa-brands fa-bilibili"></i></a>
+      <a href="mailto:simqiqi@example.com" class="ft-email" title="邮箱"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <div class="runtime" id="siteRuntime"></div>
+  </footer>
+
+  <script src="js/main.js"></script>
+
+  <button class="back-to-top" id="backToTop" title="回到顶部">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
+    <i class="fa-solid fa-rocket"></i>
+  </button>
+
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" aria-label="音乐播放器">
+      <i class="fa-solid fa-music"></i>
+    </button>
+    <div class="music-panel" id="musicPanel">
+      <div class="track-info">
+        <div class="track-name" id="trackName">星空漫步</div>
+        <div class="track-mood" id="trackMood">安静 · 治愈</div>
+      </div>
+      <div class="music-controls">
+        <button class="ctrl-btn" id="musicPrev"><i class="fa-solid fa-backward"></i></button>
+        <button class="ctrl-btn main-btn" id="musicPlay"><i class="fa-solid fa-play"></i></button>
+        <button class="ctrl-btn" id="musicNext"><i class="fa-solid fa-forward"></i></button>
+      </div>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="0.5" step="0.01" value="0.15">
+    </div>
+  </div>
+</body>
+</html>
