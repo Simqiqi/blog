@@ -77,7 +77,7 @@ function hideWechat() {
   document.getElementById('wechatModal').classList.remove('active');
 }
 
-// ===== 环境背景音乐 =====
+// ===== 背景音乐：致爱丽丝 =====
 (function() {
   let started = false;
   let audioCtx = null;
@@ -87,46 +87,101 @@ function hideWechat() {
     started = true;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    const now = audioCtx.currentTime;
+    const bpm = 72;
+    const eighth = 60 / bpm / 2;
 
-    // 和弦：C大七 (C E G B) 低频铺垫
-    const freqs = [130.81, 164.81, 196.00, 246.94]; // C3 E3 G3 B3
-    const gains = [0.06, 0.045, 0.04, 0.035];
+    // 音符频率映射
+    const N = {
+      A2: 110, E3: 164.81, A3: 220,
+      B3: 246.94, C4: 261.63, D4: 293.66,
+      Ds4: 311.13, E4: 329.63, Gs4: 415.30,
+      A4: 440, B4: 493.88, C5: 523.25,
+      D5: 587.33, E5: 659.25, F5: 698.46,
+      G5: 783.99,
+    };
 
-    freqs.forEach((freq, i) => {
+    function pianoNote(freq, startTime, duration, vol) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-
-      osc.type = 'sine';
+      osc.type = 'triangle';
       osc.frequency.value = freq;
-      osc.detune.value = (Math.random() - 0.5) * 8; // 轻微失谐
-
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(gains[i], now + 3);
-      gain.gain.linearRampToValueAtTime(gains[i] * 0.7, now + 6);
-
+      // 钢琴包络
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(vol * 0.6, startTime + duration * 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration - 0.02);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
-      osc.start(now);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
 
-      // 循环呼吸效果
-      setInterval(() => {
-        const t = audioCtx.currentTime;
-        const breath = gains[i] * (0.7 + 0.3 * Math.sin(t * 0.3 + i));
-        gain.gain.linearRampToValueAtTime(breath, t + 2);
-      }, 4000);
-    });
+    function padNote(freq, startTime, duration, vol) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + 0.15);
+      gain.gain.linearRampToValueAtTime(0, startTime + duration - 0.05);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
 
-    // 高频泛音
-    const airOsc = audioCtx.createOscillator();
-    const airGain = audioCtx.createGain();
-    airOsc.type = 'triangle';
-    airOsc.frequency.value = 523.25; // C5
-    airGain.gain.setValueAtTime(0, now);
-    airGain.gain.linearRampToValueAtTime(0.015, now + 4);
-    airOsc.connect(airGain);
-    airGain.connect(audioCtx.destination);
-    airOsc.start(now);
+    function playLoop() {
+      const t = audioCtx.currentTime;
+      const v = 0.22;
+
+      // 旋律：[note, dur(eighth倍数), octaveMul]
+      const melody = [
+        ['E4', 1], ['Ds4', 1], ['E4', 1], ['Ds4', 1], ['E4', 1],
+        ['B3', 1], ['D4', 1], ['C4', 1], ['A3', 2],
+        [null, 1], ['C4', 1], ['E4', 1], ['A3', 1], ['B3', 2],
+        [null, 1], ['E3', 1], ['Gs4', 1], ['B3', 1], ['C4', 2],
+        [null, 1], ['E4', 1], ['Ds4', 1], ['E4', 1], ['Ds4', 1], ['E4', 1],
+        ['B3', 1], ['D4', 1], ['C4', 1], ['A3', 2],
+        [null, 1], ['C4', 1], ['E4', 1], ['A3', 1], ['B3', 2],
+        [null, 1], ['E4', 1], ['C4', 1], ['B3', 1], ['A3', 2],
+        [null, 2],
+      ];
+
+      let time = t + 0.1;
+      melody.forEach(([note, dur]) => {
+        if (note) {
+          pianoNote(N[note], time, eighth * dur, v);
+        }
+        time += eighth * dur;
+      });
+
+      return time - t; // 返回循环长度
+    }
+
+    function playBass() {
+      const t = audioCtx.currentTime + 0.1;
+      // Am - E - Am - E 的低音进行
+      const bass = [
+        ['A2', 3], ['E3', 3], ['A2', 3], ['E3', 3],
+        ['A2', 3], ['E3', 3], ['A2', 3], ['E3', 3],
+        ['A2', 3], ['E3', 3], ['A2', 3], ['E3', 3],
+        ['A2', 3], ['E3', 3], ['A2', 3], ['E3', 3],
+      ];
+      let time = t;
+      bass.forEach(([note, beats]) => {
+        padNote(N[note], time, eighth * beats * 3, 0.04);
+        time += eighth * beats * 3;
+      });
+    }
+
+    let loopDuration;
+    function schedule() {
+      loopDuration = playLoop();
+      playBass();
+      setTimeout(schedule, loopDuration * 950); // 比实际略短，无缝衔接
+    }
+
+    schedule();
   }
 
   document.addEventListener('click', startMusic, { once: true });
