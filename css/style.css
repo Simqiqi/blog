@@ -2190,3 +2190,88 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
 .skill-fill.anime  { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
 .skill-fill.game   { background: linear-gradient(90deg, #ef4444, #f87171); }
 .skill-fill.sleep  { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+
+/* ===== 文章上一篇/下一篇导航 ===== */
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-nav a {
+  flex: 1;
+  max-width: 280px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.article-nav a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+}
+
+.article-nav .nav-prev { text-align: left; }
+.article-nav .nav-next { text-align: right; justify-content: flex-end; margin-left: auto; }
+
+.article-nav .nav-placeholder {
+  flex: 1;
+  max-width: 280px;
+  padding: 14px 18px;
+  visibility: hidden;
+}
+
+.article-nav .nav-icon {
+  font-size: 0.85rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.article-nav .nav-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.article-nav .nav-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+.article-nav .nav-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== 博客卡片 3D 倾斜 ===== */
+.blog-page {
+  perspective: 800px;
+}
+
+.post-card {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out, box-shadow 0.3s;
+  will-change: transform;
+}
+
+.post-card:hover {
+  z-index: 10;
+}
