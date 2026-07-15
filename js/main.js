@@ -76,3 +76,34 @@ function showWechat() {
 function hideWechat() {
   document.getElementById('wechatModal').classList.remove('active');
 }
+
+// ===== 打字机效果语录 =====
+(function() {
+  const quotes = [
+    '保持好奇，保持愚蠢。',
+    '生活不是竞速，偶尔迷路也没关系。',
+    '种一棵树最好的时间是十年前，其次是现在。',
+    '世界是自己的，与他人毫无关系。',
+    '所有的为时已晚，其实都是恰逢其时。',
+    '与其互为人间，不如自成宇宙。',
+    '慢慢来，会更快。',
+    '山海自有归期，风雨自有相逢。',
+  ];
+
+  const el = document.getElementById('heroQuote');
+  if (!el) return;
+
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  let i = 0;
+
+  function type() {
+    if (i < quote.length) {
+      el.innerHTML = quote.slice(0, i + 1) + '<span class="cursor"></span>';
+      i++;
+      const delay = 60 + Math.random() * 80;
+      setTimeout(type, delay);
+    }
+  }
+
+  type();
+})();
