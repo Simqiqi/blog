@@ -631,3 +631,86 @@ function hideWechat() {
   whisper.addEventListener('touchend', function() { clearTimeout(longPressTimer); });
   whisper.addEventListener('touchmove', function() { clearTimeout(longPressTimer); });
 })();
+
+// ===== 11. 暗黑模式切换 =====
+(function() {
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    window._particleColor = { r: 99, g: 102, b: 241 };
+  }
+
+  var toggle = document.getElementById('themeToggle');
+  if (!toggle) return;
+
+  toggle.addEventListener('click', function() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      window._particleColor = { r: 0, g: 229, b: 255 };
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      window._particleColor = { r: 99, g: 102, b: 241 };
+      localStorage.setItem('theme', 'light');
+    }
+  });
+})();
+
+// ===== 12. 回到顶部火箭 =====
+(function() {
+  var rocket = document.getElementById('rocketToTop');
+  if (!rocket) return;
+
+  var ticking = false;
+
+  function updateVisibility() {
+    if (window.pageYOffset > 400) {
+      rocket.classList.add('visible');
+    } else {
+      rocket.classList.remove('visible');
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(updateVisibility);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  rocket.addEventListener('click', function() {
+    // 发射粒子
+    var rect = rocket.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var count = 12;
+
+    for (var i = 0; i < count; i++) {
+      var particle = document.createElement('div');
+      particle.className = 'rocket-particle';
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 30 + Math.random() * 50;
+      particle.style.left = cx + 'px';
+      particle.style.top = cy + 'px';
+      particle.style.setProperty('--rx', Math.cos(angle) * dist + 'px');
+      particle.style.setProperty('--ry', Math.sin(angle) * dist + 'px');
+      document.body.appendChild(particle);
+      setTimeout(function(p) { p.remove(); }, 700, particle);
+    }
+
+    // 尾迹
+    for (var j = 0; j < 3; j++) {
+      var trail = document.createElement('div');
+      trail.className = 'rocket-trail';
+      trail.style.left = (cx + (Math.random() - 0.5) * 4) + 'px';
+      trail.style.top = (cy + j * 16) + 'px';
+      document.body.appendChild(trail);
+      setTimeout(function(t) { t.remove(); }, 600, trail);
+    }
+
+    // 平滑滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
