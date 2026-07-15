@@ -240,6 +240,86 @@ body::before {
   box-shadow: 0 10px 30px rgba(0, 229, 255, 0.25);
 }
 
+.hero-quote {
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  min-height: 1.5em;
+  letter-spacing: 0.5px;
+}
+
+.hero-quote .cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== 首页最近文章 ===== */
+.recent-posts {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+.recent-posts h3 {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.recent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.recent-card {
+  display: block;
+  text-decoration: none;
+  padding: 18px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.3s;
+}
+
+.recent-card:hover {
+  border-color: rgba(0, 229, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.recent-date {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.recent-title {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+@media (max-width: 500px) {
+  .recent-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ===== Footer ===== */
 footer {
   position: relative;
