@@ -107,3 +107,29 @@ function hideWechat() {
 
   type();
 })();
+
+// ===== 在线天数 =====
+(function() {
+  const el = document.getElementById('daysCount');
+  if (!el) return;
+  const start = new Date('2026-07-15');
+  const now = new Date();
+  const days = Math.max(1, Math.floor((now - start) / (1000 * 60 * 60 * 24)));
+  el.textContent = days;
+})();
+
+// ===== 滚动渐显 =====
+(function() {
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.recent-posts, .interests, .say-hi').forEach(function(el) {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+})();
