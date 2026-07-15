@@ -61,6 +61,26 @@
       <span class="like-count" id="likeCount">0</span>
     </div>
 
+    <div class="article-share">
+      <span class="share-label">分享</span>
+      <button class="share-btn copy-link" id="shareCopy" aria-label="复制链接">
+        <i class="fa-solid fa-link"></i>
+        <span class="tooltip">复制链接</span>
+      </button>
+      <button class="share-btn weibo" id="shareWeibo" aria-label="分享到微博">
+        <i class="fa-brands fa-weibo"></i>
+        <span class="tooltip">微博</span>
+      </button>
+      <button class="share-btn twitter" id="shareTwitter" aria-label="分享到Twitter">
+        <i class="fa-brands fa-x-twitter"></i>
+        <span class="tooltip">Twitter</span>
+      </button>
+      <button class="share-btn qrcode" id="shareQR" aria-label="二维码分享">
+        <i class="fa-solid fa-qrcode"></i>
+        <span class="tooltip">二维码</span>
+      </button>
+    </div>
+
     <a href="../blog.html" class="back-link">
       <i class="fa-solid fa-arrow-left"></i> 返回博客列表
     </a>
@@ -78,7 +98,18 @@
 
   <footer>
     <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <div class="runtime" id="siteRuntime"></div>
   </footer>
+
+  <!-- 二维码弹窗 -->
+  <div class="qr-overlay" id="qrOverlay">
+    <div class="qr-card">
+      <img id="qrImage" src="" alt="扫码访问">
+      <div class="qr-title">扫码访问</div>
+      <div class="qr-hint">手机扫一扫，分享给朋友</div>
+      <button class="qr-close">关闭</button>
+    </div>
+  </div>
 
   <script src="../js/main.js"></script>
   <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
