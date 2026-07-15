@@ -2275,3 +2275,75 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
 .post-card:hover {
   z-index: 10;
 }
+
+/* ===== 头像创意 — hover 旋转+光晕 ===== */
+#avatarWrapper:hover .avatar img {
+  animation: avatarSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#avatarWrapper:hover .avatar {
+  box-shadow: 0 0 18px 4px rgba(0, 229, 255, 0.45), 0 0 40px 8px rgba(0, 229, 255, 0.18);
+  transition: box-shadow 0.3s ease;
+}
+#avatarWrapper .avatar {
+  transition: box-shadow 0.4s ease;
+}
+@keyframes avatarSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes avatarGlowBreath {
+  0%, 100% { box-shadow: 0 0 18px 4px rgba(0, 229, 255, 0.3), 0 0 40px 8px rgba(0, 229, 255, 0.1); }
+  50%      { box-shadow: 0 0 28px 6px rgba(0, 229, 255, 0.55), 0 0 55px 12px rgba(0, 229, 255, 0.22); }
+}
+
+/* ===== 头像创意 — 彩虹边框 ===== */
+.avatar-ring {
+  border: 3px solid transparent;
+  background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
+              conic-gradient(
+                #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0000ff, #aa00ff, #ff0000
+              ) border-box !important;
+  border-style: solid !important;
+  border-radius: 50%;
+  animation: spin 4s linear infinite, ringBreath 3s ease-in-out infinite;
+}
+
+/* ===== 头像创意 — 漂浮粒子 ===== */
+.avatar-particles {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+.avatar-particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.85);
+  box-shadow: 0 0 6px 1px rgba(0, 229, 255, 0.6);
+}
+@media (max-width: 768px) {
+  .avatar-particles { display: none; }
+}
+
+/* ===== 头像创意 — 点击表情贴纸 ===== */
+.avatar-face {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.avatar-face.show {
+  opacity: 1;
+}
+#avatarWrapper {
+  cursor: pointer;
+}
