@@ -1078,3 +1078,67 @@ footer {
   opacity: 0.55;
   transition: opacity 0.6s;
 }
+
+/* ===== 迷你心跳线 ===== */
+.heartbeat-line {
+  width: 160px;
+  margin: 10px auto 0;
+}
+
+.ekg-svg {
+  width: 100%;
+  height: auto;
+}
+
+.ekg-svg polyline {
+  animation: ekgPulse 2s ease-in-out infinite;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+}
+
+@keyframes ekgPulse {
+  0% { stroke-dashoffset: 200; }
+  15% { stroke-dashoffset: 0; }
+  85% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -200; }
+}
+
+/* ===== 悄悄话 ===== */
+.whisper-text {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0;
+  margin-top: 8px;
+  transition: opacity 1.2s ease;
+  user-select: none;
+  cursor: default;
+  line-height: 1.5;
+}
+
+.whisper-text.revealed {
+  opacity: 0.55;
+}
+
+/* ===== 标签云呼吸 ===== */
+.tag-cloud .tag {
+  transition: all 0.8s ease;
+  opacity: 0.4;
+}
+
+.tag-cloud .tag.breathing {
+  opacity: 1;
+  color: var(--accent-color, #6366f1);
+  text-shadow: 0 0 12px rgba(99,102,241,0.4);
+}
+
+/* ===== 滚动弹性回弹 ===== */
+body.bounce-end {
+  animation: rubberBounce 0.5s ease-out;
+}
+
+@keyframes rubberBounce {
+  0% { transform: scaleY(0.97); transform-origin: bottom; }
+  25% { transform: scaleY(1.015); transform-origin: bottom; }
+  50% { transform: scaleY(0.99); transform-origin: bottom; }
+  100% { transform: scaleY(1); transform-origin: bottom; }
+}
