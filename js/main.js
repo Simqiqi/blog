@@ -1306,3 +1306,96 @@ function hideWechat() {
     }
   });
 })();
+
+// ===== 18. 复制自动追加版权声明 =====
+(function() {
+  document.addEventListener('copy', function(e) {
+    var selection = window.getSelection().toString().trim();
+    if (!selection || selection.length < 10) return;
+
+    var attribution = '\n\n——来自 柒柒的博客 (https://simqiqi.github.io/blog/)';
+    var clipData = e.clipboardData || window.clipboardData;
+    if (clipData) {
+      e.preventDefault();
+      clipData.setData('text/plain', selection + attribution);
+    }
+  });
+})();
+
+// ===== 19. 文章分享按钮组 =====
+(function() {
+  var copyBtn = document.getElementById('shareCopy');
+  var weiboBtn = document.getElementById('shareWeibo');
+  var twitterBtn = document.getElementById('shareTwitter');
+  var qrBtn = document.getElementById('shareQR');
+  if (!copyBtn && !weiboBtn && !twitterBtn && !qrBtn) return;
+
+  var pageUrl = window.location.href;
+  var pageTitle = document.title;
+
+  // 复制链接
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      navigator.clipboard.writeText(pageUrl).then(function() {
+        var tip = copyBtn.querySelector('.tooltip');
+        if (tip) {
+          tip.textContent = '已复制';
+          setTimeout(function() { tip.textContent = '复制链接'; }, 1500);
+        }
+      });
+    });
+  }
+
+  // 微博分享
+  if (weiboBtn) {
+    weiboBtn.addEventListener('click', function() {
+      var url = 'https://service.weibo.com/share/share.php?url=' + encodeURIComponent(pageUrl) + '&title=' + encodeURIComponent(pageTitle);
+      window.open(url, '_blank');
+    });
+  }
+
+  // Twitter分享
+  if (twitterBtn) {
+    twitterBtn.addEventListener('click', function() {
+      var url = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(pageUrl) + '&text=' + encodeURIComponent(pageTitle);
+      window.open(url, '_blank');
+    });
+  }
+
+  // 二维码
+  if (qrBtn) {
+    qrBtn.addEventListener('click', function() {
+      var overlay = document.getElementById('qrOverlay');
+      var img = document.getElementById('qrImage');
+      if (!overlay || !img) return;
+
+      var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pageUrl);
+      img.src = qrUrl;
+      overlay.classList.add('active');
+
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay || e.target.classList.contains('qr-close')) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+  }
+})();
+
+// ===== 20. 站点运行时间计时器 =====
+(function() {
+  var el = document.getElementById('siteRuntime');
+  if (!el) return;
+
+  var startDate = new Date('2026-07-15');
+
+  function update() {
+    var now = new Date();
+    var diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+    el.textContent = '本站已运行 ' + diff + ' 天';
+  }
+
+  update();
+  // 每天更新一次即可
+  setInterval(update, 3600000);
+})();
