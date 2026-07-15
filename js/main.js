@@ -714,3 +714,515 @@ function hideWechat() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
+
+// ===== 13. 随机一言弹幕墙 =====
+(function() {
+  if (window.innerWidth < 768) return; // 移动端不显示弹幕
+
+  var container = document.createElement('div');
+  container.className = 'barrage-container';
+  document.body.appendChild(container);
+
+  var quotes = [
+    '种一棵树最好的时间是十年前，其次是现在',
+    '生活不是竞速，偶尔迷路也没关系',
+    '保持好奇，保持愚蠢',
+    '世界是自己的，与他人毫无关系',
+    '所有的为时已晚，其实都是恰逢其时',
+    '与其互为人间，不如自成宇宙',
+    '慢慢来，会更快',
+    '山海自有归期，风雨自有相逢',
+    '耐心是一种很酷的品质',
+    '别怕犯错，怕的是不敢开始',
+    '换个角度看看这个世界',
+    '偶尔摆烂也没关系',
+    '再小的念头也值得被看见',
+    '风吹过的时候，记得呼吸',
+    '愿你被这世界温柔以待',
+    '今天的云特别好看',
+    '深夜最适合和自己聊天',
+    '世界上所有的美好都是免费的',
+    '你不需要成为别人眼中的样子',
+    '有些话不说出口也是诗'
+  ];
+
+  var colors = [
+    'rgba(99,102,241,0.14)', 'rgba(168,85,247,0.14)',
+    'rgba(236,72,153,0.12)', 'rgba(34,211,238,0.14)',
+    'rgba(251,191,36,0.12)', 'rgba(52,211,153,0.12)'
+  ];
+
+  var used = [];
+
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+
+  function spawn() {
+    if (used.length >= quotes.length) used = [];
+    var pool = quotes.filter(function(_, i) { return used.indexOf(i) === -1; });
+    var idx = quotes.indexOf(pool[Math.floor(Math.random() * pool.length)]);
+    used.push(idx);
+
+    var item = document.createElement('div');
+    item.className = 'barrage-item theme-' + getTheme() + '-barrage';
+    item.textContent = quotes[idx];
+    item.style.top = (8 + Math.random() * 24) + 'px';
+    item.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    container.appendChild(item);
+
+    setTimeout(function() { item.remove(); }, 15000);
+  }
+
+  // 初始弹幕
+  setTimeout(spawn, 2000);
+  setTimeout(spawn, 4500);
+
+  // 每 8-15 秒随机出现
+  function schedule() {
+    spawn();
+    setTimeout(schedule, 8000 + Math.random() * 14000);
+  }
+  setTimeout(schedule, 9000);
+
+  // 主题切换时更新弹幕样式
+  var observer = new MutationObserver(function() {
+    var theme = getTheme();
+    document.querySelectorAll('.barrage-item').forEach(function(el) {
+      el.className = 'barrage-item theme-' + theme + '-barrage';
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+
+// ===== 14. 迷你音乐播放器 (Web Audio API) =====
+(function() {
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  var ctx = null;
+  var playing = false;
+  var currentTrack = 0;
+  var gainNode = null;
+  var timerId = null;
+  var noteIndex = 0;
+
+  var tracks = [
+    {
+      name: '星空漫步',
+      mood: '安静 · 治愈',
+      scale: [262, 294, 330, 349, 392, 440, 494, 523], // C D E F G A B C
+      tempo: 1200,
+      pattern: [0, 2, 4, 7, 4, 2, 0, 2, 4, 5, 4, 2, 7, 8, 7, 5]
+    },
+    {
+      name: '午后阳光',
+      mood: '温暖 · 悠闲',
+      scale: [330, 349, 392, 440, 494, 523, 587, 659], // E F G A B C D E
+      tempo: 1000,
+      pattern: [0, 3, 5, 7, 3, 0, 5, 3, 2, 0, 7, 5, 3, 2, 0, 3]
+    },
+    {
+      name: '午夜思绪',
+      mood: '深沉 · 内省',
+      scale: [220, 247, 262, 294, 330, 349, 392, 440], // A B C D E F G A
+      tempo: 1500,
+      pattern: [0, 2, 4, 7, 4, 2, 7, 8, 7, 5, 3, 0, 2, 4, 7, 5]
+    },
+    {
+      name: '晨露',
+      mood: '清新 · 灵动',
+      scale: [294, 330, 349, 392, 440, 494, 523, 587], // D E F G A B C D
+      tempo: 900,
+      pattern: [7, 5, 4, 2, 0, 7, 5, 4, 7, 5, 3, 2, 0, 5, 7, 8]
+    }
+  ];
+
+  function initCtx() {
+    if (!ctx) {
+      ctx = new AudioContext();
+      gainNode = ctx.createGain();
+      gainNode.gain.value = 0.15;
+      gainNode.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+  }
+
+  function playNote() {
+    if (!playing || !ctx) return;
+    var track = tracks[currentTrack];
+    var freq = track.scale[track.pattern[noteIndex % track.pattern.length]];
+    var osc = ctx.createOscillator();
+    var noteGain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+
+    noteGain.gain.setValueAtTime(0, ctx.currentTime);
+    noteGain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.08);
+    noteGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+    osc.connect(noteGain);
+    noteGain.connect(gainNode);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 1.2);
+
+    noteIndex++;
+    timerId = setTimeout(playNote, track.tempo);
+  }
+
+  function startMusic() {
+    initCtx();
+    playing = true;
+    noteIndex = 0;
+    playNote();
+  }
+
+  function stopMusic() {
+    playing = false;
+    if (timerId) { clearTimeout(timerId); timerId = null; }
+  }
+
+  function nextTrack() {
+    currentTrack = (currentTrack + 1) % tracks.length;
+    if (playing) {
+      stopMusic();
+      noteIndex = 0;
+      playNote();
+    }
+    updatePanel();
+  }
+
+  function prevTrack() {
+    currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+    if (playing) {
+      stopMusic();
+      noteIndex = 0;
+      playNote();
+    }
+    updatePanel();
+  }
+
+  function updatePanel() {
+    var nameEl = document.getElementById('trackName');
+    var moodEl = document.getElementById('trackMood');
+    if (nameEl) nameEl.textContent = tracks[currentTrack].name;
+    if (moodEl) moodEl.textContent = tracks[currentTrack].mood;
+  }
+
+  function togglePlay() {
+    if (playing) {
+      stopMusic();
+      document.getElementById('musicToggle').classList.remove('playing');
+    } else {
+      startMusic();
+      document.getElementById('musicToggle').classList.add('playing');
+    }
+  }
+
+  // 音量滑条
+  var volSlider = document.getElementById('volumeSlider');
+  if (volSlider) {
+    volSlider.addEventListener('input', function() {
+      if (gainNode) gainNode.gain.value = parseFloat(this.value);
+    });
+  }
+
+  // 绑定事件
+  var toggle = document.getElementById('musicToggle');
+  var panel = document.getElementById('musicPanel');
+
+  if (toggle) {
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (panel && !panel.classList.contains('open')) {
+        panel.classList.add('open');
+        setTimeout(function() {
+          document.addEventListener('click', closePanel);
+        }, 100);
+      } else if (panel) {
+        panel.classList.remove('open');
+        document.removeEventListener('click', closePanel);
+      }
+    });
+  }
+
+  function closePanel(e) {
+    if (panel && !panel.contains(e.target) && e.target !== toggle) {
+      panel.classList.remove('open');
+      document.removeEventListener('click', closePanel);
+    }
+  }
+
+  // 播放/暂停
+  var playBtn = document.getElementById('musicPlay');
+  if (playBtn) {
+    playBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      togglePlay();
+    });
+  }
+
+  // 上一首
+  var prevBtn = document.getElementById('musicPrev');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      prevTrack();
+    });
+  }
+
+  // 下一首
+  var nextBtn = document.getElementById('musicNext');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      nextTrack();
+    });
+  }
+
+  updatePanel();
+})();
+
+// ===== 15. 3D 旋转地球仪 =====
+(function() {
+  if (typeof THREE === 'undefined') {
+    // 动态加载 Three.js
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    script.onload = initGlobe;
+    document.head.appendChild(script);
+  } else {
+    initGlobe();
+  }
+
+  function initGlobe() {
+    var container = document.getElementById('globeContainer');
+    if (!container) return;
+
+    var width = container.clientWidth;
+    var height = container.clientHeight;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = 4.2;
+
+    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // 地球
+    var globeGeom = new THREE.SphereGeometry(1.5, 64, 64);
+
+    // 生成程序化纹理
+    var canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 256;
+    var ctx2d = canvas.getContext('2d');
+
+    // 海洋底色
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    ctx2d.fillStyle = isLight ? '#e8edf2' : '#0a0a1a';
+    ctx2d.fillRect(0, 0, 512, 256);
+
+    // 绘制伪大陆
+    ctx2d.fillStyle = isLight ? '#c8d6e5' : '#1a1a3a';
+    // 简化的大陆形状
+    var continents = [
+      { x: 80, y: 60, rx: 70, ry: 50 },   // 北美
+      { x: 90, y: 130, rx: 45, ry: 35 },  // 南美
+      { x: 240, y: 50, rx: 60, ry: 55 },  // 欧洲
+      { x: 250, y: 120, rx: 50, ry: 70 }, // 非洲
+      { x: 350, y: 40, rx: 80, ry: 60 },  // 亚洲
+      { x: 370, y: 130, rx: 40, ry: 30 }, // 东南亚
+      { x: 400, y: 160, rx: 35, ry: 25 }, // 澳洲
+      { x: 160, y: 200, rx: 80, ry: 40 }, // 南极洲
+    ];
+
+    continents.forEach(function(c) {
+      ctx2d.beginPath();
+      ctx2d.ellipse(c.x, c.y, c.rx, c.ry, Math.random() * 0.3, 0, Math.PI * 2);
+      ctx2d.fill();
+    });
+
+    // 添加一些岛屿和细节
+    ctx2d.fillStyle = isLight ? '#d1dce8' : '#252550';
+    for (var i = 0; i < 40; i++) {
+      ctx2d.beginPath();
+      ctx2d.arc(Math.random() * 512, Math.random() * 256, 2 + Math.random() * 8, 0, Math.PI * 2);
+      ctx2d.fill();
+    }
+
+    var texture = new THREE.CanvasTexture(canvas);
+    var globeMat = new THREE.MeshPhongMaterial({
+      map: texture,
+      specular: 0x333333,
+      shininess: 8,
+      emissive: isLight ? 0x111122 : 0x000011,
+      emissiveIntensity: 0.3
+    });
+
+    var globe = new THREE.Mesh(globeGeom, globeMat);
+    scene.add(globe);
+
+    // 大气层光环
+    var atmosGeom = new THREE.SphereGeometry(1.55, 64, 64);
+    var atmosMat = new THREE.MeshPhongMaterial({
+      color: isLight ? 0x6366f1 : 0x00e5ff,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.FrontSide
+    });
+    var atmosphere = new THREE.Mesh(atmosGeom, atmosMat);
+    scene.add(atmosphere);
+
+    // 光点（访客标记）
+    var dotsGroup = new THREE.Group();
+    var dotGeom = new THREE.SphereGeometry(0.03, 8, 8);
+    var dotMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+
+    var cityCoords = [
+      { lat: 40, lon: -74 },  // 纽约
+      { lat: 51, lon: -0.1 }, // 伦敦
+      { lat: 35, lon: 139 },  // 东京
+      { lat: -34, lon: 151 }, // 悉尼
+      { lat: 39, lon: 116 },  // 北京
+      { lat: 30, lon: 31 },   // 开罗
+      { lat: -23, lon: -46 }, // 圣保罗
+      { lat: 55, lon: 37 },   // 莫斯科
+      { lat: 19, lon: 72 },   // 孟买
+      { lat: 48, lon: 2 },    // 巴黎
+      { lat: -1, lon: 36 },   // 内罗毕
+      { lat: 37, lon: 127 },  // 首尔
+    ];
+
+    cityCoords.forEach(function(c) {
+      var phi = (90 - c.lat) * (Math.PI / 180);
+      var theta = (c.lon + 180) * (Math.PI / 180);
+      var x = -(1.52) * Math.sin(phi) * Math.cos(theta);
+      var y = 1.52 * Math.cos(phi);
+      var z = 1.52 * Math.sin(phi) * Math.sin(theta);
+
+      var dot = new THREE.Mesh(dotGeom, dotMat);
+      dot.position.set(x, y, z);
+      dotsGroup.add(dot);
+
+      // 光柱
+      var pillarGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.15, 6);
+      var pillarMat = new THREE.MeshBasicMaterial({
+        color: isLight ? 0x6366f1 : 0x00e5ff,
+        transparent: true,
+        opacity: 0.5
+      });
+      var pillar = new THREE.Mesh(pillarGeom, pillarMat);
+      pillar.position.set(x, y + 0.08, z);
+      dotsGroup.add(pillar);
+    });
+
+    globe.add(dotsGroup);
+
+    // 光照
+    var ambientLight = new THREE.AmbientLight(0x444466, 0.6);
+    scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 3, 5);
+    scene.add(directionalLight);
+
+    // 鼠标交互
+    var isDragging = false;
+    var prevMouse = { x: 0, y: 0 };
+    var rotationVelocity = { x: 0, y: 0 };
+    var autoRotate = true;
+    var autoSpeed = 0.003;
+
+    renderer.domElement.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      autoRotate = false;
+      prevMouse.x = e.clientX;
+      prevMouse.y = e.clientY;
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      var dx = e.clientX - prevMouse.x;
+      var dy = e.clientY - prevMouse.y;
+      rotationVelocity.y = dx * 0.005;
+      rotationVelocity.x = dy * 0.003;
+      prevMouse.x = e.clientX;
+      prevMouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseup', function() {
+      isDragging = false;
+      setTimeout(function() { autoRotate = true; }, 2000);
+    });
+
+    // 触摸支持
+    renderer.domElement.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      autoRotate = false;
+      prevMouse.x = e.touches[0].clientX;
+      prevMouse.y = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      var dx = e.touches[0].clientX - prevMouse.x;
+      var dy = e.touches[0].clientY - prevMouse.y;
+      rotationVelocity.y = dx * 0.005;
+      rotationVelocity.x = dy * 0.003;
+      prevMouse.x = e.touches[0].clientX;
+      prevMouse.y = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchend', function() {
+      isDragging = false;
+      setTimeout(function() { autoRotate = true; }, 2000);
+    });
+
+    // 响应式
+    window.addEventListener('resize', function() {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    // 动画循环
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (autoRotate) {
+        globe.rotation.y += autoSpeed;
+        // 减速拖动惯性
+        rotationVelocity.y *= 0.95;
+        rotationVelocity.x *= 0.95;
+      } else {
+        globe.rotation.y += rotationVelocity.y;
+        globe.rotation.x += rotationVelocity.x;
+        rotationVelocity.y *= 0.95;
+        rotationVelocity.x *= 0.95;
+      }
+
+      // 光点脉动
+      var time = Date.now() * 0.001;
+      dotMat.color.setHSL(0.55 + Math.sin(time) * 0.05, 0.9, 0.55 + Math.sin(time * 1.7) * 0.1);
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // 更新访问计数显示
+    var visitorsEl = document.getElementById('globeVisitors');
+    if (visitorsEl) {
+      var count = Math.floor(Math.random() * 50) + 80;
+      visitorsEl.textContent = '来自 ' + count + ' 个城市的足迹';
+    }
+  }
+})();
