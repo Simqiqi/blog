@@ -2039,3 +2039,154 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
 @media (max-width: 768px) {
   .nav-clock { display: none; }
 }
+
+/* ===== 文章阅读量 ===== */
+.article-views {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.article-views::before {
+  content: '👁';
+  font-size: 0.7rem;
+}
+
+/* ===== 打字机效果 ===== */
+.typewriter-wrap {
+  display: inline;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  background: var(--accent);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: cursorBlink 0.8s steps(1) infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== 页脚社交图标 ===== */
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.footer-social a {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+}
+
+.footer-social a:hover {
+  transform: translateY(-3px) scale(1.1);
+}
+
+.footer-social a.ft-github:hover {
+  border-color: #6e7681;
+  color: #6e7681;
+  box-shadow: 0 4px 12px rgba(110, 118, 129, 0.3);
+}
+
+.footer-social a.ft-weibo:hover {
+  border-color: #e6162d;
+  color: #e6162d;
+  box-shadow: 0 4px 12px rgba(230, 22, 45, 0.3);
+}
+
+.footer-social a.ft-bilibili:hover {
+  border-color: #fb7299;
+  color: #fb7299;
+  box-shadow: 0 4px 12px rgba(251, 114, 153, 0.3);
+}
+
+.footer-social a.ft-email:hover {
+  border-color: #10b981;
+  color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* ===== 技能进度条 ===== */
+.skills-section {
+  margin-top: 36px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skills-title {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+
+.skill-item {
+  margin-bottom: 16px;
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.skill-name {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.skill-pct {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.skill-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(99, 102, 241, 0.08);
+  overflow: hidden;
+}
+
+[data-theme="light"] .skill-bar {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.skill-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(90deg, #6366f1, #a78bfa);
+}
+
+.skill-fill.writing { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.skill-fill.design { background: linear-gradient(90deg, #ec4899, #f472b6); }
+.skill-fill.photo  { background: linear-gradient(90deg, #10b981, #34d399); }
+.skill-fill.anime  { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.skill-fill.game   { background: linear-gradient(90deg, #ef4444, #f87171); }
+.skill-fill.sleep  { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
