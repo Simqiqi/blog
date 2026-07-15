@@ -1661,3 +1661,99 @@ function hideWechat() {
     });
   });
 })();
+
+// ===== 64. 头像漂浮粒子 =====
+(function() {
+  const container = document.getElementById('avatarParticles');
+  if (!container) return;
+  const count = 6;
+  const particles = [];
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'avatar-particle';
+    container.appendChild(p);
+    const angle = (i / count) * Math.PI * 2;
+    const speed = 0.3 + Math.random() * 0.5;
+    const rx = 42 + Math.random() * 10;
+    const ry = 42 + Math.random() * 10;
+    const phase = Math.random() * Math.PI * 2;
+    particles.push({ el: p, angle, speed, rx, ry, phase });
+  }
+
+  function animate() {
+    const t = performance.now() / 1000;
+    const cw = container.offsetWidth / 2;
+    const ch = container.offsetHeight / 2;
+    particles.forEach(p => {
+      const a = p.angle + p.phase + t * p.speed;
+      const x = cw + Math.cos(a) * p.rx - 2;
+      const y = ch + Math.sin(a) * p.ry - 2;
+      p.el.style.left = x + 'px';
+      p.el.style.top = y + 'px';
+      p.el.style.opacity = 0.4 + 0.6 * Math.abs(Math.sin(t * 1.5 + p.phase));
+      p.el.style.transform = 'scale(' + (0.7 + 0.5 * Math.abs(Math.sin(t * 2 + p.phase))) + ')';
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ===== 65. 头像点击切换表情 =====
+(function() {
+  const wrapper = document.getElementById('avatarWrapper');
+  const faceEl = document.getElementById('avatarFace');
+  if (!wrapper || !faceEl) return;
+
+  const faces = [
+    { emoji: '🐱', label: 'cat', size: '60px' },
+    { emoji: '😎', label: 'cool', size: '55px' },
+    { emoji: '👑', label: 'crown', size: '50px' },
+    { emoji: '🥳', label: 'party', size: '55px' },
+    { emoji: '🥸', label: 'disguise', size: '55px' },
+    { emoji: '🤩', label: 'star', size: '55px' }
+  ];
+  let current = -1;
+
+  function showFace(index) {
+    faceEl.style.backgroundImage = 'none';
+    faceEl.style.fontSize = faces[index].size;
+    faceEl.style.display = 'flex';
+    faceEl.style.alignItems = 'center';
+    faceEl.style.justifyContent = 'center';
+    faceEl.textContent = faces[index].emoji;
+    faceEl.classList.add('show');
+  }
+
+  function hideFace() {
+    faceEl.classList.remove('show');
+    setTimeout(() => { faceEl.textContent = ''; }, 300);
+  }
+
+  wrapper.addEventListener('click', function(e) {
+    // If already showing, hide first
+    if (faceEl.classList.contains('show')) {
+      hideFace();
+      // Then show next after a short delay for smooth transition
+      setTimeout(() => {
+        current = (current + 1) % faces.length;
+        showFace(current);
+      }, 350);
+      return;
+    }
+    current = (current + 1) % faces.length;
+    showFace(current);
+  });
+
+  // Auto-hide after 3 seconds
+  let hideTimer;
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(m => {
+      if (m.target.classList.contains('show') && m.oldValue === '' && m.target.classList.value.includes('show')) {
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(hideFace, 3000);
+      }
+    });
+  });
+  observer.observe(faceEl, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+})();
