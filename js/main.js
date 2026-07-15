@@ -1757,3 +1757,103 @@ function hideWechat() {
   });
   observer.observe(faceEl, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
 })();
+
+// ===== 66. 首页雨滴 + 溅射涟漪 =====
+(function() {
+  const rainCanvas = document.getElementById('rainCanvas');
+  const hero = document.querySelector('.hero');
+  const ripplesContainer = document.getElementById('rainRipples');
+  if (!rainCanvas || !hero || !ripplesContainer) return;
+
+  const ctx = rainCanvas.getContext('2d');
+  const drops = [];
+  const DROP_COUNT = 80;
+
+  function resizeRain() {
+    rainCanvas.width = hero.offsetWidth;
+    rainCanvas.height = hero.offsetHeight;
+  }
+  resizeRain();
+  window.addEventListener('resize', resizeRain);
+
+  for (let i = 0; i < DROP_COUNT; i++) {
+    drops.push({
+      x: Math.random() * (rainCanvas.width || hero.offsetWidth),
+      y: Math.random() * (rainCanvas.height || hero.offsetHeight),
+      len: 6 + Math.random() * 16,
+      speed: 2.5 + Math.random() * 5,
+      opacity: 0.08 + Math.random() * 0.28
+    });
+  }
+
+  function getCollisionZones() {
+    const elms = [
+      document.querySelector('.navbar'),
+      document.querySelector('.hero-card')
+    ];
+    const heroRect = hero.getBoundingClientRect();
+    const zones = [];
+    elms.forEach(el => {
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      zones.push({
+        y: r.top - heroRect.top,
+        x: r.left - heroRect.left,
+        w: r.width
+      });
+      // Also bottom edge of navbar
+      if (el.classList.contains('navbar')) {
+        zones.push({
+          y: r.bottom - heroRect.top,
+          x: r.left - heroRect.left,
+          w: r.width
+        });
+      }
+    });
+    return zones;
+  }
+
+  function createRipple(x, y) {
+    const ripple = document.createElement('div');
+    ripple.className = 'rain-ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripplesContainer.appendChild(ripple);
+    ripple.addEventListener('animationend', function() { ripple.remove(); });
+  }
+
+  function animate() {
+    if (rainCanvas.width === 0) resizeRain();
+    ctx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+    const zones = getCollisionZones();
+
+    drops.forEach(d => {
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x, d.y + d.len);
+      ctx.strokeStyle = 'rgba(147,197,253,' + d.opacity + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      d.y += d.speed;
+
+      for (const z of zones) {
+        if (d.x > z.x && d.x < z.x + z.w &&
+            d.y + d.len >= z.y && d.y <= z.y + 3) {
+          createRipple(d.x, z.y);
+          d.y = -d.len;
+          d.x = Math.random() * rainCanvas.width;
+          break;
+        }
+      }
+
+      if (d.y > rainCanvas.height) {
+        d.y = -d.len;
+        d.x = Math.random() * rainCanvas.width;
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
