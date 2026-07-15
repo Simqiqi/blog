@@ -1399,3 +1399,128 @@ function hideWechat() {
   // 每天更新一次即可
   setInterval(update, 3600000);
 })();
+
+// ===== 21. 导航栏实时时钟 =====
+(function() {
+  var el = document.getElementById('navClock');
+  if (!el) return;
+
+  function tick() {
+    var now = new Date();
+    var h = now.getHours().toString().padStart(2, '0');
+    var m = now.getMinutes().toString().padStart(2, '0');
+    el.textContent = h + ':' + m;
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
+
+// ===== 22. 导航栏一言签名 =====
+(function() {
+  var el = document.getElementById('navMotto');
+  if (!el) return;
+
+  var mottos = [
+    '且将新火试新茶，诗酒趁年华',
+    '心之所向，素履以往',
+    '吹灭读书灯，一身都是月',
+    '人生如逆旅，我亦是行人',
+    '欲买桂花同载酒，终不似，少年游',
+    '世界微尘里，吾宁爱与憎',
+    '应是天仙狂醉，乱把白云揉碎',
+    '醉后不知天在水，满船清梦压星河',
+    '山中何事？松花酿酒，春水煎茶',
+    '看取莲花净，应知不染心',
+    '借我一个暮年，借我碎片',
+    '万物皆有裂痕，那是光照进来的地方',
+    '天空没有翅膀的痕迹，但鸟已飞过',
+    '每一个不曾起舞的日子，都是对生命的辜负'
+  ];
+
+  var idx = Math.floor(Math.random() * mottos.length);
+  el.textContent = mottos[idx];
+
+  el.addEventListener('click', function() {
+    var old = idx;
+    while (idx === old) idx = Math.floor(Math.random() * mottos.length);
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.textContent = mottos[idx];
+      el.style.opacity = '0.55';
+    }, 300);
+  });
+})();
+
+// ===== 23. 导航栏搜索 =====
+(function() {
+  var toggle = document.getElementById('searchToggle');
+  var dropdown = document.getElementById('searchDropdown');
+  var input = document.getElementById('searchInput');
+  var results = document.getElementById('searchResults');
+  if (!toggle || !dropdown) return;
+
+  var articles = [
+    { title: '你好，世界', path: 'posts/hello-world.html', date: '2026-07-15', tag: '生活随笔' },
+    { title: '话没说完，也没关系', path: 'posts/talk-unfinished.html', date: '2026-07-15', tag: '生活随笔' }
+  ];
+
+  function renderResults(list) {
+    if (!results) return;
+    if (list.length === 0) {
+      results.innerHTML = '<div class="search-empty">没有找到相关文章</div>';
+      return;
+    }
+    var html = '';
+    list.forEach(function(a) {
+      html += '<a class="search-result" href="' + a.path + '">';
+      html += '<div class="result-title">' + a.title + '</div>';
+      html += '<div class="result-meta">' + a.date + ' · ' + a.tag + '</div>';
+      html += '</a>';
+    });
+    results.innerHTML = html;
+  }
+
+  toggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    dropdown.classList.toggle('active');
+    if (dropdown.classList.contains('active')) {
+      setTimeout(function() { input && input.focus(); }, 150);
+      renderResults(articles);
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target) && e.target !== toggle) {
+      dropdown.classList.remove('active');
+    }
+  });
+
+  if (input) {
+    input.addEventListener('input', function() {
+      var q = input.value.trim().toLowerCase();
+      if (!q) { renderResults(articles); return; }
+      var filtered = articles.filter(function(a) {
+        return a.title.toLowerCase().indexOf(q) !== -1 ||
+               a.tag.toLowerCase().indexOf(q) !== -1;
+      });
+      renderResults(filtered);
+    });
+  }
+
+  renderResults(articles);
+})();
+
+// ===== 24. 导航栏小红点 =====
+(function() {
+  var dot = document.getElementById('navNewDot');
+  if (!dot) return;
+
+  var latestDate = new Date('2026-07-15');
+  var now = new Date();
+  var diffDays = Math.floor((now - latestDate) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 7) {
+    dot.style.display = 'inline-block';
+  }
+})();
