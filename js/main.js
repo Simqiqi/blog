@@ -1,3 +1,6 @@
+// ===== 全局粒子颜色（由昼夜模块更新） =====
+window._particleColor = { r: 0, g: 229, b: 255 };
+
 // ===== 粒子背景 =====
 (function() {
   const canvas = document.getElementById('particles');
@@ -27,8 +30,14 @@
     });
   }
 
+  function getColor() {
+    const c = window._particleColor || { r: 0, g: 229, b: 255 };
+    return c.r + ',' + c.g + ',' + c.b;
+  }
+
   function draw() {
     ctx.clearRect(0, 0, w, h);
+    const rgb = getColor();
 
     for (let i = 0; i < count; i++) {
       const p = particles[i];
@@ -42,11 +51,10 @@
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 229, 255, 0.35)';
+      ctx.fillStyle = 'rgba(' + rgb + ',0.35)';
       ctx.fill();
     }
 
-    // 连线
     for (let i = 0; i < count; i++) {
       for (let j = i + 1; j < count; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -56,7 +64,7 @@
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(0, 229, 255, ${0.06 * (1 - dist / connectionDist)})`;
+          ctx.strokeStyle = 'rgba(' + rgb + ',' + (0.06 * (1 - dist / connectionDist)) + ')';
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -390,4 +398,130 @@ function hideWechat() {
     el.style.opacity = '0';
     setTimeout(function() { el.textContent = trails[idx]; el.style.opacity = '0.55'; }, 600);
   }, 8000);
+})();
+
+// ===== 6. 点击涟漪 =====
+(function() {
+  var style = document.createElement('style');
+  style.textContent = '.ripple { position: fixed; z-index: 9999; pointer-events: none; border-radius: 50%; border: 1px solid rgba(99,102,241,0.5); animation: rippleOut 0.9s ease-out forwards; } @keyframes rippleOut { 0% { width: 0; height: 0; opacity: 0.8; } 100% { width: 120px; height: 120px; opacity: 0; margin-left: -60px; margin-top: -60px; } }';
+  document.head.appendChild(style);
+  document.addEventListener('click', function(e) {
+    var r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.left = e.clientX + 'px';
+    r.style.top = e.clientY + 'px';
+    document.body.appendChild(r);
+    setTimeout(function() { r.remove(); }, 900);
+  });
+})();
+
+// ===== 7. 粒子昼夜变色 =====
+(function() {
+  var schedule = [
+    { h: 0,  r: 20,  g: 50,  b: 120  },
+    { h: 5,  r: 80,  g: 100, b: 200  },
+    { h: 7,  r: 140, g: 160, b: 240  },
+    { h: 10, r: 0,   g: 229, b: 255  },
+    { h: 14, r: 100, g: 220, b: 200  },
+    { h: 17, r: 255, g: 170, b: 100  },
+    { h: 19, r: 200, g: 120, b: 220  },
+    { h: 21, r: 60,  g: 80,  b: 180  },
+    { h: 23, r: 20,  g: 50,  b: 120  }
+  ];
+  function lerp(a,b,t){ return Math.round(a+(b-a)*t); }
+  function update() {
+    var h = new Date().getHours() + new Date().getMinutes()/60;
+    for (var i=schedule.length-2; i>=0; i--) {
+      var A=schedule[i], B=schedule[i+1];
+      if (h >= A.h) {
+        var t = Math.min(1, (h - A.h) / (B.h - A.h));
+        window._particleColor.r = lerp(A.r, B.r, t);
+        window._particleColor.g = lerp(A.g, B.g, t);
+        window._particleColor.b = lerp(A.b, B.b, t);
+        break;
+      }
+    }
+  }
+  update();
+  setInterval(update, 60000);
+})();
+
+// ===== 8. 灵感气泡 =====
+(function() {
+  var style = document.createElement('style');
+  style.textContent = '.idea-bubble { position: fixed; z-index: 1; pointer-events: none; left: 50%; transform: translateX(-50%); bottom: -60px; padding: 10px 22px; background: rgba(99,102,241,0.1); backdrop-filter: blur(8px); border: 1px solid rgba(99,102,241,0.18); border-radius: 24px; color: rgba(255,255,255,0.7); font-size: 0.78rem; font-style: italic; white-space: nowrap; animation: bubbleUp 8s ease-in forwards; } @keyframes bubbleUp { 0% { bottom: -60px; opacity: 0; } 15% { opacity: 0.7; } 85% { opacity: 0.5; } 100% { bottom: 105%; opacity: 0; } }';
+  document.head.appendChild(style);
+  var poems = [
+    '再小的念头也值得被看见',
+    '风吹过的时候，记得呼吸',
+    '你不需要成为别人眼中的样子',
+    '没关系，慢慢来',
+    '有些话不说出口也是诗',
+    '今天的云特别好看',
+    '换个角度看看这个世界',
+    '耐心是一种很酷的品质',
+    '别怕犯错，怕的是不敢开始',
+    '深夜最适合和自己聊天',
+    '偶尔摆烂也没关系',
+    '世界上所有的美好都是免费的'
+  ];
+  var idx = 0;
+  function spawn() {
+    var b = document.createElement('div');
+    b.className = 'idea-bubble';
+    b.textContent = poems[idx];
+    idx = (idx + 1) % poems.length;
+    document.body.appendChild(b);
+    setTimeout(function() { b.remove(); }, 8000);
+  }
+  spawn();
+  setInterval(spawn, 15000);
+})();
+
+// ===== 9. 页面载入淡入 =====
+(function() {
+  document.documentElement.style.opacity = '0';
+  document.documentElement.style.transition = 'opacity 0.7s ease-out';
+  window.addEventListener('load', function() {
+    requestAnimationFrame(function() {
+      document.documentElement.style.opacity = '1';
+    });
+  });
+})();
+
+// ===== 10. 头像彩蛋 =====
+(function() {
+  var avatar = document.querySelector('.avatar');
+  if (!avatar) return;
+  var clicks = 0, timer = null;
+  var emojis = ['✨','🌟','💫','🎉','🎊','💖','🔥','⚡'];
+  avatar.addEventListener('click', function(e) {
+    clicks++;
+    if (clicks === 1) timer = setTimeout(function() { clicks = 0; }, 800);
+    if (clicks >= 3) {
+      clearTimeout(timer);
+      clicks = 0;
+      var rect = avatar.getBoundingClientRect();
+      var cx = rect.left + rect.width/2;
+      var cy = rect.top + rect.height/2;
+      var style = document.createElement('style');
+      var css = '@keyframes burst { 0% { transform: translate(0,0) scale(0); opacity: 1; } 100% { opacity: 0; } }';
+      for (var i = 0; i < emojis.length; i++) {
+        var angle = (i / emojis.length) * Math.PI * 2;
+        var dist = 60 + Math.random() * 40;
+        var tx = Math.cos(angle)*dist, ty = Math.sin(angle)*dist;
+        css += '@keyframes b' + i + ' { 0% { transform: translate(0,0) scale(0); opacity: 1; } 100% { transform: translate(' + tx + 'px,' + ty + 'px) scale(1); opacity: 0; } }';
+      }
+      style.textContent = css;
+      document.head.appendChild(style);
+      for (var j = 0; j < emojis.length; j++) {
+        var el = document.createElement('span');
+        el.textContent = emojis[j];
+        el.style.cssText = 'position:fixed;z-index:99999;pointer-events:none;font-size:1.6rem;left:'+(cx-12)+'px;top:'+(cy-12)+'px;animation:b'+j+' 0.7s ease-out forwards;';
+        document.body.appendChild(el);
+        setTimeout(function(span){ span.remove(); }, 700, el);
+      }
+      setTimeout(function() { style.remove(); }, 1000);
+    }
+  });
 })();
