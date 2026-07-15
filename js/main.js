@@ -118,6 +118,37 @@ function hideWechat() {
   el.textContent = days;
 })();
 
+// ===== 统计数字动画 =====
+(function() {
+  const nums = document.querySelectorAll('.stat-num');
+  if (!nums.length) return;
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.textContent);
+      if (isNaN(target)) return;
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(target * eased);
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+      }
+
+      requestAnimationFrame(tick);
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  nums.forEach(function(el) { observer.observe(el); });
+})();
+
 // ===== 滚动渐显 =====
 (function() {
   const observer = new IntersectionObserver(function(entries) {
