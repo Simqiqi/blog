@@ -39,6 +39,25 @@ body::before {
   pointer-events: none;
 }
 
+/* ===== 滚动进度条 ===== */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  z-index: 999;
+  background: linear-gradient(90deg, var(--accent), #c471f5, var(--accent));
+  background-size: 200% 100%;
+  animation: progressFlow 2s linear infinite;
+  border-radius: 0 2px 2px 0;
+  transition: width 0.15s ease-out;
+  width: 0%;
+}
+
+@keyframes progressFlow {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ===== 导航栏 ===== */
 .navbar {
   position: fixed;
@@ -47,6 +66,13 @@ body::before {
   backdrop-filter: blur(20px);
   background: rgba(6, 6, 14, 0.7);
   border-bottom: 1px solid var(--border);
+  transition: background 0.35s, backdrop-filter 0.35s, box-shadow 0.35s;
+}
+
+.navbar.scrolled {
+  background: rgba(10, 10, 28, 0.88);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 1px 20px rgba(99, 102, 241, 0.12), 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .nav-inner {
@@ -436,6 +462,12 @@ body::before {
   opacity: 0.6;
   animation: floatHint 2s ease-in-out infinite;
   z-index: 1;
+  transition: opacity 0.4s, visibility 0.4s;
+}
+
+.scroll-hint.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .scroll-hint i {
