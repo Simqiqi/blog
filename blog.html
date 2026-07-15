@@ -13,11 +13,22 @@
   <nav class="navbar">
     <div class="nav-inner">
       <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
       <div class="nav-links">
         <a href="index.html">首页</a>
-        <a href="blog.html" class="active">博客</a>
+        <a href="blog.html" class="active">博客<span class="nav-dot" id="navNewDot" style="display:none"></span></a>
         <a href="about.html">关于</a>
         <a href="thanks.html">致谢</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span>
+      <div class="nav-search">
+        <button class="search-toggle" id="searchToggle" aria-label="搜索">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="search-dropdown" id="searchDropdown">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
+          <div class="search-results" id="searchResults"></div>
+        </div>
       </div>
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
         <i class="fa-solid fa-sun"></i>
