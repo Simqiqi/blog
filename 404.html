@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 柒柒的博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .nf-code {
+      font-size: clamp(6rem, 15vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #6366f1, #a78bfa, #f472b6);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: nfGradient 4s ease-in-out infinite;
+      line-height: 1;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+
+    @keyframes nfGradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .nf-decor {
+      font-size: 3rem;
+      animation: nfBounce 2s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes nfBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .nf-message {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+      min-height: 1.6em;
+    }
+
+    .nf-sub {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+    }
+
+    .nf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.92rem;
+      transition: all 0.3s;
+      backdrop-filter: blur(8px);
+    }
+
+    .nf-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .nf-btn i {
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span>
+      <div class="nav-search">
+        <button class="search-toggle" id="searchToggle" aria-label="搜索">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="search-dropdown" id="searchDropdown">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <main class="not-found">
+    <div class="nf-code">404</div>
+    <div class="nf-decor" id="nfDecor">🧭</div>
+    <p class="nf-message" id="nfMessage"></p>
+    <p class="nf-sub">你来到了宇宙的边界，这里什么都没有。</p>
+    <a href="index.html" class="nf-btn">
+      <i class="fa-solid fa-house"></i> 返回首页
+    </a>
+  </main>
+
+  <footer>
+    <div class="footer-social">
+      <a href="https://github.com/Simqiqi" target="_blank" class="ft-github" title="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://weibo.com/u/7878583139" target="_blank" class="ft-weibo" title="微博"><i class="fa-brands fa-weibo"></i></a>
+      <a href="https://space.bilibili.com" target="_blank" class="ft-bilibili" title="B站"><i class="fa-brands fa-bilibili"></i></a>
+      <a href="mailto:simqiqi@example.com" class="ft-email" title="邮箱"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <div class="runtime" id="siteRuntime"></div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
+    <i class="fa-solid fa-rocket"></i>
+  </button>
+
+  <script>
+    (function() {
+      var messages = [
+        '这个页面被风吹走了...',
+        '你好像迷路了，要喝杯茶吗？',
+        '404：柒柒也不知道这页在哪',
+        '该页已开启隐身模式',
+        '你是不是在找不存在的东西？',
+        '这里只有回声...回声...声...',
+        '恭喜你发现了一个黑洞',
+        '页面去流浪了，还没回来',
+        '此处有猫，但没有页面',
+        '访问的页面已人间蒸发'
+      ];
+      var decor = ['🧭', '🗺️', '🌌', '🪐', '☄️', '🎈', '🕳️', '🔮', '🐱', '☕'];
+      var idx = Math.floor(Math.random() * messages.length);
+      document.getElementById('nfMessage').textContent = messages[idx];
+      document.getElementById('nfDecor').textContent = decor[idx];
+    })();
+  </script>
+</body>
+</html>
