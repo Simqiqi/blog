@@ -68,3 +68,11 @@
 
   draw();
 })();
+
+// 微信二维码弹窗
+function showWechat() {
+  document.getElementById('wechatModal').classList.add('active');
+}
+function hideWechat() {
+  document.getElementById('wechatModal').classList.remove('active');
+}
