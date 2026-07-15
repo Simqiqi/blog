@@ -158,6 +158,15 @@ body::before {
   transition: opacity 0.5s;
 }
 
+.moment-hint {
+  font-size: 0.6rem;
+  opacity: 0.4;
+}
+
+.moment-inner {
+  cursor: pointer;
+}
+
 /* ===== 导航栏 ===== */
 .navbar {
   position: fixed;
@@ -545,6 +554,26 @@ body::before {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+/* ===== 状态条 ===== */
+.status-bar {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin: 0 0 10px;
+  padding: 6px 16px;
+  background: rgba(22, 22, 38, 0.3);
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.status-label { opacity: 0.6; }
+
+.status-text {
+  color: var(--accent);
+  margin-left: 4px;
+  transition: opacity 0.35s;
 }
 
 /* ===== 滚动提示 ===== */
@@ -1019,4 +1048,28 @@ footer {
   margin-top: 14px;
   color: #aaa;
   font-size: 0.9rem;
+}
+
+/* ===== 访客足迹 ===== */
+.visitor-trail {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.trail-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  opacity: 0.35;
+  margin-bottom: 8px;
+}
+
+.trail-text {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-style: italic;
+  opacity: 0.55;
+  transition: opacity 0.6s;
 }
