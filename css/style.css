@@ -21,6 +21,15 @@ body {
   overflow-x: hidden;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url('../images/bg.jpg') center/cover no-repeat;
+  opacity: 0.25;
+}
+
 /* ===== 粒子画布 ===== */
 #particles {
   position: fixed;
