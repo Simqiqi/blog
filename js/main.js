@@ -525,3 +525,109 @@ function hideWechat() {
     }
   });
 })();
+
+// ===== 标签云呼吸 =====
+(function() {
+  var tags = document.querySelectorAll('.tag-cloud .tag');
+  if (!tags.length) return;
+  var idx = 0;
+  function breathe() {
+    tags.forEach(function(t) { t.classList.remove('breathing'); });
+    tags[idx].classList.add('breathing');
+    idx = (idx + 1) % tags.length;
+  }
+  breathe();
+  setInterval(breathe, 2800);
+})();
+
+// ===== 滚动弹性回弹 =====
+(function() {
+  var bouncing = false;
+  function isAtBottom() {
+    var scrollBottom = window.innerHeight + window.pageYOffset;
+    return scrollBottom >= document.body.offsetHeight - 5;
+  }
+  function bounce() {
+    if (bouncing) return;
+    bouncing = true;
+    document.body.classList.add('bounce-end');
+    setTimeout(function() {
+      document.body.classList.remove('bounce-end');
+      bouncing = false;
+    }, 500);
+  }
+  window.addEventListener('wheel', function(e) {
+    if (e.deltaY > 0 && isAtBottom()) {
+      bounce();
+    }
+  }, { passive: true });
+  window.addEventListener('touchmove', function(e) {
+    if (isAtBottom()) {
+      var touch = e.touches[0];
+      if (touch && touch.clientY > window.innerHeight - 100) {
+        bounce();
+      }
+    }
+  }, { passive: true });
+})();
+
+// ===== 深夜彩蛋（22:00 后） =====
+(function() {
+  var h = new Date().getHours();
+  if (h < 22 && h >= 5) return;
+  var nightWords = ['熬夜冠军', '灵感迸发', '深夜放空', '星空守望', '晚安未眠'];
+  var statusEl = document.getElementById('statusText');
+  if (!statusEl) return;
+  var nightStatuses = ['深夜放空', '熬夜赶工', '独自听歌', '仰望星空', '想喝热可可'];
+  var si = 0;
+  setInterval(function() {
+    if (statusEl && statusEl.textContent) {
+      si = (si + 1) % nightStatuses.length;
+      if (statusEl.textContent.indexOf('深夜') !== -1 || statusEl.textContent.indexOf('熬夜') !== -1) {
+        statusEl.textContent = nightStatuses[si];
+      }
+    }
+  }, 8000);
+  var dots = document.querySelectorAll('.status-dot');
+  if (dots.length) {
+    dots.forEach(function(d) { d.style.background = '#fbbf24'; });
+  }
+  var moodEl = document.getElementById('liveMood');
+  if (moodEl) moodEl.textContent = '🌙';
+  var wordsEl = document.getElementById('liveWords');
+  if (wordsEl) wordsEl.textContent = '夜深了，柒柒还在';
+})();
+
+// ===== 悄悄话选中浮现 =====
+(function() {
+  var whisper = document.getElementById('whisperText');
+  if (!whisper) return;
+  var whispers = [
+    '有些话，只给愿意停留的人看。',
+    '你发现了我藏起来的小秘密～',
+    '晚风会记住每一份温柔。',
+    '世界很大，谢谢你停在这里。',
+    '嘘——这是只属于你的彩蛋。',
+    '今天的柒柒也很喜欢你。',
+    '没有人是一座孤岛。',
+    '愿你被这世界温柔以待。'
+  ];
+  var used = 0;
+  function reveal() {
+    var w = whispers[used % whispers.length];
+    used++;
+    whisper.textContent = w;
+    whisper.classList.add('revealed');
+    setTimeout(function() {
+      whisper.classList.remove('revealed');
+    }, 4000);
+  }
+  whisper.addEventListener('dblclick', reveal);
+  whisper.addEventListener('contextmenu', function(e) { e.preventDefault(); reveal(); });
+  var longPressTimer;
+  whisper.addEventListener('touchstart', function(e) {
+    longPressTimer = setTimeout(reveal, 600);
+  }, { passive: true });
+  whisper.addEventListener('touchend', function() { clearTimeout(longPressTimer); });
+  whisper.addEventListener('touchmove', function() { clearTimeout(longPressTimer); });
+})();
