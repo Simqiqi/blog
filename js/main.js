@@ -1524,3 +1524,114 @@ function hideWechat() {
     dot.style.display = 'inline-block';
   }
 })();
+
+// ===== 25. 文章阅读量计数器 =====
+(function() {
+  var el = document.getElementById('articleViews');
+  if (!el) return;
+
+  // 用页面路径做key
+  var path = window.location.pathname;
+  var storageKey = 'blog_views_' + path.replace(/[^a-zA-Z0-9]/g, '_');
+  var timeKey = storageKey + '_time';
+
+  var stored = parseInt(localStorage.getItem(storageKey) || '0');
+  var lastTime = parseInt(localStorage.getItem(timeKey) || '0');
+  var now = Date.now();
+
+  // 30分钟内不重复计数
+  if (now - lastTime > 30 * 60 * 1000) {
+    stored += 1;
+    localStorage.setItem(storageKey, stored);
+    localStorage.setItem(timeKey, now);
+  }
+
+  // 如果计数器为0说明是新页面，设为1
+  if (stored === 0) {
+    stored = 1;
+    localStorage.setItem(storageKey, 1);
+    localStorage.setItem(timeKey, now);
+  }
+
+  el.textContent = '阅读 ' + stored;
+})();
+
+// ===== 26. 首页打字机标语 =====
+(function() {
+  var el = document.getElementById('typewriterText');
+  var cursor = document.getElementById('typewriterCursor');
+  if (!el && !cursor) return;
+
+  // 如果页面没有打字机元素则跳过（非首页）
+  if (!el) return;
+
+  var phrases = [
+    '一个不知天高地厚的大学生',
+    '喜欢在深夜里写点东西',
+    '相信文字有治愈的力量',
+    '记录那些没说出口的话',
+    '想把平凡的日子过得浪漫',
+    '正在努力成为更好的自己'
+  ];
+
+  var phraseIdx = 0;
+  var charIdx = 0;
+  var isDeleting = false;
+  var elRef = el;
+
+  function type() {
+    var current = phrases[phraseIdx];
+
+    if (!isDeleting) {
+      // 打字
+      elRef.textContent = current.substring(0, charIdx + 1);
+      charIdx++;
+
+      if (charIdx === current.length) {
+        // 打完，停2秒后开始删除
+        setTimeout(function() { isDeleting = true; type(); }, 2000);
+        return;
+      }
+    } else {
+      // 删除
+      elRef.textContent = current.substring(0, charIdx - 1);
+      charIdx--;
+
+      if (charIdx === 0) {
+        isDeleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        // 切换到下一句前短暂停顿
+        setTimeout(type, 400);
+        return;
+      }
+    }
+
+    var speed = isDeleting ? 40 : 80;
+    setTimeout(type, speed);
+  }
+
+  type();
+})();
+
+// ===== 27. 技能进度条滚动动画 =====
+(function() {
+  var fills = document.querySelectorAll('.skill-fill');
+  if (!fills.length) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var w = el.getAttribute('data-width');
+        if (w) {
+          setTimeout(function() {
+            el.style.width = w + '%';
+          }, 100);
+        }
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  fills.forEach(function(f) { observer.observe(f); });
+})();
