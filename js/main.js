@@ -1758,3 +1758,206 @@ function hideWechat() {
   observer.observe(faceEl, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
 })();
 
+
+// ===== 66. 页面入场动画 =====
+(function() {
+  var items = document.querySelectorAll('.entrance-item');
+  if (!items.length) return;
+
+  // sessionStorage only plays once per session
+  if (!sessionStorage.getItem('hero_entrance_played')) {
+    // 750ms delay to sync with page fade-in
+    setTimeout(function() {
+      document.body.classList.add('hero-entrance-active');
+    }, 750);
+    sessionStorage.setItem('hero_entrance_played', '1');
+  } else {
+    // Already played this session, just show
+    items.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+  }
+})();
+
+// ===== 67. 博客文章卡片滚动入场 =====
+(function() {
+  var cards = document.querySelectorAll('.post-card');
+  if (!cards.length) return;
+
+  cards.forEach(function(card) {
+    card.classList.add('scroll-reveal');
+  });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+  cards.forEach(function(card) { observer.observe(card); });
+})();
+
+// ===== 68. 页脚游动锦鲤 =====
+(function() {
+  var footer = document.querySelector('footer');
+  if (!footer) return;
+
+  var container = document.createElement('div');
+  container.className = 'koi-container';
+
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'koi-svg');
+  svg.setAttribute('viewBox', '0 0 80 40');
+
+  // 鱼身
+  var body = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+  body.setAttribute('cx', '35');
+  body.setAttribute('cy', '20');
+  body.setAttribute('rx', '30');
+  body.setAttribute('ry', '14');
+  body.setAttribute('fill', 'url(#koiGrad)');
+
+  // 渐变
+  var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  var grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+  grad.setAttribute('id', 'koiGrad');
+  grad.setAttribute('x1', '0');
+  grad.setAttribute('y1', '0');
+  grad.setAttribute('x2', '1');
+  grad.setAttribute('y2', '0');
+  var stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop1.setAttribute('offset', '0%');
+  stop1.setAttribute('stop-color', '#ff6b6b');
+  var stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop2.setAttribute('offset', '50%');
+  stop2.setAttribute('stop-color', '#ffa94d');
+  var stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop3.setAttribute('offset', '100%');
+  stop3.setAttribute('stop-color', '#ffe066');
+  grad.appendChild(stop1);
+  grad.appendChild(stop2);
+  grad.appendChild(stop3);
+  defs.appendChild(grad);
+  svg.appendChild(defs);
+
+  // 尾巴
+  var tail = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  tail.setAttribute('class', 'koi-tail');
+  tail.setAttribute('points', '4,10 0,20 4,30');
+  tail.setAttribute('fill', '#ff8787');
+
+  // 眼睛
+  var eye = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  eye.setAttribute('cx', '50');
+  eye.setAttribute('cy', '15');
+  eye.setAttribute('r', '3');
+  eye.setAttribute('fill', '#fff');
+
+  var pupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  pupil.setAttribute('cx', '51');
+  pupil.setAttribute('cy', '15');
+  pupil.setAttribute('r', '1.5');
+  pupil.setAttribute('fill', '#111');
+
+  // 鱼鳍
+  var fin = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  fin.setAttribute('d', 'M30 8 Q35 0 40 8');
+  fin.setAttribute('fill', 'rgba(255,150,100,0.5)');
+
+  svg.appendChild(body);
+  svg.appendChild(tail);
+  svg.appendChild(eye);
+  svg.appendChild(pupil);
+  svg.appendChild(fin);
+
+  // 气泡
+  for (var i = 0; i < 3; i++) {
+    var bubble = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bubble.setAttribute('cx', 55 + i * 6);
+    bubble.setAttribute('cy', 8 + i * 4);
+    bubble.setAttribute('r', 1.5 + i * 0.5);
+    bubble.setAttribute('fill', 'rgba(255,255,255,0.3)');
+    svg.appendChild(bubble);
+  }
+
+  container.appendChild(svg);
+  footer.parentNode.insertBefore(container, footer);
+})();
+
+// ===== 69. 长按头像震动特效 =====
+(function() {
+  var wrapper = document.getElementById('avatarWrapper');
+  if (!wrapper) return;
+
+  var longPressTimer;
+  var isLongPress = false;
+  var longPressDuration = 500;
+
+  function burstParticles() {
+    var rect = wrapper.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var count = 10;
+
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('div');
+      p.className = 'avatar-burst';
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      var angle = (i / count) * Math.PI * 2;
+      var dist = 40 + Math.random() * 30;
+      p.style.setProperty('--bx', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--by', Math.sin(angle) * dist + 'px');
+
+      var colors = ['#00e5ff', '#b44aff', '#ff6b6b', '#ffe066', '#51cf66'];
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+      document.body.appendChild(p);
+      setTimeout(function(el) { el.remove(); }, 700, p);
+    }
+  }
+
+  function runEffect() {
+    wrapper.classList.add('avatar-shaking');
+    burstParticles();
+
+    setTimeout(function() {
+      wrapper.classList.remove('avatar-shaking');
+      wrapper.classList.add('avatar-bounce');
+    }, 400);
+
+    setTimeout(function() {
+      wrapper.classList.remove('avatar-bounce');
+    }, 1000);
+  }
+
+  // 移动端长按
+  wrapper.addEventListener('touchstart', function(e) {
+    isLongPress = false;
+    longPressTimer = setTimeout(function() {
+      isLongPress = true;
+      if (navigator.vibrate) navigator.vibrate(50);
+      runEffect();
+    }, longPressDuration);
+  }, { passive: true });
+
+  wrapper.addEventListener('touchend', function() {
+    clearTimeout(longPressTimer);
+    if (isLongPress) {
+      // Prevent the click-to-switch-face from firing after long press
+      isLongPress = false;
+    }
+  });
+
+  wrapper.addEventListener('touchmove', function() {
+    clearTimeout(longPressTimer);
+  });
+
+  // 桌面端双击
+  wrapper.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+    runEffect();
+  });
+})();
