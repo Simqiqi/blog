@@ -74,8 +74,13 @@
     rotateY = Math.max(-maxRotate, Math.min(maxRotate, dx * 0.05));
     booksContainer.style.transform = `rotateY(${rotateY}deg)`;
   }, {passive: true});
-  wrapper.addEventListener('touchend', () => {
+  wrapper.addEventListener('touchend', (e) => {
     booksContainer.style.transform = 'rotateY(0deg)';
+    const endX = e.changedTouches[0].pageX;
+    const book = e.target.closest('.book-item');
+    if (book && Math.abs(endX - startX) < 10) {
+      book.classList.toggle('book-open');
+    }
   });
 
   // Click to open book
