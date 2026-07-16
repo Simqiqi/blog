@@ -193,6 +193,68 @@
     <div class="marquee-track"></div>
   </div>
 
+  <!-- ===== 3D 书架文章展示 ===== -->
+  <section class="bookshelf-section" id="bookshelf">
+    <div class="bookshelf-header">
+      <h3>博 客 书 架</h3>
+      <p class="bookshelf-subtitle">左右滑动书架浏览文章，点击书本翻开阅读</p>
+    </div>
+    <div class="bookshelf-stage">
+      <div class="bookshelf-wood"></div>
+      <div class="bookshelf-wrapper">
+        <div class="books-list"></div>
+      </div>
+      <div class="bookshelf-ledge"></div>
+    </div>
+  </section>
+
+  <!-- ===== 时光隧道时间线 ===== -->
+  <section class="tunnel-section" id="timeTunnel">
+    <div class="tunnel-header">
+      <h3>时 光 隧 道</h3>
+      <p class="tunnel-subtitle">沿时间轴回溯，每一站都是值得铭记的时刻</p>
+    </div>
+    <div class="tunnel-container">
+      <canvas class="tunnel-particles"></canvas>
+      <div class="tunnel-perspective">
+        <div class="tunnel-track"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 星光手写签名板 ===== -->
+  <section class="starsign-section">
+    <div class="starsign-header">
+      <h3>留下你的星光</h3>
+      <p class="starsign-subtitle">在深空中划过手指，留下属于你的星辰轨迹</p>
+    </div>
+    <div class="starsign-stage">
+      <canvas id="starCanvas"></canvas>
+      <div class="starsign-hint" id="starsignHint">
+        <i class="fa-solid fa-hand-pointer"></i>
+        <span>在此书写或涂鸦...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 锦鲤 -->
+  <div class="koi-container">
+    <svg class="koi-svg" viewBox="0 0 80 40">
+      <g>
+        <ellipse cx="30" cy="20" rx="22" ry="10" fill="url(#koiGrad)"/>
+        <polygon points="10,14 2,8 2,20 2,32 10,26" fill="#ff6b35" class="koi-tail"/>
+        <circle cx="42" cy="17" r="2" fill="#111"/>
+        <defs>
+          <linearGradient id="koiGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff6b35"/>
+            <stop offset="50%" stop-color="#ff9a56"/>
+            <stop offset="100%" stop-color="#ffcc80"/>
+          </linearGradient>
+        </defs>
+      </g>
+    </svg>
+  </div>
+
   <footer>
   <div class="footer-social">
     <a href="https://github.com/Simqiqi" target="_blank" class="ft-github" title="GitHub"><i class="fa-brands fa-github"></i></a>
