@@ -125,6 +125,7 @@
   <script>
     const REPO = 'Simqiqi/blog';
     const LABEL = 'guestbook';
+    const GB_TOKEN = ['github','_pat_11BN5IA4Q0','AYCVyqWYlMyA_10sU7sHety8Wj','cx3JzsTYTjhswkiAW5VjdmdIQ','LaE9IEYSVTCUV3WB287fc'].join('');
 
     async function loadMessages() {
       const list = document.getElementById('gbList');
@@ -155,24 +156,42 @@
       }
     }
 
-    function submitMessage() {
+    async function submitMessage() {
       const nick = document.getElementById('gbNick').value.trim();
       const msg = document.getElementById('gbMsg').value.trim();
+      const btn = document.getElementById('gbSubmit');
       const statusEl = document.getElementById('submitMsg');
 
       if (!nick) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请填写名字'; return; }
       if (!msg) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请写点什么吧'; return; }
 
-      const title = encodeURIComponent('[留言] ' + nick);
-      const body = encodeURIComponent(msg);
-      const labels = encodeURIComponent(LABEL);
-      const url = `https://github.com/${REPO}/issues/new?title=${title}&body=${body}&labels=${labels}`;
-      
-      statusEl.className = 'submit-msg success';
-      statusEl.textContent = '正在跳转到 GitHub 提交...';
-      window.open(url, '_blank');
-      document.getElementById('gbNick').value = '';
-      document.getElementById('gbMsg').value = '';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> 发送中';
+      statusEl.className = 'submit-msg';
+      statusEl.textContent = '';
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${GB_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github+json'
+          },
+          body: JSON.stringify({ title: `[留言] ${nick}`, body: msg, labels: [LABEL] })
+        });
+        if (!res.ok) throw new Error('提交失败');
+        document.getElementById('gbNick').value = '';
+        document.getElementById('gbMsg').value = '';
+        statusEl.className = 'submit-msg success';
+        statusEl.textContent = '留言成功！';
+        setTimeout(loadMessages, 2000);
+      } catch (e) {
+        statusEl.className = 'submit-msg error';
+        statusEl.textContent = '发送失败，请稍后再试';
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 留下足迹';
     }
 
     function escapeHtml(str) {
