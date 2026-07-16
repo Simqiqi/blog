@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>柒柒的个人博客</title>
+  <link>https://simqiqi.github.io/blog/</link>
+  <description>一个不知天高地厚的大学生，记录生活的点滴与胡思乱想。探索 AI、独立开发、开源、写作。</description>
+  <language>zh-CN</language>
+  <lastBuildDate>Thu, 16 Jul 2026 00:00:00 +0800</lastBuildDate>
+  <atom:link href="https://simqiqi.github.io/blog/rss.xml" rel="self" type="application/rss+xml"/>
+
+  <item>
+    <title>话没说完，也没关系</title>
+    <link>https://simqiqi.github.io/blog/posts/talk-unfinished.html</link>
+    <guid>https://simqiqi.github.io/blog/posts/talk-unfinished.html</guid>
+    <pubDate>Wed, 15 Jul 2026 00:00:00 +0800</pubDate>
+    <description>那句话就卡在喉咙里，像一颗没熟透的果子。真正重要的从来不是话本身，而是你愿意把心里那扇窗推开一条缝。</description>
+  </item>
+
+  <item>
+    <title>你好，世界</title>
+    <link>https://simqiqi.github.io/blog/posts/hello-world.html</link>
+    <guid>https://simqiqi.github.io/blog/posts/hello-world.html</guid>
+    <pubDate>Wed, 15 Jul 2026 00:00:00 +0800</pubDate>
+    <description>这是我的第一篇博客。一个不知天高地厚的大学生，终于有了属于自己的小角落。从这里开始，记录生活的点滴与胡思乱想。</description>
+  </item>
+</channel>
+</rss>
