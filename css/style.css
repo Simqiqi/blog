@@ -2519,3 +2519,130 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
     height: 160px;
   }
 }
+
+/* ===== 页面入场动画 ===== */
+.entrance-item {
+  opacity: 0;
+  transform: translateY(36px);
+}
+
+.hero-entrance-active .entrance-item {
+  animation: entranceRise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+@keyframes entranceRise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== 博客文章卡片滚动入场 ===== */
+.post-card.scroll-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.post-card.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== 页脚游动锦鲤 ===== */
+.koi-container {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  margin-bottom: -20px;
+}
+
+.koi-svg {
+  position: absolute;
+  top: 10px;
+  width: 80px;
+  height: 40px;
+  animation: koiSwim 14s ease-in-out infinite;
+}
+
+.koi-tail {
+  transform-origin: 6px 20px;
+  animation: tailWag 0.8s ease-in-out infinite;
+}
+
+@keyframes koiSwim {
+  0%   { left: -100px; transform: scaleX(1); }
+  45%  { left: calc(100% - 40px); transform: scaleX(1); }
+  55%  { left: calc(100% - 40px); transform: scaleX(-1); }
+  100% { left: -100px; transform: scaleX(-1); }
+}
+
+@keyframes tailWag {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-8deg); }
+}
+
+[data-theme="light"] .koi-svg {
+  filter: brightness(0.7);
+}
+
+/* ===== 头像震动特效 ===== */
+.avatar-wrapper.avatar-shaking {
+  animation: avatarShake 0.4s ease-out;
+}
+
+.avatar-wrapper.avatar-bounce {
+  animation: avatarBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes avatarShake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-6px) rotate(-3deg); }
+  20% { transform: translateX(6px) rotate(3deg); }
+  30% { transform: translateX(-5px) rotate(-2deg); }
+  40% { transform: translateX(5px) rotate(2deg); }
+  50% { transform: translateX(-3px) rotate(-1deg); }
+  60% { transform: translateX(3px) rotate(1deg); }
+  70% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes avatarBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35); }
+  50% { transform: scale(0.9); }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* 头像粒子爆发 */
+.avatar-burst {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 10;
+  animation: burstOut 0.7s ease-out forwards;
+}
+
+@keyframes burstOut {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--bx), var(--by)) scale(0);
+  }
+}
