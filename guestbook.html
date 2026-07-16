@@ -228,6 +228,7 @@
     const LABEL = 'guestbook';
     const GB_TOKEN = ['ghp','_7Kg5kybtPOhAgFWaIeN1I','khD92ONMG0xXC4j'].join('');
     const AVATAR_COLORS = ['gb-avatar-c1','gb-avatar-c2','gb-avatar-c3','gb-avatar-c4','gb-avatar-c5','gb-avatar-c6'];
+    const MAX_ITEMS = 6;
 
     function renderMessage(issue, idx) {
       const name = issue.title.replace(/^\[留言\]\s*/, '');
@@ -258,13 +259,16 @@
       if (emptyEl) list.innerHTML = '';
       const idx = list.querySelectorAll('.gb-item').length;
       list.insertAdjacentHTML('afterbegin', renderMessage(issue, idx));
+      // 只保留最近 MAX_ITEMS 条
+      const items = list.querySelectorAll('.gb-item');
+      for (let i = items.length - 1; i >= MAX_ITEMS; i--) items[i].remove();
       updateCount();
     }
 
     async function loadMessages() {
       const list = document.getElementById('gbList');
       try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?labels=${LABEL}&state=open&sort=created&direction=desc&per_page=30`);
+        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?labels=${LABEL}&state=open&sort=created&direction=desc&per_page=${MAX_ITEMS}`);
         const issues = await res.json();
         if (!issues.length) {
           list.innerHTML = '<div class="gb-empty"><i class="fa-solid fa-feather"></i><p>还没有留言，来做第一个吧</p></div>';
