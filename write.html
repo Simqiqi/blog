@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>柒柒的博客 - 写文章</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #06060e;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --border: rgba(0, 229, 255, 0.12);
+      --accent: #00e5ff;
+      --accent2: #b44aff;
+      --text: #d4d4dc;
+      --text-dim: #777;
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(180, 74, 255, 0.03) 0%, transparent 50%);
+    }
+
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(6, 6, 14, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .logo-dot { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 28px; }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: #fff; }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* 主内容区 */
+    .write-page {
+      padding: 100px 24px 60px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .editor-card {
+      background: rgba(22, 22, 38, 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .editor-card h1 {
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .editor-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .editor-meta input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .editor-meta input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.08);
+    }
+
+    .editor-meta input::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    #titleInput { flex: 3; }
+    #tagsInput { flex: 2; }
+
+    /* 编辑+预览分栏 */
+    .editor-panels {
+      display: flex;
+      gap: 20px;
+      min-height: 400px;
+    }
+
+    .editor-panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .panel-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    #editorTextarea {
+      width: 100%;
+      min-height: 400px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    #editorTextarea:focus {
+      border-color: var(--accent);
+    }
+
+    #editorTextarea::placeholder {
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    .preview-content {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      min-height: 400px;
+      line-height: 1.8;
+      overflow-y: auto;
+      word-wrap: break-word;
+    }
+
+    .preview-content h1, .preview-content h2, .preview-content h3 {
+      color: #fff;
+      margin: 16px 0 8px;
+    }
+
+    .preview-content h1 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .preview-content h2 { font-size: 1.2rem; }
+    .preview-content h3 { font-size: 1.05rem; }
+
+    .preview-content p { margin-bottom: 12px; color: #c0c0cc; }
+    .preview-content a { color: var(--accent); }
+    .preview-content code {
+      background: rgba(0, 229, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    .preview-content pre {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    .preview-content pre code { background: none; padding: 0; }
+    .preview-content blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 12px 0;
+      color: var(--text-dim);
+    }
+    .preview-content img { max-width: 100%; border-radius: 8px; }
+    .preview-content ul, .preview-content ol { margin: 8px 0; padding-left: 24px; color: #c0c0cc; }
+
+    .preview-empty {
+      color: var(--text-dim);
+      font-style: italic;
+      opacity: 0.4;
+    }
+
+    /* 底部操作栏 */
+    .editor-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .word-count {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn-draft {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-draft:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-publish {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #000;
+      font-weight: 600;
+    }
+
+    .btn-publish:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 229, 255, 0.25);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .toast.show { opacity: 1; }
+    .toast-success { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+    .toast-error { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .toast-info { background: rgba(0, 229, 255, 0.1); border: 1px solid var(--border); color: var(--accent); }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .editor-meta { flex-direction: column; }
+      .editor-panels { flex-direction: column; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 0.82rem; }
+      .editor-footer { flex-direction: column; gap: 12px; align-items: stretch; }
+      .editor-actions { justify-content: stretch; }
+      .editor-actions .btn { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+        <a href="write.html" class="active">写文章</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="write-page">
+    <div class="editor-card">
+      <h1><i class="fa-solid fa-feather-pointed"></i> 写文章</h1>
+      <div class="editor-meta">
+        <input type="text" id="titleInput" placeholder="给你的故事起个名字...">
+        <input type="text" id="tagsInput" placeholder="标签，用逗号分隔，如：生活, 技术">
+      </div>
+      <div class="editor-panels">
+        <div class="editor-panel">
+          <div class="panel-label">Markdown 编辑</div>
+          <textarea id="editorTextarea" placeholder="开始写你的故事吧... 支持 Markdown 语法"></textarea>
+        </div>
+        <div class="editor-panel">
+          <div class="panel-label">实时预览</div>
+          <div class="preview-content" id="previewArea">
+            <span class="preview-empty">在这里预览你的文章...</span>
+          </div>
+        </div>
+      </div>
+      <div class="editor-footer">
+        <span class="word-count" id="wordCount">字数: 0</span>
+        <div class="editor-actions">
+          <button class="btn btn-draft" id="draftBtn"><i class="fa-solid fa-floppy-disk"></i> 保存草稿</button>
+          <button class="btn btn-publish" id="publishBtn"><i class="fa-solid fa-paper-plane"></i> 发布</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    const titleInput = document.getElementById('titleInput');
+    const tagsInput = document.getElementById('tagsInput');
+    const textarea = document.getElementById('editorTextarea');
+    const previewArea = document.getElementById('previewArea');
+    const wordCount = document.getElementById('wordCount');
+    const draftBtn = document.getElementById('draftBtn');
+    const publishBtn = document.getElementById('publishBtn');
+    const toast = document.getElementById('toast');
+
+    let currentUser = null;
+
+    // Toast
+    function showToast(msg, type) {
+      toast.textContent = msg;
+      toast.className = 'toast toast-' + type + ' show';
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    }
+
+    // 字数统计
+    function updateWordCount() {
+      const text = textarea.value.trim();
+      const count = text.length;
+      wordCount.textContent = '字数: ' + count;
+    }
+
+    // Markdown 预览
+    function updatePreview() {
+      const text = textarea.value.trim();
+      if (!text) {
+        previewArea.innerHTML = '<span class="preview-empty">在这里预览你的文章...</span>';
+      } else {
+        previewArea.innerHTML = marked.parse(text);
+      }
+    }
+
+    textarea.addEventListener('input', function() {
+      updateWordCount();
+      updatePreview();
+    });
+
+    // 保存草稿到 localStorage
+    function saveDraft() {
+      const draft = {
+        title: titleInput.value,
+        tags: tagsInput.value,
+        content: textarea.value,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('draft_article', JSON.stringify(draft));
+      showToast('草稿已保存到本地', 'success');
+    }
+
+    draftBtn.addEventListener('click', saveDraft);
+
+    // 恢复草稿
+    function checkDraft() {
+      const raw = localStorage.getItem('draft_article');
+      if (!raw) return;
+      try {
+        const draft = JSON.parse(raw);
+        if (!draft.content && !draft.title) return;
+        if (confirm('检测到未发布的草稿（' + new Date(draft.savedAt).toLocaleString() + '），是否恢复？')) {
+          titleInput.value = draft.title || '';
+          tagsInput.value = draft.tags || '';
+          textarea.value = draft.content || '';
+          updateWordCount();
+          updatePreview();
+        }
+      } catch(e) {}
+    }
+
+    // 发布文章
+    publishBtn.addEventListener('click', async function() {
+      const title = titleInput.value.trim();
+      const content = textarea.value.trim();
+
+      if (!title) { showToast('请输入标题', 'error'); return; }
+      if (!content) { showToast('请输入内容', 'error'); return; }
+      if (!currentUser) { showToast('请先登录', 'error'); window.location.href = 'auth.html'; return; }
+
+      publishBtn.disabled = true;
+      publishBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 发布中...';
+
+      try {
+        const tagsRaw = tagsInput.value.trim();
+        const tags = tagsRaw ? tagsRaw.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
+
+        const { data, error } = await supabase
+          .from('articles')
+          .insert({
+            user_id: currentUser.id,
+            title: title,
+            tags: tags,
+            content: content,
+            status: 'published'
+          })
+          .select('id')
+          .single();
+
+        if (error) throw error;
+
+        localStorage.removeItem('draft_article');
+        showToast('发布成功！', 'success');
+        setTimeout(function() {
+          window.location.href = 'post.html?id=' + data.id;
+        }, 800);
+      } catch (err) {
+        showToast('发布失败: ' + (err.message || '未知错误'), 'error');
+      } finally {
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 发布';
+      }
+    });
+
+    // Ctrl+S 保存草稿
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveDraft();
+      }
+    });
+
+    // 初始化
+    (async function init() {
+      currentUser = await getCurrentUser();
+      if (!currentUser) {
+        window.location.href = 'auth.html';
+        return;
+      }
+      checkDraft();
+    })();
+  </script>
+</body>
+</html>
