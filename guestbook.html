@@ -8,19 +8,24 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     /* ========== 页面布局 ========== */
-    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 80px 20px 100px; }
+    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 80px 20px 100px; overflow-x: hidden; }
 
-    /* 标题区 */
+    /* ========== SVG 手写体标题动画 ========== */
     .gb-hero { text-align: center; margin-bottom: 40px; }
-    .gb-hero h2 {
-      font-size: 32px; font-weight: 800; margin-bottom: 8px;
-      background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .gb-hero .title-svg { width: 180px; height: 52px; display: block; margin: 0 auto 10px; }
+    .gb-hero .title-svg text {
+      font-size: 36px; font-weight: 900; fill: none;
+      stroke: url(#titleGrad); stroke-width: 2;
+      stroke-dasharray: 300; stroke-dashoffset: 300;
+      animation: handwrite 2s ease-out forwards;
     }
-    .gb-hero .subtitle {
-      color: var(--text-muted); font-size: 14px; line-height: 1.6;
+    @keyframes handwrite { to { stroke-dashoffset: 0; } }
+    .gb-hero .title-svg .fill-layer {
+      fill: url(#titleGrad); stroke: none;
+      animation: fillIn 0.6s ease-out 1.8s forwards; opacity: 0;
     }
+    @keyframes fillIn { to { opacity: 1; } }
+    .gb-hero .subtitle { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
     .gb-hero .msg-count {
       display: inline-flex; align-items: center; gap: 6px;
       background: rgba(99,102,241,0.1); color: #6366f1;
@@ -28,11 +33,10 @@
       margin-top: 12px;
     }
 
-    /* ========== 留言表单 ========== */
+    /* ========== 漂流瓶表单 ========== */
     .gb-form {
-      background: var(--card-bg);
-      border-radius: 20px; padding: 28px; margin-bottom: 40px;
-      border: 1px solid var(--border);
+      background: var(--card-bg); border-radius: 20px; padding: 28px;
+      margin-bottom: 40px; border: 1px solid var(--border);
       box-shadow: 0 4px 24px rgba(99,102,241,0.06);
       position: relative; overflow: hidden;
     }
@@ -52,8 +56,7 @@
       width: 100%; background: var(--bg); border: 2px solid var(--border);
       border-radius: 12px; padding: 14px 16px; font-size: 15px;
       color: var(--text); font-family: inherit; outline: none;
-      transition: border-color 0.25s, box-shadow 0.25s;
-      box-sizing: border-box;
+      transition: border-color 0.25s, box-shadow 0.25s; box-sizing: border-box;
     }
     .gb-form input:focus, .gb-form textarea:focus {
       border-color: #6366f1;
@@ -66,19 +69,30 @@
       color: #fff; border: none;
       padding: 12px 32px; border-radius: 12px; font-size: 15px; font-weight: 700;
       cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-      box-shadow: 0 2px 12px rgba(99,102,241,0.3);
-      letter-spacing: 0.5px;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.3); letter-spacing: 0.5px;
     }
     .gb-form .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.4); }
     .gb-form .submit-btn:active { transform: scale(0.97); }
     .gb-form .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    /* 漂流瓶晃动动画 */
+    .submit-btn.bottle-shake {
+      animation: bottleShake 0.6s ease-in-out;
+    }
+    @keyframes bottleShake {
+      0%,100% { transform: rotate(0); }
+      15% { transform: rotate(-15deg) scale(1.08); }
+      30% { transform: rotate(12deg) scale(1.05); }
+      45% { transform: rotate(-10deg) scale(1.08); }
+      60% { transform: rotate(8deg) scale(1.05); }
+      75% { transform: rotate(-5deg) scale(1.03); }
+      90% { transform: rotate(2deg); }
+    }
     .gb-form .submit-msg { font-size: 13px; min-height: 20px; font-weight: 500; }
     .gb-form .submit-msg.success { color: #22c55e; }
     .gb-form .submit-msg.error { color: #ef4444; }
     .gb-form .char-count { text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-    /* ========== 留言卡片 ========== */
-    .gb-list { display: flex; flex-direction: column; gap: 14px; }
+    /* ========== 对话气泡 ========== */
     .gb-list-header {
       display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
       font-size: 16px; font-weight: 700; color: var(--text-secondary);
@@ -87,43 +101,68 @@
       content: ''; flex: 1; height: 1px;
       background: linear-gradient(90deg, transparent, var(--border), transparent);
     }
+    .gb-list { display: flex; flex-direction: column; gap: 14px; }
 
-    .gb-item {
-      background: var(--card-bg); border-radius: 16px; padding: 22px;
-      position: relative;
-      border: 1px solid var(--border);
-      transition: border-color 0.3s, transform 0.25s, box-shadow 0.25s;
-      animation: gbFadeIn 0.4s ease-out both;
+    /* 3D 翻转容器 */
+    .gb-item-wrap { perspective: 800px; }
+    .gb-item-wrap.flipped .gb-item-inner { transform: rotateY(180deg); }
+    .gb-item-inner {
+      position: relative; transition: transform 0.5s ease;
+      transform-style: preserve-3d; cursor: pointer;
     }
-    .gb-item:nth-child(1) { animation-delay: 0.05s; }
-    .gb-item:nth-child(2) { animation-delay: 0.1s; }
-    .gb-item:nth-child(3) { animation-delay: 0.15s; }
-    .gb-item:nth-child(4) { animation-delay: 0.2s; }
-    .gb-item:nth-child(5) { animation-delay: 0.25s; }
+    .gb-item-front, .gb-item-back {
+      backface-visibility: hidden; border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+    .gb-item-back {
+      position: absolute; inset: 0;
+      transform: rotateY(180deg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      font-size: 36px; color: rgba(99,102,241,0.2);
+    }
+    .gb-item-back small { font-size: 12px; color: var(--text-muted); opacity: 0.6; }
+
+    /* 气泡左右交替 */
+    .gb-item-wrap { animation: gbFadeIn 0.4s ease-out both; }
+    .gb-item-wrap:nth-child(odd) .gb-item-front { border-radius: 16px 16px 16px 4px; }
+    .gb-item-wrap:nth-child(even) .gb-item-front { border-radius: 16px 16px 4px 16px; }
+    .gb-item-wrap:nth-child(odd) .gb-item-back { border-radius: 16px 16px 16px 4px; }
+    .gb-item-wrap:nth-child(even) .gb-item-back { border-radius: 16px 16px 4px 16px; }
+    .gb-item-wrap:nth-child(1) { animation-delay: 0.05s; }
+    .gb-item-wrap:nth-child(2) { animation-delay: 0.1s; }
+    .gb-item-wrap:nth-child(3) { animation-delay: 0.15s; }
+    .gb-item-wrap:nth-child(4) { animation-delay: 0.2s; }
+    .gb-item-wrap:nth-child(5) { animation-delay: 0.25s; }
     @keyframes gbFadeIn {
       from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .gb-item:hover {
-      border-color: #6366f1;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(99,102,241,0.08);
+
+    .gb-item-front { padding: 20px; position: relative; }
+    .gb-item-front::after {
+      content: '点击翻转';
+      position: absolute; top: 8px; right: 12px;
+      font-size: 10px; color: var(--text-muted); opacity: 0;
+      transition: opacity 0.3s;
     }
-    /* 左侧彩色竖条 */
-    .gb-item::before {
-      content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
-      width: 3px; border-radius: 0 3px 3px 0;
-      background: linear-gradient(180deg, #6366f1, #a78bfa);
+    .gb-item-inner:hover .gb-item-front::after { opacity: 0.5; }
+    .gb-item-wrap:hover .gb-item-inner {
+      transform: translateY(-2px);
+    }
+    .gb-item-wrap:hover .gb-item-front {
+      border-color: #6366f1; box-shadow: 0 8px 30px rgba(99,102,241,0.08);
     }
 
-    .gb-item .gb-header {
+    .gb-item-front .gb-header {
       display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
     }
-    .gb-item .gb-avatar {
+    .gb-avatar {
       width: 40px; height: 40px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
-      position: relative; box-shadow: 0 2px 10px rgba(99,102,241,0.2);
+      box-shadow: 0 2px 10px rgba(99,102,241,0.2);
     }
     .gb-avatar-c1 { background: linear-gradient(135deg, #6366f1, #818cf8); }
     .gb-avatar-c2 { background: linear-gradient(135deg, #ec4899, #f472b6); }
@@ -131,37 +170,48 @@
     .gb-avatar-c4 { background: linear-gradient(135deg, #10b981, #34d399); }
     .gb-avatar-c5 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
     .gb-avatar-c6 { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
-
-    .gb-item .gb-name { font-weight: 700; font-size: 15px; color: var(--text); }
-    .gb-item .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
-    .gb-item .gb-body {
+    .gb-name { font-weight: 700; font-size: 15px; color: var(--text); }
+    .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .gb-body {
       font-size: 15px; line-height: 1.75; color: var(--text);
-      margin-left: 4px; word-break: break-word;
+      margin-left: 4px; word-break: break-word; min-height: 1.5em;
     }
-    .gb-item .gb-body a { color: #6366f1; text-decoration: underline; text-underline-offset: 2px; }
+    .gb-body a { color: #6366f1; text-decoration: underline; text-underline-offset: 2px; }
+    /* 打字机光标 */
+    .gb-body .type-cursor {
+      display: inline-block; width: 2px; height: 1.1em;
+      background: #6366f1; vertical-align: text-bottom;
+      animation: blink 0.7s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ========== 烟花 canvas ========== */
+    #confettiCanvas {
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+    }
 
     /* 空状态 */
     .gb-empty { text-align: center; padding: 56px 0; color: var(--text-muted); }
     .gb-empty i { font-size: 52px; display: block; margin-bottom: 16px; opacity: 0.2; }
     .gb-empty p { font-size: 15px; }
-    .gb-loading { text-align: center; padding: 40px; color: var(--text-muted); }
-    .gb-loading i { font-size: 20px; }
 
     /* ========== 移动端适配 ========== */
     @media (max-width: 480px) {
       .guestbook-page { padding: 72px 14px 80px; }
-      .gb-hero h2 { font-size: 26px; }
+      .gb-hero .title-svg { width: 150px; height: 44px; }
       .gb-form { padding: 22px 16px; border-radius: 18px; }
       .gb-form input, .gb-form textarea { padding: 12px 14px; font-size: 16px; }
       .gb-form .submit-btn { width: 100%; text-align: center; }
       .gb-form .submit-row { flex-direction: column; align-items: stretch; }
-      .gb-item { padding: 18px 16px; }
-      .gb-item .gb-body { font-size: 14px; }
+      .gb-item-front { padding: 16px 14px; }
+      .gb-body { font-size: 14px; }
     }
   </style>
 </head>
 <body>
   <canvas id="particles"></canvas>
+  <canvas id="confettiCanvas"></canvas>
 
   <nav class="navbar">
     <div class="nav-inner">
@@ -185,12 +235,22 @@
 
   <main class="guestbook-page">
     <div class="gb-hero">
-      <h2>留言墙</h2>
+      <svg class="title-svg" viewBox="0 0 180 52">
+        <defs>
+          <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6366f1"/>
+            <stop offset="50%" stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+          </linearGradient>
+        </defs>
+        <text x="50%" y="40" text-anchor="middle" dominant-baseline="middle">留言墙</text>
+        <text class="fill-layer" x="50%" y="40" text-anchor="middle" dominant-baseline="middle">留言墙</text>
+      </svg>
       <p class="subtitle">来都来了，留句话再走 ✨ 你的每一条留言我都会认真看</p>
       <div class="msg-count" id="msgCount">💬 1 条留言</div>
     </div>
 
-    <div class="gb-form">
+    <div class="gb-form" id="gbForm">
       <div class="form-row">
         <label>你的名字</label>
         <input type="text" id="gbNick" placeholder="怎么称呼你？" maxlength="30">
@@ -202,7 +262,7 @@
       </div>
       <div class="submit-row">
         <button class="submit-btn" id="gbSubmit" onclick="submitMessage()">
-          <i class="fa-solid fa-paper-plane"></i> 留下足迹
+          <i class="fa-solid fa-bottle-water"></i> 扔出瓶子
         </button>
         <span class="submit-msg" id="submitMsg"></span>
       </div>
@@ -210,14 +270,18 @@
 
     <div class="gb-list-header">全部留言</div>
     <div class="gb-list" id="gbList">
-      <div class="gb-item">
-        <div class="gb-header">
-          <div class="gb-avatar gb-avatar-c1">柒</div>
-          <span class="gb-name">柒柒</span>
-          <span class="gb-time">2026/07/16</span>
+      <!-- 硬编码第一条 -->
+      <div class="gb-item-wrap"><div class="gb-item-inner">
+        <div class="gb-item-front">
+          <div class="gb-header">
+            <div class="gb-avatar gb-avatar-c1">柒</div>
+            <span class="gb-name">柒柒</span>
+            <span class="gb-time">2026/07/16</span>
+          </div>
+          <div class="gb-body"></div>
         </div>
-        <div class="gb-body"></div>
-      </div>
+        <div class="gb-item-back">🌌<small>点击返回</small></div>
+      </div></div>
     </div>
   </main>
 
@@ -227,42 +291,121 @@
     const REPO = 'Simqiqi/blog';
     const LABEL = 'guestbook';
     const GB_TOKEN = ['ghp','_7Kg5kybtPOhAgFWaIeN1I','khD92ONMG0xXC4j'].join('');
-    const AVATAR_COLORS = ['gb-avatar-c1','gb-avatar-c2','gb-avatar-c3','gb-avatar-c4','gb-avatar-c5','gb-avatar-c6'];
+    const AV_CLASSES = ['gb-avatar-c1','gb-avatar-c2','gb-avatar-c3','gb-avatar-c4','gb-avatar-c5','gb-avatar-c6'];
+    const BACK_EMOJI = ['🌌','🌊','🏔️','🌸','🎆','🪐','🌈','🍃','🌙','⭐','🔥','💎'];
     const MAX_ITEMS = 6;
 
-    function renderMessage(issue, idx) {
+    /* ========== 烟花 Canvas ========== */
+    (function confettiSystem() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [], animId = null, w, h;
+      function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+      resize(); window.addEventListener('resize', resize);
+
+      function fire() {
+        const colors = ['#6366f1','#a78bfa','#ec4899','#f59e0b','#22d3ee','#10b981','#fbbf24','#8b5cf6'];
+        for (let i = 0; i < 100; i++) {
+          particles.push({
+            x: w/2 + (Math.random()-0.5)*200, y: h/2 + (Math.random()-0.5)*100,
+            vx: (Math.random()-0.5)*12, vy: (Math.random()-1)*10 - 2,
+            life: 1, decay: 0.008 + Math.random()*0.02,
+            size: 3 + Math.random()*6, color: colors[Math.floor(Math.random()*colors.length)],
+            shape: Math.random() > 0.5 ? 'circle' : 'rect'
+          });
+        }
+        if (!animId) loop();
+      }
+
+      function loop() {
+        ctx.clearRect(0,0,w,h);
+        particles = particles.filter(p => {
+          p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.life -= p.decay;
+          if (p.life <= 0) return false;
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); }
+          else { ctx.fillRect(p.x-p.size/2, p.y-p.size/2, p.size, p.size*1.6); }
+          return true;
+        });
+        ctx.globalAlpha = 1;
+        if (particles.length > 0) animId = requestAnimationFrame(loop);
+        else animId = null;
+      }
+      window.fireConfetti = fire;
+    })();
+
+    /* ========== 3D 翻转 ========== */
+    document.addEventListener('click', function(e) {
+      const inner = e.target.closest('.gb-item-inner');
+      if (!inner) return;
+      const wrap = inner.parentElement;
+      // toggle flip
+      wrap.classList.toggle('flipped');
+      if (wrap.classList.contains('flipped')) {
+        setTimeout(() => wrap.classList.remove('flipped'), 2200);
+      }
+    });
+
+    /* ========== 渲染消息（气泡 + 翻转壳） ========== */
+    function renderMessageHTML(issue, idx) {
       const name = issue.title.replace(/^\[留言\]\s*/, '');
       const avatar = name.charAt(0).toUpperCase();
-      const colorClass = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+      const colorClass = AV_CLASSES[idx % AV_CLASSES.length];
       const time = new Date(issue.created_at).toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
       const body = issue.body ? issue.body.replace(/\n/g, '<br>') : '';
-      return `
-            <div class="gb-item">
-              <div class="gb-header">
-                <div class="gb-avatar ${colorClass}">${avatar}</div>
-                <span class="gb-name">${escapeHtml(name)}</span>
-                <span class="gb-time">${time}</span>
-              </div>
-              <div class="gb-body">${body}</div>
-            </div>`;
+      const backEmoji = BACK_EMOJI[idx % BACK_EMOJI.length];
+      return `<div class="gb-item-wrap"><div class="gb-item-inner">
+        <div class="gb-item-front">
+          <div class="gb-header">
+            <div class="gb-avatar ${colorClass}">${avatar}</div>
+            <span class="gb-name">${escapeHtml(name)}</span>
+            <span class="gb-time">${time}</span>
+          </div>
+          <div class="gb-body">${body}</div>
+        </div>
+        <div class="gb-item-back">${backEmoji}<small>点击返回</small></div>
+      </div></div>`;
     }
 
+    /* ========== 打字机效果 ========== */
+    function typewriter(el, text, speed) {
+      return new Promise(resolve => {
+        let i = 0; const total = text.length;
+        function tick() {
+          if (i >= total) { el.innerHTML = text; resolve(); return; }
+          el.innerHTML = text.substring(0, i+1) + '<span class="type-cursor"></span>';
+          i++;
+          setTimeout(tick, speed);
+        }
+        tick();
+      });
+    }
+
+    /* ========== DOM 操作 ========== */
     function updateCount() {
-      const count = document.querySelectorAll('#gbList .gb-item').length;
+      const count = document.querySelectorAll('#gbList .gb-item-wrap').length;
       const el = document.getElementById('msgCount');
       if (el) el.innerHTML = `💬 ${count} 条留言`;
     }
 
-    function addMessageToDOM(issue) {
+    async function addMessageToDOM(issue) {
       const list = document.getElementById('gbList');
       const emptyEl = list.querySelector('.gb-empty');
       if (emptyEl) list.innerHTML = '';
-      const idx = list.querySelectorAll('.gb-item').length;
-      list.insertAdjacentHTML('afterbegin', renderMessage(issue, idx));
-      // 只保留最近 MAX_ITEMS 条
-      const items = list.querySelectorAll('.gb-item');
+      const idx = list.querySelectorAll('.gb-item-wrap').length;
+      list.insertAdjacentHTML('afterbegin', renderMessageHTML(issue, idx));
+      // 裁剪
+      const items = list.querySelectorAll('.gb-item-wrap');
       for (let i = items.length - 1; i >= MAX_ITEMS; i--) items[i].remove();
       updateCount();
+      // 打字机效果：只对新插入的第一条
+      const first = list.querySelector('.gb-item-wrap:first-child .gb-body');
+      if (first && first.textContent.trim()) {
+        const raw = first.textContent.trim();
+        first.innerHTML = '';
+        await typewriter(first, raw, 25);
+      }
     }
 
     async function loadMessages() {
@@ -272,18 +415,18 @@
         const issues = await res.json();
         if (!issues.length) {
           list.innerHTML = '<div class="gb-empty"><i class="fa-solid fa-feather"></i><p>还没有留言，来做第一个吧</p></div>';
-          updateCount();
-          return;
+          updateCount(); return;
         }
-        list.innerHTML = issues.map((issue, i) => renderMessage(issue, i)).join('');
+        list.innerHTML = issues.map((issue, i) => renderMessageHTML(issue, i)).join('');
         updateCount();
       } catch (e) {
-        if (!list.querySelector('.gb-item')) {
+        if (!list.querySelector('.gb-item-wrap')) {
           list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
         }
       }
     }
 
+    /* ========== 漂流瓶提交 ========== */
     async function submitMessage() {
       const nick = document.getElementById('gbNick').value.trim();
       const msg = document.getElementById('gbMsg').value.trim();
@@ -293,10 +436,12 @@
       if (!nick) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请填写名字'; return; }
       if (!msg) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请写点什么吧'; return; }
 
+      // 漂流瓶摇晃动画
+      btn.classList.add('bottle-shake');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-pulse"></i> 发送中';
+      btn.innerHTML = '<i class="fa-solid fa-bottle-water"></i> 漂流中...';
       statusEl.className = 'submit-msg';
-      statusEl.textContent = '';
+      statusEl.textContent = '瓶子正在漂向远方...';
 
       try {
         const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
@@ -309,19 +454,23 @@
           body: JSON.stringify({ title: `[留言] ${nick}`, body: msg, labels: [LABEL] })
         });
         if (!res.ok) throw new Error('提交失败');
-        // 提交成功后立即插入留言到列表
         const issue = await res.json();
-        addMessageToDOM(issue);
+        await addMessageToDOM(issue);
         document.getElementById('gbNick').value = '';
         document.getElementById('gbMsg').value = '';
+        document.getElementById('charCount').textContent = '0';
         statusEl.className = 'submit-msg success';
-        statusEl.textContent = '留言成功！';
+        statusEl.textContent = '瓶子已送达！🎉';
+        // 烟花！
+        fireConfetti();
+        setTimeout(() => fireConfetti(), 300);
       } catch (e) {
         statusEl.className = 'submit-msg error';
-        statusEl.textContent = '发送失败，请稍后再试';
+        statusEl.textContent = '瓶子碎了，请稍后再试';
       }
+      btn.classList.remove('bottle-shake');
       btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 留下足迹';
+      btn.innerHTML = '<i class="fa-solid fa-bottle-water"></i> 扔出瓶子';
     }
 
     function escapeHtml(str) {
