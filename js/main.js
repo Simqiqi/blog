@@ -978,3 +978,6 @@ function hideWechat() {
   }, 6000);
   el.textContent = mottos[0];
 })();
+
+/* ==================== 页面淡入 ==================== */
+document.documentElement.style.opacity = '1';
