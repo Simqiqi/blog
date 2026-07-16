@@ -801,31 +801,145 @@ function hideWechat() {
 
 /* ==================== 保留：音乐播放器 ==================== */
 (function musicPlayer() {
-  const toggle = document.getElementById('musicToggle');
-  const panel = document.getElementById('musicPanel');
-  const playBtn = document.getElementById('musicPlay');
+  var toggle = document.getElementById('musicToggle');
+  var panel = document.getElementById('musicPanel');
+  var playBtn = document.getElementById('musicPlay');
+  var prevBtn = document.getElementById('musicPrev');
+  var nextBtn = document.getElementById('musicNext');
+  var volSlider = document.getElementById('volumeSlider');
+  var trackName = document.getElementById('trackName');
+  var trackMood = document.getElementById('trackMood');
   if (!toggle || !panel) return;
 
-  let playing = false;
+  // ============================================================
+  // 用 Web Audio API 生成环境氛围音乐（无需外部音频文件）
+  // ============================================================
+  var ctx = null, masterGain = null, oscillators = [], playing = false;
+  var trackIdx = 0;
 
-  toggle.addEventListener('click', (e) => {
+  // 氛围音乐预设：音阶、情绪
+  var tracks = [
+    { name: '星空漫步', mood: '安静 · 治愈', freqs: [261.6, 329.6, 392.0, 523.2], delay: 2.2 },
+    { name: '雨后清晨', mood: '清新 · 放松', freqs: [293.7, 349.2, 440.0, 587.3], delay: 1.8 },
+    { name: '海浪低语', mood: '温柔 · 冥想', freqs: [196.0, 246.9, 329.6, 392.0], delay: 2.8 },
+    { name: '萤火之森', mood: '梦幻 · 自然', freqs: [349.2, 440.0, 523.2, 659.3], delay: 1.5 },
+    { name: '月光独白', mood: '沉静 · 舒缓', freqs: [220.0, 277.2, 329.6, 440.0], delay: 3.0 },
+  ];
+
+  function stopAllNotes() {
+    oscillators.forEach(function(o) {
+      try { o.osc.stop(); o.osc.disconnect(); } catch(e) {}
+      if (o.timer) clearTimeout(o.timer);
+    });
+    oscillators = [];
+  }
+
+  function startAmbient() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.value = parseFloat(volSlider ? volSlider.value : 0.15);
+      masterGain.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+
+    stopAllNotes();
+    var t = tracks[trackIdx];
+    var baseTime = ctx.currentTime;
+
+    t.freqs.forEach(function(freq, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = 0;
+
+      // 淡入
+      gain.gain.linearRampToValueAtTime(0.06, baseTime + i * 0.5 + 0.3);
+      // 持续
+      gain.gain.setValueAtTime(0.06, baseTime + i * 0.5 + 0.3 + t.delay);
+      // 循环淡出淡入
+      scheduleLoop(gain, baseTime + i * 0.5 + 0.3 + t.delay, t.delay);
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(baseTime + i * 0.5);
+      oscillators.push({ osc: osc, gain: gain, timer: null });
+    });
+  }
+
+  function scheduleLoop(gainNode, startTime, period) {
+    function loop() {
+      var now = ctx.currentTime;
+      if (now < startTime) {
+        oscillators.forEach(function(o) {
+          if (o.gain === gainNode && !o.timer) {
+            o.timer = setTimeout(loop, (startTime - now) * 1000);
+          }
+        });
+        return;
+      }
+      gainNode.gain.linearRampToValueAtTime(0.02, now + period * 0.3);
+      gainNode.gain.linearRampToValueAtTime(0.06, now + period);
+      oscillators.forEach(function(o) {
+        if (o.gain === gainNode) o.timer = setTimeout(loop, period * 1000);
+      });
+    }
+    loop();
+  }
+
+  function play() {
+    if (playing) return;
+    playing = true;
+    startAmbient();
+    playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    toggle.classList.add('playing');
+  }
+
+  function pause() {
+    if (!playing) return;
+    playing = false;
+    stopAllNotes();
+    playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    toggle.classList.remove('playing');
+  }
+
+  // 播放/暂停
+  playBtn.addEventListener('click', function() {
+    if (playing) pause(); else play();
+  });
+
+  // 上一首
+  prevBtn.addEventListener('click', function() {
+    trackIdx = (trackIdx - 1 + tracks.length) % tracks.length;
+    trackName.textContent = tracks[trackIdx].name;
+    trackMood.textContent = tracks[trackIdx].mood;
+    if (playing) { stopAllNotes(); startAmbient(); }
+  });
+
+  // 下一首
+  nextBtn.addEventListener('click', function() {
+    trackIdx = (trackIdx + 1) % tracks.length;
+    trackName.textContent = tracks[trackIdx].name;
+    trackMood.textContent = tracks[trackIdx].mood;
+    if (playing) { stopAllNotes(); startAmbient(); }
+  });
+
+  // 音量
+  volSlider.addEventListener('input', function() {
+    if (masterGain) masterGain.gain.value = parseFloat(volSlider.value);
+  });
+
+  // 面板开关
+  toggle.addEventListener('click', function(e) {
     e.stopPropagation();
     panel.classList.toggle('open');
   });
-
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', function(e) {
     if (!panel.contains(e.target) && !toggle.contains(e.target)) {
       panel.classList.remove('open');
     }
   });
-
-  if (playBtn) {
-    playBtn.addEventListener('click', () => {
-      playing = !playing;
-      playBtn.innerHTML = playing ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
-      toggle.classList.toggle('playing', playing);
-    });
-  }
 })();
 
 
