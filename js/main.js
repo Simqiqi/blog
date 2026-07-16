@@ -10,53 +10,22 @@
   let colors;
 
   if (hour >= 5 && hour < 7) {
-    // 清晨 - 暖橙
-    colors = {
-      '--sky-bg': '#1a0e05', '--sky-bg2': '#2d1810',
-      '--sky-accent': '#ff8c42', '--sky-accent2': '#ffb380',
-      '--sky-border': 'rgba(255,140,66,0.18)', '--sky-glow': 'rgba(255,140,66,0.10)',
-      '--sky-card': 'rgba(255,140,66,0.04)', '--sky-text-muted': '#b89580'
-    };
+    colors = { '--bg': '#1a1008', '--bg-card': 'rgba(255,140,66,0.06)', '--accent': '#ff8c42', '--border': 'rgba(255,140,66,0.20)', '--text-dim': '#b89580', '--text-muted': '#886655' };
   } else if (hour >= 7 && hour < 12) {
-    // 上午 - 亮白
-    colors = {
-      '--sky-bg': '#0a0a1a', '--sky-bg2': '#151530',
-      '--sky-accent': '#7ec8f8', '--sky-accent2': '#a0d8ff',
-      '--sky-border': 'rgba(126,200,248,0.15)', '--sky-glow': 'rgba(126,200,248,0.08)',
-      '--sky-card': 'rgba(126,200,248,0.04)', '--sky-text-muted': '#8899aa'
-    };
+    colors = { '--bg': '#0a0a1a', '--bg-card': 'rgba(126,200,248,0.06)', '--accent': '#7ec8f8', '--border': 'rgba(126,200,248,0.18)', '--text-dim': '#8899aa', '--text-muted': '#667788' };
   } else if (hour >= 12 && hour < 17) {
-    // 下午 - 柔和日光
-    colors = {
-      '--sky-bg': '#0d0d18', '--sky-bg2': '#1a1a30',
-      '--sky-accent': '#ffd166', '--sky-accent2': '#ffe0a0',
-      '--sky-border': 'rgba(255,209,102,0.15)', '--sky-glow': 'rgba(255,209,102,0.08)',
-      '--sky-card': 'rgba(255,209,102,0.03)', '--sky-text-muted': '#998866'
-    };
+    colors = { '--bg': '#0d0d18', '--bg-card': 'rgba(255,209,102,0.05)', '--accent': '#ffd166', '--border': 'rgba(255,209,102,0.18)', '--text-dim': '#998866', '--text-muted': '#776655' };
   } else if (hour >= 17 && hour < 19) {
-    // 黄昏 - 紫金
-    colors = {
-      '--sky-bg': '#12081a', '--sky-bg2': '#201030',
-      '--sky-accent': '#c084fc', '--sky-accent2': '#f0abfc',
-      '--sky-border': 'rgba(192,132,252,0.18)', '--sky-glow': 'rgba(192,132,252,0.10)',
-      '--sky-card': 'rgba(192,132,252,0.04)', '--sky-text-muted': '#9988aa'
-    };
+    colors = { '--bg': '#12081a', '--bg-card': 'rgba(192,132,252,0.06)', '--accent': '#c084fc', '--border': 'rgba(192,132,252,0.20)', '--text-dim': '#9988aa', '--text-muted': '#776688' };
   } else {
-    // 夜晚 - 星空深蓝
-    colors = {
-      '--sky-bg': '#030614', '--sky-bg2': '#0a1030',
-      '--sky-accent': '#4a90d9', '--sky-accent2': '#7ab0ff',
-      '--sky-border': 'rgba(74,144,217,0.15)', '--sky-glow': 'rgba(74,144,217,0.06)',
-      '--sky-card': 'rgba(74,144,217,0.03)', '--sky-text-muted': '#6677aa'
-    };
+    colors = { '--bg': '#06060e', '--bg-card': 'rgba(74,144,217,0.05)', '--accent': '#4a90d9', '--border': 'rgba(74,144,217,0.18)', '--text-dim': '#6677aa', '--text-muted': '#556688' };
   }
 
-  // 平滑过渡：设置 CSS 变量并添加 transition
+  // 平滑过渡
   const root = document.documentElement;
-  root.style.setProperty('--sky-transition', 'background 1.5s ease, color 1.5s ease, border-color 1.5s ease, box-shadow 1.5s ease');
+  root.style.setProperty('--transition-theme', '1.5s');
   Object.entries(colors).forEach(([k, v]) => root.style.setProperty(k, v));
 
-  // 将时段类名加到 body
   let period = 'night';
   if (hour >= 5 && hour < 7) period = 'dawn';
   else if (hour >= 7 && hour < 12) period = 'morning';
