@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>柒柒的博客</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #06060e;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --border: rgba(0, 229, 255, 0.12);
+      --accent: #00e5ff;
+      --accent2: #b44aff;
+      --text: #d4d4dc;
+      --text-dim: #777;
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(180, 74, 255, 0.03) 0%, transparent 50%);
+    }
+
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(6, 6, 14, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .logo-dot { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 28px; }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    /* 文章页 */
+    .post-page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 100px 24px 60px;
+    }
+
+    .post-card {
+      background: rgba(22, 22, 38, 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .post-title {
+      font-size: 1.8rem;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .post-meta .author {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .post-meta .sep {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--text-dim);
+    }
+
+    .post-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      margin-bottom: 24px;
+    }
+
+    .post-tag {
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: rgba(0, 229, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.15);
+      border-radius: 14px;
+    }
+
+    .post-body {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: #c0c0cc;
+    }
+
+    .post-body h1, .post-body h2, .post-body h3 {
+      color: #fff;
+      margin: 28px 0 12px;
+    }
+
+    .post-body h1 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .post-body h2 { font-size: 1.25rem; }
+    .post-body h3 { font-size: 1.1rem; }
+
+    .post-body p { margin-bottom: 16px; }
+    .post-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    .post-body code {
+      background: rgba(0, 229, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+    }
+
+    .post-body pre {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    .post-body pre code { background: none; padding: 0; }
+
+    .post-body blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 16px 0;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .post-body img { max-width: 100%; border-radius: 10px; margin: 8px 0; }
+
+    .post-body ul, .post-body ol { margin: 8px 0; padding-left: 24px; }
+    .post-body li { margin-bottom: 6px; }
+
+    .post-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-top: 32px;
+      transition: gap 0.3s;
+    }
+
+    .post-back:hover { gap: 12px; }
+
+    /* 加载状态 */
+    .loading-state {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-dim);
+    }
+
+    .loading-state .spinner {
+      display: inline-block;
+      width: 32px; height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 640px) {
+      .post-card { padding: 28px 20px; }
+      .post-title { font-size: 1.4rem; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+        <a href="write.html">写文章</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="post-page" id="postPage">
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p>加载文章中...</p>
+    </div>
+    <div class="error-state" id="errorState" style="display:none;">
+      <p>文章不存在或已被删除</p>
+      <a href="index.html" class="post-back" style="justify-content:center;margin-top:24px;"><i class="fa-solid fa-arrow-left"></i> 回到首页</a>
+    </div>
+    <div id="postContent" style="display:none;"></div>
+  </main>
+
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    (async function() {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('id');
+
+      if (!articleId) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display = 'block';
+        return;
+      }
+
+      try {
+        const { data: article, error } = await supabase
+          .from('articles')
+          .select('id, title, content, tags, created_at, user_id')
+          .eq('id', articleId)
+          .eq('status', 'published')
+          .single();
+
+        if (error || !article) throw new Error('not found');
+
+        // 获取作者信息
+        let authorName = '匿名';
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('nickname')
+            .eq('id', article.user_id)
+            .single();
+          if (profile?.nickname) authorName = profile.nickname;
+        } catch(e) {}
+
+        // 格式化时间
+        const createdAt = new Date(article.created_at);
+        const dateStr = createdAt.getFullYear() + '年' +
+          String(createdAt.getMonth() + 1).padStart(2, '0') + '月' +
+          String(createdAt.getDate()).padStart(2, '0') + '日 ' +
+          String(createdAt.getHours()).padStart(2, '0') + ':' +
+          String(createdAt.getMinutes()).padStart(2, '0');
+
+        // 渲染内容
+        const tagsHtml = article.tags && article.tags.length > 0
+          ? '<div class="post-tags">' + article.tags.map(function(t) {
+              return '<span class="post-tag">' + escapeHtml(t) + '</span>';
+            }).join('') + '</div>'
+          : '';
+
+        const html =
+          '<div class="post-card">' +
+            '<h1 class="post-title">' + escapeHtml(article.title) + '</h1>' +
+            '<div class="post-meta">' +
+              '<span class="author"><i class="fa-solid fa-user"></i> ' + escapeHtml(authorName) + '</span>' +
+              '<span class="sep"></span>' +
+              '<span><i class="fa-regular fa-clock"></i> ' + dateStr + '</span>' +
+            '</div>' +
+            tagsHtml +
+            '<div class="post-body">' + marked.parse(article.content) + '</div>' +
+            '<a href="index.html" class="post-back"><i class="fa-solid fa-arrow-left"></i> 回到首页</a>' +
+          '</div>';
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('postContent').innerHTML = html;
+        document.getElementById('postContent').style.display = 'block';
+
+        document.title = article.title + ' - 柒柒的博客';
+      } catch(err) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display = 'block';
+      }
+    })();
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
