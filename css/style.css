@@ -1131,18 +1131,6 @@ footer {
   text-shadow: 0 0 12px rgba(99,102,241,0.4);
 }
 
-/* ===== 滚动弹性回弹 ===== */
-body.bounce-end {
-  animation: rubberBounce 0.5s ease-out;
-}
-
-@keyframes rubberBounce {
-  0% { transform: scaleY(0.97); transform-origin: bottom; }
-  25% { transform: scaleY(1.015); transform-origin: bottom; }
-  50% { transform: scaleY(0.99); transform-origin: bottom; }
-  100% { transform: scaleY(1); transform-origin: bottom; }
-}
-
 /* ===== 暗黑模式切换 ===== */
 :root {
   --transition-theme: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
