@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>留言墙 - 柒柒的个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+    .guestbook-page h2 {
+      font-size: 28px; margin-bottom: 8px; font-weight: 700;
+    }
+    .guestbook-page .subtitle {
+      color: var(--text-muted); font-size: 14px; margin-bottom: 32px;
+    }
+
+    /* 留言表单 */
+    .gb-form {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-bottom: 36px;
+    }
+    .gb-form .form-row { margin-bottom: 14px; }
+    .gb-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+    .gb-form input, .gb-form textarea {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 14px; font-size: 14px;
+      color: var(--text); font-family: inherit; outline: none;
+      transition: border-color 0.2s;
+    }
+    .gb-form input:focus, .gb-form textarea:focus { border-color: var(--accent); }
+    .gb-form textarea { resize: vertical; min-height: 100px; }
+    .gb-form .submit-row { display: flex; align-items: center; gap: 12px; }
+    .gb-form .submit-btn {
+      background: var(--accent); color: #fff; border: none;
+      padding: 10px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .gb-form .submit-btn:hover { opacity: 0.9; }
+    .gb-form .submit-btn:active { transform: scale(0.97); }
+    .gb-form .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gb-form .submit-msg { font-size: 13px; min-height: 20px; }
+    .gb-form .submit-msg.success { color: #22c55e; }
+    .gb-form .submit-msg.error { color: #ef4444; }
+
+    /* 留言列表 */
+    .gb-list { display: flex; flex-direction: column; gap: 16px; }
+    .gb-item {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px; position: relative;
+      transition: border-color 0.2s;
+    }
+    .gb-item:hover { border-color: var(--accent); }
+    .gb-item .gb-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .gb-item .gb-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .gb-item .gb-name { font-weight: 600; font-size: 14px; }
+    .gb-item .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .gb-item .gb-body { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .gb-item .gb-body a { color: var(--accent); }
+
+    .gb-empty { text-align: center; padding: 48px 0; color: var(--text-muted); }
+    .gb-empty i { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.3; }
+    .gb-loading { text-align: center; padding: 32px; color: var(--text-muted); }
+    .gb-loading .dot-pulse { display: inline-block; }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="guestbook.html" class="active">留言墙</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <main class="guestbook-page">
+    <h2>留言墙</h2>
+    <p class="subtitle">来都来了，留句话再走 ✨ 你的每一条留言我都会认真看</p>
+
+    <div class="gb-form">
+      <div class="form-row">
+        <label>你的名字</label>
+        <input type="text" id="gbNick" placeholder="怎么称呼你？" maxlength="30">
+      </div>
+      <div class="form-row">
+        <label>想说点什么</label>
+        <textarea id="gbMsg" placeholder="友善交流，禁止广告和人身攻击~" maxlength="500"></textarea>
+      </div>
+      <div class="submit-row">
+        <button class="submit-btn" id="gbSubmit" onclick="submitMessage()">
+          <i class="fa-solid fa-paper-plane"></i> 留下足迹
+        </button>
+        <span class="submit-msg" id="submitMsg"></span>
+      </div>
+    </div>
+
+    <div class="gb-list" id="gbList">
+      <div class="gb-loading"><i class="fa-solid fa-spinner fa-pulse"></i> 加载留言中...</div>
+    </div>
+  </main>
+
+  <script src="js/particles.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/clock.js"></script>
+
+  <script>
+    const REPO = 'Simqiqi/blog';
+    const LABEL = 'guestbook';
+
+    async function loadMessages() {
+      const list = document.getElementById('gbList');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?labels=${LABEL}&state=open&sort=created&direction=desc&per_page=30`);
+        const issues = await res.json();
+        if (!issues.length) {
+          list.innerHTML = '<div class="gb-empty"><i class="fa-solid fa-feather"></i><p>还没有留言，来做第一个吧</p></div>';
+          return;
+        }
+        list.innerHTML = issues.map(issue => {
+          const name = issue.title.replace(/^\[留言\]\s*/, '');
+          const avatar = name.charAt(0).toUpperCase();
+          const time = new Date(issue.created_at).toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
+          const body = issue.body ? issue.body.replace(/\n/g, '<br>') : '';
+          return `
+            <div class="gb-item">
+              <div class="gb-header">
+                <div class="gb-avatar">${avatar}</div>
+                <span class="gb-name">${escapeHtml(name)}</span>
+                <span class="gb-time">${time}</span>
+              </div>
+              <div class="gb-body">${body}</div>
+            </div>`;
+        }).join('');
+      } catch (e) {
+        list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
+      }
+    }
+
+    function submitMessage() {
+      const nick = document.getElementById('gbNick').value.trim();
+      const msg = document.getElementById('gbMsg').value.trim();
+      const statusEl = document.getElementById('submitMsg');
+
+      if (!nick) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请填写名字'; return; }
+      if (!msg) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请写点什么吧'; return; }
+
+      const title = encodeURIComponent('[留言] ' + nick);
+      const body = encodeURIComponent(msg);
+      const labels = encodeURIComponent(LABEL);
+      const url = `https://github.com/${REPO}/issues/new?title=${title}&body=${body}&labels=${labels}`;
+      
+      statusEl.className = 'submit-msg success';
+      statusEl.textContent = '正在跳转到 GitHub 提交...';
+      window.open(url, '_blank');
+      document.getElementById('gbNick').value = '';
+      document.getElementById('gbMsg').value = '';
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    loadMessages();
+  </script>
+</body>
+</html>
