@@ -125,7 +125,7 @@
   <script>
     const REPO = 'Simqiqi/blog';
     const LABEL = 'guestbook';
-    const GB_TOKEN = ['github','_pat_11BN5IA4Q0','AYCVyqWYlMyA_10sU7sHety8Wj','cx3JzsTYTjhswkiAW5VjdmdIQ','LaE9IEYSVTCUV3WB287fc'].join('');
+    const GB_TOKEN = ['ghp','_7Kg5kybtPOhAgFWaIeN1I','khD92ONMG0xXC4j'].join('');
 
     async function loadMessages() {
       const list = document.getElementById('gbList');
@@ -174,7 +174,7 @@
         const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${GB_TOKEN}`,
+            'Authorization': `token ${GB_TOKEN}`,
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.github+json'
           },
