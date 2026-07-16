@@ -127,6 +127,30 @@
     const LABEL = 'guestbook';
     const GB_TOKEN = ['ghp','_7Kg5kybtPOhAgFWaIeN1I','khD92ONMG0xXC4j'].join('');
 
+    function renderMessage(issue) {
+      const name = issue.title.replace(/^\[留言\]\s*/, '');
+      const avatar = name.charAt(0).toUpperCase();
+      const time = new Date(issue.created_at).toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
+      const body = issue.body ? issue.body.replace(/\n/g, '<br>') : '';
+      return `
+            <div class="gb-item">
+              <div class="gb-header">
+                <div class="gb-avatar">${avatar}</div>
+                <span class="gb-name">${escapeHtml(name)}</span>
+                <span class="gb-time">${time}</span>
+              </div>
+              <div class="gb-body">${body}</div>
+            </div>`;
+    }
+
+    function addMessageToDOM(issue) {
+      const list = document.getElementById('gbList');
+      // 移除空状态占位
+      const emptyEl = list.querySelector('.gb-empty');
+      if (emptyEl) emptyEl.remove();
+      list.insertAdjacentHTML('afterbegin', renderMessage(issue));
+    }
+
     async function loadMessages() {
       const list = document.getElementById('gbList');
       try {
@@ -136,21 +160,7 @@
           list.innerHTML = '<div class="gb-empty"><i class="fa-solid fa-feather"></i><p>还没有留言，来做第一个吧</p></div>';
           return;
         }
-        list.innerHTML = issues.map(issue => {
-          const name = issue.title.replace(/^\[留言\]\s*/, '');
-          const avatar = name.charAt(0).toUpperCase();
-          const time = new Date(issue.created_at).toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
-          const body = issue.body ? issue.body.replace(/\n/g, '<br>') : '';
-          return `
-            <div class="gb-item">
-              <div class="gb-header">
-                <div class="gb-avatar">${avatar}</div>
-                <span class="gb-name">${escapeHtml(name)}</span>
-                <span class="gb-time">${time}</span>
-              </div>
-              <div class="gb-body">${body}</div>
-            </div>`;
-        }).join('');
+        list.innerHTML = issues.map(issue => renderMessage(issue)).join('');
       } catch (e) {
         list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
       }
@@ -181,11 +191,13 @@
           body: JSON.stringify({ title: `[留言] ${nick}`, body: msg, labels: [LABEL] })
         });
         if (!res.ok) throw new Error('提交失败');
+        // 提交成功后立即插入留言到列表
+        const issue = await res.json();
+        addMessageToDOM(issue);
         document.getElementById('gbNick').value = '';
         document.getElementById('gbMsg').value = '';
         statusEl.className = 'submit-msg success';
         statusEl.textContent = '留言成功！';
-        setTimeout(loadMessages, 2000);
       } catch (e) {
         statusEl.className = 'submit-msg error';
         statusEl.textContent = '发送失败，请稍后再试';
