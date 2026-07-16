@@ -902,35 +902,121 @@ function hideWechat() {
   const canvas = document.getElementById('particles');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
+  let W, H, particles = [], mx = -9999, my = -9999, mActive = false;
+  const MAX_DIST = 120, MOUSE_RADIUS = 180, PARTICLE_COUNT = 80;
 
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
+    // 重新分布粒子
+    particles.forEach(p => { p.x = Math.min(p.x, W); p.y = Math.min(p.y, H); });
+    if (particles.length < PARTICLE_COUNT) {
+      for (let i = particles.length; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 2 + 0.6,
+          baseR: 0, opacity: Math.random() * 0.5 + 0.15
+        });
+      }
+    }
   }
   resize();
   window.addEventListener('resize', resize);
 
-  for (let i = 0; i < 50; i++) {
+  // 初始化粒子
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
     particles.push({
       x: Math.random() * W, y: Math.random() * H,
       vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.5 + 0.5,
-      opacity: Math.random() * 0.4 + 0.1
+      r: Math.random() * 2 + 0.6,
+      baseR: 0, opacity: Math.random() * 0.5 + 0.15
     });
   }
 
+  // 鼠标/触摸 跟踪
+  canvas.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; mActive = true; });
+  canvas.addEventListener('mouseleave', () => { mActive = false; });
+  canvas.addEventListener('touchmove', e => { mx = e.touches[0].clientX; my = e.touches[0].clientY; mActive = true; }, {passive: true});
+  canvas.addEventListener('touchend', () => { mActive = false; });
+
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
+
+    // 更新粒子位置和大小
     particles.forEach(p => {
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
       if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      // 鼠标影响：靠近鼠标的粒子增大并变亮
+      const d = mActive ? dist(p, {x: mx, y: my}) : 1e9;
+      const influence = Math.max(0, 1 - d / MOUSE_RADIUS);
+      p.baseR = p.r + influence * 2.5;
+      p.baseOpacity = p.opacity + influence * 0.5;
+    });
+
+    // 画连线
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const d = dist(particles[i], particles[j]);
+        let alpha, lineWidth;
+        // 是否在鼠标影响范围内（两个粒子任一靠近鼠标）
+        const di = mActive ? dist(particles[i], {x: mx, y: my}) : 1e9;
+        const dj = mActive ? dist(particles[j], {x: mx, y: my}) : 1e9;
+        const nearMouse = di < MOUSE_RADIUS || dj < MOUSE_RADIUS;
+        const threshold = nearMouse ? MAX_DIST * 1.5 : MAX_DIST;
+
+        if (d < threshold) {
+          alpha = (1 - d / threshold) * (nearMouse ? 0.4 : 0.12);
+          lineWidth = nearMouse ? 1.2 : 0.5;
+          const midX = (particles[i].x + particles[j].x) / 2;
+          const midY = (particles[i].y + particles[j].y) / 2;
+          // 越靠近鼠标连线越亮
+          const md = mActive ? Math.hypot(midX - mx, midY - my) : 1e9;
+          const glowBoost = Math.max(0, 1 - md / MOUSE_RADIUS) * 0.5;
+          ctx.strokeStyle = `rgba(99,102,241,${alpha + glowBoost})`;
+          ctx.lineWidth = lineWidth;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // 画粒子
+    particles.forEach(p => {
+      const dr = p.baseR, dop = p.baseOpacity;
+      // 外发光
+      const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dr * 3);
+      glow.addColorStop(0, `rgba(99,102,241,${dop * 0.8})`);
+      glow.addColorStop(0.5, `rgba(99,102,241,${dop * 0.15})`);
+      glow.addColorStop(1, 'rgba(99,102,241,0)');
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0,229,255,${p.opacity})`;
+      ctx.arc(p.x, p.y, dr * 3, 0, Math.PI * 2);
+      ctx.fill();
+      // 粒子核心
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, dr, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(167,139,250,${dop})`;
       ctx.fill();
     });
+
+    // 鼠标光圈
+    if (mActive) {
+      const ring = ctx.createRadialGradient(mx, my, 0, mx, my, MOUSE_RADIUS);
+      ring.addColorStop(0, 'rgba(99,102,241,0)');
+      ring.addColorStop(0.7, 'rgba(99,102,241,0.03)');
+      ring.addColorStop(1, 'rgba(99,102,241,0)');
+      ctx.fillStyle = ring;
+      ctx.beginPath();
+      ctx.arc(mx, my, MOUSE_RADIUS, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     requestAnimationFrame(draw);
   }
   draw();
