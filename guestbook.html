@@ -7,68 +7,157 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
-    .guestbook-page h2 {
-      font-size: 28px; margin-bottom: 8px; font-weight: 700;
+    /* ========== 页面布局 ========== */
+    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 48px 20px 100px; }
+
+    /* 标题区 */
+    .gb-hero { text-align: center; margin-bottom: 40px; }
+    .gb-hero h2 {
+      font-size: 32px; font-weight: 800; margin-bottom: 8px;
+      background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .guestbook-page .subtitle {
-      color: var(--text-muted); font-size: 14px; margin-bottom: 32px;
+    .gb-hero .subtitle {
+      color: var(--text-muted); font-size: 14px; line-height: 1.6;
+    }
+    .gb-hero .msg-count {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,0.1); color: #6366f1;
+      padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      margin-top: 12px;
     }
 
-    /* 留言表单 */
+    /* ========== 留言表单 ========== */
     .gb-form {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px; margin-bottom: 36px;
+      background: var(--card-bg);
+      border-radius: 20px; padding: 28px; margin-bottom: 40px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(99,102,241,0.06);
+      position: relative; overflow: hidden;
     }
-    .gb-form .form-row { margin-bottom: 14px; }
-    .gb-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+    .gb-form::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #a78bfa, #ec4899);
+    }
+    .gb-form .form-row { margin-bottom: 16px; }
+    .gb-form .form-row:last-of-type { margin-bottom: 20px; }
+    .gb-form label {
+      display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px;
+      color: var(--text-secondary); letter-spacing: 0.3px;
+    }
+    .gb-form label::after { content: ' *'; color: #ef4444; font-size: 12px; }
     .gb-form input, .gb-form textarea {
-      width: 100%; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 14px; font-size: 14px;
+      width: 100%; background: var(--bg); border: 2px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; font-size: 15px;
       color: var(--text); font-family: inherit; outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      box-sizing: border-box;
     }
-    .gb-form input:focus, .gb-form textarea:focus { border-color: var(--accent); }
-    .gb-form textarea { resize: vertical; min-height: 100px; }
-    .gb-form .submit-row { display: flex; align-items: center; gap: 12px; }
+    .gb-form input:focus, .gb-form textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+    }
+    .gb-form textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+    .gb-form .submit-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .gb-form .submit-btn {
-      background: var(--accent); color: #fff; border: none;
-      padding: 10px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff; border: none;
+      padding: 12px 32px; border-radius: 12px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+      letter-spacing: 0.5px;
     }
-    .gb-form .submit-btn:hover { opacity: 0.9; }
+    .gb-form .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,0.4); }
     .gb-form .submit-btn:active { transform: scale(0.97); }
-    .gb-form .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .gb-form .submit-msg { font-size: 13px; min-height: 20px; }
+    .gb-form .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .gb-form .submit-msg { font-size: 13px; min-height: 20px; font-weight: 500; }
     .gb-form .submit-msg.success { color: #22c55e; }
     .gb-form .submit-msg.error { color: #ef4444; }
+    .gb-form .char-count { text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-    /* 留言列表 */
-    .gb-list { display: flex; flex-direction: column; gap: 16px; }
-    .gb-item {
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 20px; position: relative;
-      transition: border-color 0.2s;
+    /* ========== 留言卡片 ========== */
+    .gb-list { display: flex; flex-direction: column; gap: 14px; }
+    .gb-list-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+      font-size: 16px; font-weight: 700; color: var(--text-secondary);
     }
-    .gb-item:hover { border-color: var(--accent); }
+    .gb-list-header::before, .gb-list-header::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .gb-item {
+      background: var(--card-bg); border-radius: 16px; padding: 22px;
+      position: relative;
+      border: 1px solid var(--border);
+      transition: border-color 0.3s, transform 0.25s, box-shadow 0.25s;
+      animation: gbFadeIn 0.4s ease-out both;
+    }
+    .gb-item:nth-child(1) { animation-delay: 0.05s; }
+    .gb-item:nth-child(2) { animation-delay: 0.1s; }
+    .gb-item:nth-child(3) { animation-delay: 0.15s; }
+    .gb-item:nth-child(4) { animation-delay: 0.2s; }
+    .gb-item:nth-child(5) { animation-delay: 0.25s; }
+    @keyframes gbFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .gb-item:hover {
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.08);
+    }
+    /* 左侧彩色竖条 */
+    .gb-item::before {
+      content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
+      width: 3px; border-radius: 0 3px 3px 0;
+      background: linear-gradient(180deg, #6366f1, #a78bfa);
+    }
+
     .gb-item .gb-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
     }
     .gb-item .gb-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      width: 40px; height: 40px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+      font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+      position: relative; box-shadow: 0 2px 10px rgba(99,102,241,0.2);
     }
-    .gb-item .gb-name { font-weight: 600; font-size: 14px; }
-    .gb-item .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
-    .gb-item .gb-body { font-size: 14px; line-height: 1.7; color: var(--text); }
-    .gb-item .gb-body a { color: var(--accent); }
+    .gb-avatar-c1 { background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .gb-avatar-c2 { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .gb-avatar-c3 { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .gb-avatar-c4 { background: linear-gradient(135deg, #10b981, #34d399); }
+    .gb-avatar-c5 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .gb-avatar-c6 { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
 
-    .gb-empty { text-align: center; padding: 48px 0; color: var(--text-muted); }
-    .gb-empty i { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.3; }
-    .gb-loading { text-align: center; padding: 32px; color: var(--text-muted); }
-    .gb-loading .dot-pulse { display: inline-block; }
+    .gb-item .gb-name { font-weight: 700; font-size: 15px; color: var(--text); }
+    .gb-item .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .gb-item .gb-body {
+      font-size: 15px; line-height: 1.75; color: var(--text);
+      margin-left: 4px; word-break: break-word;
+    }
+    .gb-item .gb-body a { color: #6366f1; text-decoration: underline; text-underline-offset: 2px; }
+
+    /* 空状态 */
+    .gb-empty { text-align: center; padding: 56px 0; color: var(--text-muted); }
+    .gb-empty i { font-size: 52px; display: block; margin-bottom: 16px; opacity: 0.2; }
+    .gb-empty p { font-size: 15px; }
+    .gb-loading { text-align: center; padding: 40px; color: var(--text-muted); }
+    .gb-loading i { font-size: 20px; }
+
+    /* ========== 移动端适配 ========== */
+    @media (max-width: 480px) {
+      .guestbook-page { padding: 28px 14px 80px; }
+      .gb-hero h2 { font-size: 26px; }
+      .gb-form { padding: 22px 16px; border-radius: 18px; }
+      .gb-form input, .gb-form textarea { padding: 12px 14px; font-size: 16px; }
+      .gb-form .submit-btn { width: 100%; text-align: center; }
+      .gb-form .submit-row { flex-direction: column; align-items: stretch; }
+      .gb-item { padding: 18px 16px; }
+      .gb-item .gb-body { font-size: 14px; }
+    }
   </style>
 </head>
 <body>
@@ -95,8 +184,11 @@
   </nav>
 
   <main class="guestbook-page">
-    <h2>留言墙</h2>
-    <p class="subtitle">来都来了，留句话再走 ✨ 你的每一条留言我都会认真看</p>
+    <div class="gb-hero">
+      <h2>留言墙</h2>
+      <p class="subtitle">来都来了，留句话再走 ✨ 你的每一条留言我都会认真看</p>
+      <div class="msg-count" id="msgCount">💬 1 条留言</div>
+    </div>
 
     <div class="gb-form">
       <div class="form-row">
@@ -105,7 +197,8 @@
       </div>
       <div class="form-row">
         <label>想说点什么</label>
-        <textarea id="gbMsg" placeholder="友善交流，禁止广告和人身攻击~" maxlength="500"></textarea>
+        <textarea id="gbMsg" placeholder="友善交流，禁止广告和人身攻击~" maxlength="500" oninput="document.getElementById('charCount').textContent=this.value.length"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/500</div>
       </div>
       <div class="submit-row">
         <button class="submit-btn" id="gbSubmit" onclick="submitMessage()">
@@ -115,10 +208,11 @@
       </div>
     </div>
 
+    <div class="gb-list-header">全部留言</div>
     <div class="gb-list" id="gbList">
       <div class="gb-item">
         <div class="gb-header">
-          <div class="gb-avatar">柒</div>
+          <div class="gb-avatar gb-avatar-c1">柒</div>
           <span class="gb-name">柒柒</span>
           <span class="gb-time">2026/07/16</span>
         </div>
@@ -133,16 +227,18 @@
     const REPO = 'Simqiqi/blog';
     const LABEL = 'guestbook';
     const GB_TOKEN = ['ghp','_7Kg5kybtPOhAgFWaIeN1I','khD92ONMG0xXC4j'].join('');
+    const AVATAR_COLORS = ['gb-avatar-c1','gb-avatar-c2','gb-avatar-c3','gb-avatar-c4','gb-avatar-c5','gb-avatar-c6'];
 
-    function renderMessage(issue) {
+    function renderMessage(issue, idx) {
       const name = issue.title.replace(/^\[留言\]\s*/, '');
       const avatar = name.charAt(0).toUpperCase();
+      const colorClass = AVATAR_COLORS[idx % AVATAR_COLORS.length];
       const time = new Date(issue.created_at).toLocaleDateString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit' });
       const body = issue.body ? issue.body.replace(/\n/g, '<br>') : '';
       return `
             <div class="gb-item">
               <div class="gb-header">
-                <div class="gb-avatar">${avatar}</div>
+                <div class="gb-avatar ${colorClass}">${avatar}</div>
                 <span class="gb-name">${escapeHtml(name)}</span>
                 <span class="gb-time">${time}</span>
               </div>
@@ -150,12 +246,19 @@
             </div>`;
     }
 
+    function updateCount() {
+      const count = document.querySelectorAll('#gbList .gb-item').length;
+      const el = document.getElementById('msgCount');
+      if (el) el.innerHTML = `💬 ${count} 条留言`;
+    }
+
     function addMessageToDOM(issue) {
       const list = document.getElementById('gbList');
-      // 移除空状态占位
       const emptyEl = list.querySelector('.gb-empty');
-      if (emptyEl) emptyEl.remove();
-      list.insertAdjacentHTML('afterbegin', renderMessage(issue));
+      if (emptyEl) list.innerHTML = '';
+      const idx = list.querySelectorAll('.gb-item').length;
+      list.insertAdjacentHTML('afterbegin', renderMessage(issue, idx));
+      updateCount();
     }
 
     async function loadMessages() {
@@ -165,11 +268,15 @@
         const issues = await res.json();
         if (!issues.length) {
           list.innerHTML = '<div class="gb-empty"><i class="fa-solid fa-feather"></i><p>还没有留言，来做第一个吧</p></div>';
+          updateCount();
           return;
         }
-        list.innerHTML = issues.map(issue => renderMessage(issue)).join('');
+        list.innerHTML = issues.map((issue, i) => renderMessage(issue, i)).join('');
+        updateCount();
       } catch (e) {
-        list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
+        if (!list.querySelector('.gb-item')) {
+          list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
+        }
       }
     }
 
