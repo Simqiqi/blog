@@ -1,39 +1,8 @@
 /**
  * 柒柒的博客 - 主脚本
- * 功能：天色情绪主题、3D书架、时光隧道时间线、星光手写签名板
+ * 功能：3D书架、时光隧道时间线、星光手写签名板
  *       + 入场动画、锦鲤、头像震动、滚动入场等
  */
-
-/* ==================== 1. 天色情绪主题 ==================== */
-(function skyMoodTheme() {
-  const hour = new Date().getHours();
-  let colors;
-
-  if (hour >= 5 && hour < 7) {
-    colors = { '--bg': '#1a1008', '--bg-card': 'rgba(255,140,66,0.06)', '--accent': '#ff8c42', '--border': 'rgba(255,140,66,0.20)', '--text-dim': '#b89580', '--text-muted': '#886655' };
-  } else if (hour >= 7 && hour < 12) {
-    colors = { '--bg': '#0a0a1a', '--bg-card': 'rgba(126,200,248,0.06)', '--accent': '#7ec8f8', '--border': 'rgba(126,200,248,0.18)', '--text-dim': '#8899aa', '--text-muted': '#667788' };
-  } else if (hour >= 12 && hour < 17) {
-    colors = { '--bg': '#0d0d18', '--bg-card': 'rgba(255,209,102,0.05)', '--accent': '#ffd166', '--border': 'rgba(255,209,102,0.18)', '--text-dim': '#998866', '--text-muted': '#776655' };
-  } else if (hour >= 17 && hour < 19) {
-    colors = { '--bg': '#12081a', '--bg-card': 'rgba(192,132,252,0.06)', '--accent': '#c084fc', '--border': 'rgba(192,132,252,0.20)', '--text-dim': '#9988aa', '--text-muted': '#776688' };
-  } else {
-    colors = { '--bg': '#06060e', '--bg-card': 'rgba(74,144,217,0.05)', '--accent': '#4a90d9', '--border': 'rgba(74,144,217,0.18)', '--text-dim': '#6677aa', '--text-muted': '#556688' };
-  }
-
-  // 平滑过渡
-  const root = document.documentElement;
-  root.style.setProperty('--transition-theme', '1.5s');
-  Object.entries(colors).forEach(([k, v]) => root.style.setProperty(k, v));
-
-  let period = 'night';
-  if (hour >= 5 && hour < 7) period = 'dawn';
-  else if (hour >= 7 && hour < 12) period = 'morning';
-  else if (hour >= 12 && hour < 17) period = 'afternoon';
-  else if (hour >= 17 && hour < 19) period = 'dusk';
-  document.body.classList.add('sky-period-' + period);
-})();
-
 
 /* ==================== 2. 3D 书架文章展示 ==================== */
 (function bookshelf3D() {
