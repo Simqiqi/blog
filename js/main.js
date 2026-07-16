@@ -959,5 +959,178 @@ function hideWechat() {
   el.textContent = mottos[0];
 })();
 
+/* ==================== 3D 旋转地球 ==================== */
+(function globe3D() {
+  var container = document.getElementById('globeContainer');
+  if (!container) return;
+
+  var canvas = document.createElement('canvas');
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  container.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+
+  var W, H, R, cx, cy;
+  var dots = [];
+  var rotationY = 0, rotationX = 0.3;
+  var autoRotate = true;
+  var dragging = false, lastX = 0, lastY = 0, dragRotY = 0, dragRotX = 0;
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = container.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    R = Math.min(W, H) * 0.38;
+    cx = W / 2; cy = H / 2;
+  }
+
+  // 生成球面点
+  function generateDots() {
+    dots = [];
+    for (var i = 0; i < 260; i++) {
+      var theta = Math.random() * Math.PI * 2;
+      var phi = Math.acos(2 * Math.random() - 1);
+      dots.push({ theta: theta, phi: phi, r: Math.random() * 1.4 + 0.6 });
+    }
+    // 添加几条经纬线
+    for (var lat = -60; lat <= 60; lat += 30) {
+      for (var lng = 0; lng < 360; lng += 6) {
+        var phi2 = (90 - lat) * Math.PI / 180;
+        var theta2 = lng * Math.PI / 180;
+        dots.push({ theta: theta2, phi: phi2, r: 0.4, isLine: true });
+      }
+    }
+    for (var lng2 = 0; lng2 < 360; lng2 += 30) {
+      for (var lat2 = -80; lat2 <= 80; lat2 += 4) {
+        var phi3 = (90 - lat2) * Math.PI / 180;
+        var theta3 = lng2 * Math.PI / 180;
+        dots.push({ theta: theta3, phi: phi3, r: 0.4, isLine: true });
+      }
+    }
+  }
+
+  function project(theta, phi) {
+    var x = R * Math.sin(phi) * Math.cos(theta);
+    var y = R * Math.cos(phi);
+    var z = R * Math.sin(phi) * Math.sin(theta);
+    return { x: cx + x, y: cy - y, z: z };
+  }
+
+  function rotatePoint(dot) {
+    // 绕 Y 轴旋转
+    var cosRY = Math.cos(rotationY + dragRotY);
+    var sinRY = Math.sin(rotationY + dragRotY);
+    var x1 = dot.x * cosRY + dot.z * sinRY;
+    var z1 = -dot.x * sinRY + dot.z * cosRY;
+    // 绕 X 轴旋转
+    var cosRX = Math.cos(rotationX + dragRotX);
+    var sinRX = Math.sin(rotationX + dragRotX);
+    var y1 = dot.y * cosRX - z1 * sinRX;
+    var z2 = dot.y * sinRX + z1 * cosRX;
+    return { x: x1, y: y1, z: z2 };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // 自转
+    if (autoRotate) rotationY += 0.004;
+
+    var projected = dots.map(function(d) {
+      var p = project(d.theta, d.phi);
+      return rotatePoint(p);
+    });
+
+    // 按 z 排序
+    projected.sort(function(a, b) { return b.z - a.z; });
+
+    // 外围光晕
+    var glowGrad = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.15);
+    glowGrad.addColorStop(0, 'rgba(0,229,255,0.08)');
+    glowGrad.addColorStop(0.5, 'rgba(0,229,255,0.04)');
+    glowGrad.addColorStop(1, 'rgba(0,229,255,0)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 1.15, 0, Math.PI * 2);
+    ctx.fillStyle = glowGrad;
+    ctx.fill();
+
+    // 画点
+    projected.forEach(function(p, i) {
+      var d = dots[i];
+      var alpha = d.isLine ? (p.z > 0 ? 0.35 : 0.1) : (p.z > 0 ? 0.85 : 0.15);
+      var size = d.isLine ? d.r : (d.r * (0.5 + 0.5 * (p.z / R)));
+      ctx.beginPath();
+      ctx.arc(cx + (p.x - cx) * (R / R), cy - (cy - p.y), size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,229,255,' + alpha + ')';
+      ctx.fill();
+
+      // 正面点加光晕
+      if (p.z > 0 && !d.isLine) {
+        ctx.beginPath();
+        ctx.arc(cx + (p.x - cx), cy - (cy - p.y), size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,220,255,' + (alpha * 0.3) + ')';
+        ctx.fill();
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  generateDots();
+  draw();
+  window.addEventListener('resize', function() { resize(); generateDots(); });
+
+  // 拖拽旋转
+  container.addEventListener('mousedown', function(e) {
+    dragging = true; autoRotate = false;
+    lastX = e.clientX; lastY = e.clientY;
+    container.style.cursor = 'grabbing';
+  });
+  container.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    dragRotY += (e.clientX - lastX) * 0.005;
+    dragRotX += (e.clientY - lastY) * 0.005;
+    dragRotX = Math.max(-1, Math.min(1, dragRotX));
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  window.addEventListener('mouseup', function() {
+    if (dragging) {
+      dragging = false;
+      rotationY += dragRotY; dragRotY = 0;
+      rotationX += dragRotX; dragRotX = 0;
+      container.style.cursor = 'grab';
+      setTimeout(function() { autoRotate = true; }, 1500);
+    }
+  });
+
+  // 触摸
+  container.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    dragging = true; autoRotate = false;
+    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+  }, {passive: false});
+  container.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!dragging) return;
+    dragRotY += (e.touches[0].clientX - lastX) * 0.005;
+    dragRotX += (e.touches[0].clientY - lastY) * 0.005;
+    dragRotX = Math.max(-1, Math.min(1, dragRotX));
+    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+  }, {passive: false});
+  container.addEventListener('touchend', function() {
+    if (dragging) {
+      dragging = false;
+      rotationY += dragRotY; dragRotY = 0;
+      rotationX += dragRotX; dragRotX = 0;
+      setTimeout(function() { autoRotate = true; }, 1500);
+    }
+  });
+})();
+
 /* ==================== 页面淡入 ==================== */
 document.documentElement.style.opacity = '1';
