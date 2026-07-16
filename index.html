@@ -6,9 +6,7 @@
   <title>柒柒的个人博客</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="supabase-config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
+
 </head>
 <body>
   <div class="progress-bar" id="progressBar"></div>
@@ -24,7 +22,6 @@
         <a href="about.html">关于</a>
         <a href="thanks.html">致谢</a>
         <a href="friends.html">友链</a>
-        <a href="write.html">写文章</a>
       </div>
       <div class="nav-clock-wrap">
         <span class="nav-clock" id="navClock"></span>
@@ -37,18 +34,6 @@
         <div class="search-dropdown" id="searchDropdown">
           <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
           <div class="search-results" id="searchResults"></div>
-        </div>
-      </div>
-      <!-- 登录状态 -->
-      <div class="nav-user" id="navUser">
-        <a href="auth.html" class="nav-login-link" id="navLoginLink">登录</a>
-        <div class="nav-user-info" id="navUserInfo" style="display:none;">
-          <span class="nav-user-name" id="navUserName"></span>
-          <div class="nav-user-avatar" id="navUserAvatar"></div>
-          <div class="nav-user-dropdown" id="navUserDropdown">
-            <a href="write.html"><i class="fa-solid fa-feather-pointed"></i> 写文章</a>
-            <a href="javascript:void(0)" id="navLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> 登出</a>
-          </div>
         </div>
       </div>
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
@@ -161,29 +146,6 @@
     </div>
   </main>
 
-  <!-- 社区文章 -->
-  <section class="community-posts">
-    <h3>社区文章</h3>
-    <div class="community-grid" id="communityGrid">
-      <div class="community-loading">加载中...</div>
-    </div>
-  </section>
-
-  <!-- 静态文章降级（默认隐藏，动态加载失败时显示） -->
-  <section class="recent-posts" id="fallbackPosts" style="display:none;">
-    <h3>最近文章</h3>
-    <div class="recent-grid">
-      <a href="posts/talk-unfinished.html" class="recent-card">
-        <span class="recent-date">2026-07-15</span>
-        <span class="recent-title">话没说完，也没关系</span>
-      </a>
-      <a href="posts/hello-world.html" class="recent-card">
-        <span class="recent-date">2026-07-15</span>
-        <span class="recent-title">你好，世界</span>
-      </a>
-    </div>
-  </section>
-
   <section class="interests">
     <h3>感兴趣的事</h3>
     <div class="tag-cloud">
@@ -278,114 +240,5 @@
     </div>
   </div>
 
-  <!-- 社区文章动态加载脚本 -->
-  <script>
-    (async function() {
-      const grid = document.getElementById('communityGrid');
-      const fallback = document.getElementById('fallbackPosts');
 
-      try {
-        const { data: articles, error } = await supabase
-          .from('articles')
-          .select('id, title, content, tags, created_at, user_id')
-          .eq('status', 'published')
-          .order('created_at', { ascending: false })
-          .limit(6);
-
-        if (error || !articles || articles.length === 0) throw new Error('no articles');
-
-        // 批量获取作者昵称
-        const userIds = [...new Set(articles.map(function(a) { return a.user_id; }))];
-        let profilesMap = {};
-        if (userIds.length > 0) {
-          const { data: profiles } = await supabase
-            .from('profiles')
-            .select('id, nickname')
-            .in('id', userIds);
-          if (profiles) {
-            profiles.forEach(function(p) { profilesMap[p.id] = p.nickname; });
-          }
-        }
-
-        let html = '';
-        articles.forEach(function(article) {
-          const nickname = profilesMap[article.user_id] || '匿名';
-          const excerpt = (article.content || '').replace(/[#*`>\-\[\]!]/g, '').substring(0, 120);
-          const createdAt = new Date(article.created_at);
-          const now = new Date();
-          const diffMs = now - createdAt;
-          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-          let timeAgo;
-          if (diffDays < 1) {
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            if (diffHours < 1) {
-              timeAgo = Math.floor(diffMs / (1000 * 60)) + '分钟前';
-            } else {
-              timeAgo = diffHours + '小时前';
-            }
-          } else if (diffDays < 30) {
-            timeAgo = diffDays + '天前';
-          } else {
-            timeAgo = Math.floor(diffDays / 30) + '个月前';
-          }
-
-          const tagsHtml = article.tags && article.tags.length > 0
-            ? '<div class="community-card-tags">' + article.tags.slice(0, 3).map(function(t) {
-                return '<span class="community-tag">' + escapeHtml(t) + '</span>';
-              }).join('') + '</div>'
-            : '';
-
-          html +=
-            '<a href="post.html?id=' + article.id + '" class="community-card">' +
-              '<h4 class="community-card-title">' + escapeHtml(article.title) + '</h4>' +
-              '<div class="community-card-meta">' +
-                '<span class="community-card-author">' + escapeHtml(nickname) + '</span>' +
-                '<span class="community-card-time">' + timeAgo + '</span>' +
-              '</div>' +
-              tagsHtml +
-              '<p class="community-card-excerpt">' + escapeHtml(excerpt) + (article.content.replace(/[#*`>\-\[\]!]/g, '').length > 120 ? '...' : '') + '</p>' +
-            '</a>';
-        });
-
-        grid.innerHTML = html;
-      } catch(e) {
-        // 降级显示静态文章
-        grid.parentElement.style.display = 'none';
-        fallback.style.display = 'block';
-      }
-
-      function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-      }
-    })();
-
-    // 登录状态更新
-    (async function() {
-      try {
-        const user = await getCurrentUser();
-        if (user) {
-          document.getElementById('navLoginLink').style.display = 'none';
-          document.getElementById('navUserInfo').style.display = 'flex';
-          document.getElementById('navUserName').textContent = user.nickname || user.email;
-        }
-      } catch(e) {}
-
-      // 登出按钮
-      document.getElementById('navLogoutBtn').addEventListener('click', function() {
-        signOut();
-      });
-
-      // 点击头像切换下拉菜单
-      document.getElementById('navUserAvatar').addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('navUserDropdown').classList.toggle('open');
-      });
-
-      document.addEventListener('click', function() {
-        document.getElementById('navUserDropdown').classList.remove('open');
-      });
-    })();
-  </script>
-</body>
 </html>
