@@ -694,26 +694,6 @@ function hideWechat() {
   if (saved) document.documentElement.setAttribute('data-theme', saved);
 })();
 
-
-/* ==================== 保留：滚动弹性回弹 ==================== */
-(function scrollBounce() {
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 120;
-        if (nearBottom) {
-          document.body.classList.add('bounce-end');
-          setTimeout(() => document.body.classList.remove('bounce-end'), 500);
-        }
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
-})();
-
-
 /* ==================== 保留：标签云呼吸 ==================== */
 (function tagCloud() {
   const tags = document.querySelectorAll('.tag-cloud .tag');
