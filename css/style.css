@@ -1374,7 +1374,7 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
 /* ===== 迷你音乐播放器 ===== */
 .music-player {
   position: fixed;
-  right: 24px;
+  left: 24px;
   bottom: 96px;
   z-index: 997;
   display: flex;
