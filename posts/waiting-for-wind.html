@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我在等、等风、等你来。 - 柒柒's Blog</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="guestbook.html">留言墙</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span>
+      <div class="nav-search">
+        <button class="search-toggle" id="searchToggle" aria-label="搜索">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="search-dropdown" id="searchDropdown">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <article class="article-page">
+    <div class="article-date">2026-07-17</div>
+    <h1>我在等、等风、等你来。</h1>
+    <div class="article-meta">柒柒 · 情感随笔</div>
+    <div class="article-views" id="articleViews"></div>
+
+    <div class="article-body">
+      <p>
+        我全部的好脾气，因为我爱你。
+      </p>
+      <p>
+        愿世间万家灯火，有一盏灯独为你而亮。
+      </p>
+    </div>
+
+    <div class="article-like">
+      <button class="like-btn" id="likeBtn" aria-label="点赞">
+        <i class="fa-solid fa-heart"></i>
+        <span>喜欢</span>
+      </button>
+      <span class="like-count" id="likeCount">0</span>
+    </div>
+
+    <div class="article-share">
+      <span class="share-label">分享</span>
+      <button class="share-btn copy-link" id="shareCopy" aria-label="复制链接">
+        <i class="fa-solid fa-link"></i>
+        <span class="tooltip">复制链接</span>
+      </button>
+      <button class="share-btn weibo" id="shareWeibo" aria-label="分享到微博">
+        <i class="fa-brands fa-weibo"></i>
+        <span class="tooltip">微博</span>
+      </button>
+      <button class="share-btn twitter" id="shareTwitter" aria-label="分享到Twitter">
+        <i class="fa-brands fa-x-twitter"></i>
+        <span class="tooltip">Twitter</span>
+      </button>
+      <button class="share-btn qrcode" id="shareQR" aria-label="二维码分享">
+        <i class="fa-solid fa-qrcode"></i>
+        <span class="tooltip">二维码</span>
+      </button>
+    </div>
+
+    <a href="../blog.html" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> 返回博客列表
+    </a>
+  </article>
+
+  <nav class="article-nav">
+    <a href="talk-unfinished.html" class="nav-prev">
+      <i class="fa-solid fa-chevron-left nav-icon"></i>
+      <div class="nav-info">
+        <span class="nav-label">上一篇</span>
+        <span class="nav-title">话没说完，也没关系</span>
+      </div>
+    </a>
+    <div class="nav-placeholder"></div>
+  </nav>
+
+    <section class="globe-section">
+    <div class="globe-label">VISITORS AROUND THE WORLD</div>
+    <div class="globe-container" id="globeContainer"></div>
+    <div class="globe-visitors" id="globeVisitors">来自世界各地的足迹</div>
+  </section>
+
+  <div class="marquee-bar" id="marqueeBar">
+    <div class="marquee-track"></div>
+  </div>
+
+  <footer>
+  <div class="footer-social">
+    <a href="https://github.com/Simqiqi" target="_blank" class="ft-github" title="GitHub"><i class="fa-brands fa-github"></i></a>
+    <a href="https://weibo.com/u/7878583139" target="_blank" class="ft-weibo" title="微博"><i class="fa-brands fa-weibo"></i></a>
+    <a href="https://space.bilibili.com" target="_blank" class="ft-bilibili" title="B站"><i class="fa-brands fa-bilibili"></i></a>
+    <a href="mailto:simqiqi@example.com" class="ft-email" title="邮箱"><i class="fa-solid fa-envelope"></i></a>
+  </div>
+    <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <div class="runtime" id="siteRuntime"></div>
+  </footer>
+
+  <div class="qr-overlay" id="qrOverlay">
+    <div class="qr-card">
+      <img id="qrImage" src="" alt="扫码访问">
+      <div class="qr-title">扫码访问</div>
+      <div class="qr-hint">手机扫一扫，分享给朋友</div>
+      <button class="qr-close">关闭</button>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
+    <i class="fa-solid fa-rocket"></i>
+  </button>
+
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" aria-label="音乐播放器">
+      <i class="fa-solid fa-music"></i>
+    </button>
+    <div class="music-panel" id="musicPanel">
+      <div class="track-info">
+        <div class="track-name" id="trackName">星空漫步</div>
+        <div class="track-mood" id="trackMood">安静 · 治愈</div>
+      </div>
+      <div class="music-controls">
+        <button class="ctrl-btn" id="musicPrev"><i class="fa-solid fa-backward"></i></button>
+        <button class="ctrl-btn main-btn" id="musicPlay"><i class="fa-solid fa-play"></i></button>
+        <button class="ctrl-btn" id="musicNext"><i class="fa-solid fa-forward"></i></button>
+      </div>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="0.5" step="0.01" value="0.15">
+    </div>
+  </div>
+
+</body>
+</html>
