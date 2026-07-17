@@ -866,6 +866,7 @@ function hideWechat() {
   // 音量
   volSlider.addEventListener('input', function() {
     if (masterGain) masterGain.gain.value = parseFloat(volSlider.value);
+    if (audioEl) audioEl.volume = parseFloat(volSlider.value);
   });
 
   // 面板开关
@@ -877,6 +878,20 @@ function hideWechat() {
     if (!panel.contains(e.target) && !toggle.contains(e.target)) {
       panel.classList.remove('open');
     }
+  });
+
+  // 自动播放：先尝试直接播放，被浏览器拦截则等首次用户交互触发
+  var autoPlayTriggered = false;
+  function triggerAutoPlay() {
+    if (autoPlayTriggered) return;
+    autoPlayTriggered = true;
+    if (!playing) play();
+  }
+  // 尝试直接播放（大概率被浏览器拦截，但不影响体验）
+  play();
+  // 兜底：用户首次点击/触摸/滚动页面时自动播放
+  ['click', 'touchstart', 'scroll'].forEach(function(evt) {
+    document.addEventListener(evt, triggerAutoPlay, { once: true });
   });
 })();
 
