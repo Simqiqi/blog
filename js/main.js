@@ -1223,5 +1223,209 @@ function hideWechat() {
   });
 })();
 
+/* ==================== 时间结晶 ==================== */
+(function timeCrystal() {
+  var container = document.createElement('div');
+  container.id = 'timeCrystal';
+  container.style.cssText = 'position:fixed;bottom:90px;right:24px;z-index:9998;width:70px;height:70px;cursor:pointer;transition:opacity 0.5s;';
+  
+  var canvas = document.createElement('canvas');
+  canvas.width = 140; canvas.height = 140;
+  canvas.style.width = '70px'; canvas.style.height = '70px';
+  container.appendChild(canvas);
+  
+  var tooltip = document.createElement('div');
+  tooltip.style.cssText = 'position:absolute;bottom:78px;right:0;background:var(--card-bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+  container.appendChild(tooltip);
+  
+  container.addEventListener('mouseenter', function(){ tooltip.style.opacity = '1'; });
+  container.addEventListener('mouseleave', function(){ tooltip.style.opacity = '0'; });
+  document.body.appendChild(container);
+
+  var ctx = canvas.getContext('2d');
+  var startTime = Date.now();
+
+  function draw() {
+    var elapsed = (Date.now() - startTime) / 1000; // seconds
+    var mins = Math.floor(elapsed / 60);
+    var secs = Math.floor(elapsed % 60);
+    var hours = Math.floor(mins / 60);
+    mins = mins % 60;
+    var timeStr = hours + 'h ' + mins + 'm ' + secs + 's';
+    tooltip.textContent = '✨ 博客已陪伴 ' + timeStr;
+
+    // 光泽随时间和秒数脉动
+    var pulse = 0.7 + 0.3 * Math.sin(elapsed * 0.8);
+    var ageGlow = Math.min(1, elapsed / 1800); // 30分钟后光泽达到最大
+
+    ctx.clearRect(0, 0, 140, 140);
+    var cx = 70, cy = 70, r = 55;
+
+    // 外光环
+    var outerGlow = ctx.createRadialGradient(cx, cy, r * 0.85, cx, cy, r * 1.2);
+    outerGlow.addColorStop(0, 'rgba(139,92,246,' + (0.3 * pulse * ageGlow) + ')');
+    outerGlow.addColorStop(0.5, 'rgba(99,102,241,' + (0.1 * pulse * ageGlow) + ')');
+    outerGlow.addColorStop(1, 'rgba(99,102,241,0)');
+    ctx.fillStyle = outerGlow;
+    ctx.beginPath(); ctx.arc(cx, cy, r * 1.2, 0, Math.PI * 2); ctx.fill();
+
+    // 水晶球主体
+    var crystal = ctx.createRadialGradient(cx - 12, cy - 15, r * 0.05, cx, cy, r);
+    crystal.addColorStop(0, 'rgba(196,167,255,' + (0.9 + 0.1 * pulse) + ')');
+    crystal.addColorStop(0.35, 'rgba(139,92,246,' + (0.55 + 0.15 * pulse) + ')');
+    crystal.addColorStop(0.7, 'rgba(76,29,149,' + (0.4 + 0.1 * pulse) + ')');
+    crystal.addColorStop(1, 'rgba(46,16,101,0.7)');
+    ctx.fillStyle = crystal;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+
+    // 高光反射
+    var highlight = ctx.createRadialGradient(cx - 18, cy - 18, r * 0.02, cx - 15, cy - 12, r * 0.5);
+    highlight.addColorStop(0, 'rgba(255,255,255,' + (0.6 * pulse) + ')');
+    highlight.addColorStop(0.3, 'rgba(255,255,255,0.15)');
+    highlight.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = highlight;
+    ctx.beginPath(); ctx.arc(cx - 18, cy - 18, r * 0.55, 0, Math.PI * 2); ctx.fill();
+
+    // 内部星光粒子
+    var t = elapsed * 0.5;
+    for (var i = 0; i < 4; i++) {
+      var angle = t + i * Math.PI / 2;
+      var dist = r * 0.35 + Math.sin(elapsed * 1.3 + i) * r * 0.12;
+      var sx = cx + Math.cos(angle) * dist;
+      var sy = cy + Math.sin(angle) * dist * 0.6;
+      var sparkle = ctx.createRadialGradient(sx, sy, 0, sx, sy, 4);
+      sparkle.addColorStop(0, 'rgba(255,255,255,' + (0.7 * pulse * ageGlow) + ')');
+      sparkle.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sparkle;
+      ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ==================== 月相小挂件 ==================== */
+(function moonPhase() {
+  var container = document.createElement('div');
+  container.id = 'moonWidget';
+  container.style.cssText = 'position:fixed;bottom:170px;right:28px;z-index:9998;width:56px;height:56px;cursor:pointer;';
+  
+  var canvas = document.createElement('canvas');
+  canvas.width = 112; canvas.height = 112;
+  canvas.style.width = '56px'; canvas.style.height = '56px';
+  container.appendChild(canvas);
+  
+  var tooltip = document.createElement('div');
+  tooltip.style.cssText = 'position:absolute;bottom:64px;right:0;background:var(--card-bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+  container.appendChild(tooltip);
+  
+  container.addEventListener('mouseenter', function(){ tooltip.style.opacity = '1'; });
+  container.addEventListener('mouseleave', function(){ tooltip.style.opacity = '0'; });
+  document.body.appendChild(container);
+
+  var ctx = canvas.getContext('2d');
+  var phases = [
+    '🌑 新月', '🌒 蛾眉月', '🌓 上弦月', '🌔 盈凸月',
+    '🌕 满月', '🌖 亏凸月', '🌗 下弦月', '🌘 残月'
+  ];
+
+  function drawMoon(phase) {
+    var cx = 56, cy = 56, r = 46;
+    ctx.clearRect(0, 0, 112, 112);
+
+    // 柔和光晕
+    var glow = ctx.createRadialGradient(cx, cy, r * 0.9, cx, cy, r * 1.3);
+    glow.addColorStop(0, 'rgba(253,224,175,0.25)');
+    glow.addColorStop(1, 'rgba(253,224,175,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(cx, cy, r * 1.3, 0, Math.PI * 2); ctx.fill();
+
+    // 月亮基底（暗面）
+    ctx.fillStyle = '#e8dcc8';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+
+    // 亮面裁剪
+    var illum = 0.5; // 默认半亮
+    var phaseIdx = Math.floor(phase);
+
+    // 根据相位计算亮面比例
+    var frac = phase - phaseIdx;
+    if (phaseIdx === 0) { illum = frac * 0.5; }           // 0→0.5 新月→上弦
+    else if (phaseIdx === 1) { illum = 0.5 + frac * 0.5; } // 0.5→1 上弦→满月
+    else if (phaseIdx === 2) { illum = 1 - frac * 0.5; }   // 1→0.5 满月→下弦
+    else { illum = 0.5 - frac * 0.5; }                     // 0.5→0 下弦→新月
+
+    // 画亮面
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+
+    if (illum < 1) {
+      // 用椭圆模拟月相
+      var ellipseW = Math.abs(illum - 0.5) * 2 * r * 2;
+      var fillColor = illum < 0.5 ? '#c8b89a' : '#fdf0d5';
+      
+      // 亮面
+      ctx.fillStyle = '#fdf0d5';
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+
+      var shadowX;
+      if (illum < 0.5) {
+        shadowX = cx - r + illum * 2 * r;
+      } else {
+        shadowX = cx + r - (1 - illum) * 2 * r;
+      }
+      
+      ctx.fillStyle = '#c8b89a';
+      ctx.beginPath();
+      ctx.ellipse(shadowX, cy, r * 1.05, r * 1.05, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = '#fdf0d5';
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+
+    // 全月覆盖亮色
+    if (illum > 0.5) {
+      ctx.fillStyle = '#fdf0d5';
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+
+      var shadowRatio = 1 - illum;
+      var shadowW = shadowRatio * 2 * r;
+      ctx.fillStyle = '#c8b89a';
+      ctx.beginPath();
+      ctx.ellipse(cx - r + shadowRatio * 2 * r, cy, r * 1.05, r * 1.05, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 环形边框
+    ctx.strokeStyle = 'rgba(253,224,175,0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+  }
+
+  // 计算月相：基准 2026-07-14 新月(phase=0)，周期 29.53 天
+  function getMoonPhase() {
+    var ref = new Date(2026, 6, 14).getTime(); // July 14, 2026 - new moon
+    var now = Date.now();
+    var days = (now - ref) / (1000 * 60 * 60 * 24);
+    var phase = (days % 29.53) / 29.53;
+    if (phase < 0) phase += 1;
+    return phase;
+  }
+
+  function update() {
+    var phase = getMoonPhase();
+    var phaseIdx = Math.floor(phase * 8) % 8;
+    tooltip.textContent = phases[phaseIdx] + ' · ' + (phase * 100).toFixed(1) + '% 亮度';
+    drawMoon(phase * 8);
+    requestAnimationFrame(function() {
+      setTimeout(update, 3600000); // 每小时更新
+    });
+  }
+  update();
+})();
+
 /* ==================== 页面淡入 ==================== */
 document.documentElement.style.opacity = '1';
