@@ -880,18 +880,17 @@ function hideWechat() {
     }
   });
 
-  // 自动播放：先尝试直接播放，被浏览器拦截则等首次用户交互触发
-  var autoPlayTriggered = false;
-  function triggerAutoPlay() {
-    if (autoPlayTriggered) return;
-    autoPlayTriggered = true;
-    if (!playing) play();
+  // 自动播放：等待首次用户交互（浏览器策略要求）
+  var autoPlayDone = false;
+  function autoPlay() {
+    if (autoPlayDone) return;
+    autoPlayDone = true;
+    // 强制播放，跳过 playing 状态检查
+    playing = false;
+    play();
   }
-  // 尝试直接播放（大概率被浏览器拦截，但不影响体验）
-  play();
-  // 兜底：用户首次点击/触摸/滚动页面时自动播放
   ['click', 'touchstart', 'scroll'].forEach(function(evt) {
-    document.addEventListener(evt, triggerAutoPlay, { once: true });
+    document.addEventListener(evt, autoPlay, { once: true });
   });
 })();
 
