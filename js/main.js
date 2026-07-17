@@ -737,11 +737,12 @@ function hideWechat() {
   // ============================================================
   // 用 Web Audio API 生成环境氛围音乐（无需外部音频文件）
   // ============================================================
-  var ctx = null, masterGain = null, oscillators = [], playing = false;
+  var ctx = null, masterGain = null, oscillators = [], audioEl = null, playing = false;
   var trackIdx = 0;
 
   // 氛围音乐预设：音阶、情绪
   var tracks = [
+    { name: '把回忆拼好给你', mood: '王贰浪 · 回忆', url: 'https://music.163.com/song/media/outer/url?id=1403318151.mp3', type: 'audio' },
     { name: '星空漫步', mood: '安静 · 治愈', freqs: [261.6, 329.6, 392.0, 523.2], delay: 2.2 },
     { name: '雨后清晨', mood: '清新 · 放松', freqs: [293.7, 349.2, 440.0, 587.3], delay: 1.8 },
     { name: '海浪低语', mood: '温柔 · 冥想', freqs: [196.0, 246.9, 329.6, 392.0], delay: 2.8 },
@@ -755,9 +756,26 @@ function hideWechat() {
       if (o.timer) clearTimeout(o.timer);
     });
     oscillators = [];
+    if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; audioEl = null; }
   }
 
   function startAmbient() {
+    stopAllNotes();
+    var t = tracks[trackIdx];
+
+    // 真实音频文件
+    if (t.type === 'audio' && t.url) {
+      audioEl = new Audio();
+      audioEl.src = t.url;
+      audioEl.loop = true;
+      audioEl.volume = parseFloat(volSlider ? volSlider.value : 0.15);
+      audioEl.play().catch(function(e) {
+        console.warn('Audio play failed:', e.message);
+        audioEl = null;
+      });
+      return;
+    }
+
     if (!ctx) {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       masterGain = ctx.createGain();
@@ -765,9 +783,6 @@ function hideWechat() {
       masterGain.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') ctx.resume();
-
-    stopAllNotes();
-    var t = tracks[trackIdx];
     var baseTime = ctx.currentTime;
 
     t.freqs.forEach(function(freq, i) {
