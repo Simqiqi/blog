@@ -5,17 +5,25 @@
  */
 
 /* ==================== 2. 3D 书架文章展示 ==================== */
-(function bookshelf3D() {
+(async function bookshelf3D() {
   const shelf = document.getElementById('bookshelf');
   if (!shelf) return;
   const wrapper = shelf.querySelector('.bookshelf-wrapper');
   const booksContainer = shelf.querySelector('.books-list');
 
-  const posts = [
-    { title: '我在等、等风、等你来。', date: '2026-07-17', excerpt: '我全部的好脾气，因为我爱你。愿世间万家灯火，有一盏灯独为你而亮。', url: 'posts/waiting-for-wind.html', color: '#ec4899' },
-    { title: '话没说完，也没关系', date: '2026-07-15', excerpt: '那句话就卡在喉咙里，像一颗没熟透的果子。真正重要的从来不是话本身。', url: 'posts/talk-unfinished.html', color: '#6366f1' },
-    { title: '你好，世界', date: '2026-07-15', excerpt: '这是我的第一篇博客。一个不知天高地厚的大学生，终于有了属于自己的小角落。', url: 'posts/hello-world.html', color: '#10b981' },
-  ];
+  // 动态从 posts.json 加载文章列表
+  let posts = [];
+  try {
+    const resp = await fetch('../posts.json');
+    if (resp.ok) posts = await resp.json();
+  } catch(e) {
+    console.warn('无法加载 posts.json, 使用空列表', e);
+  }
+
+  if (posts.length === 0) {
+    booksContainer.innerHTML = '<div class="book-item" style="text-align:center;width:100%"><p style="color:#999">📚 还没有文章哦~</p></div>';
+    return;
+  }
 
   booksContainer.innerHTML = posts.map((p, i) => `
     <div class="book-item" style="--book-color:${p.color};--book-i:${i};" data-url="${p.url}">
@@ -35,8 +43,10 @@
     </div>
   `).join('');
 
-  // 复制一份用于无缝滚动
-  booksContainer.innerHTML += booksContainer.innerHTML;
+  // 少于5本不复制滚动
+  if (posts.length >= 5) {
+    booksContainer.innerHTML += booksContainer.innerHTML;
+  }
 
   let isDragging = false, startX = 0, scrollLeft = 0;
   let rotateY = 0;
