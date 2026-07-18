@@ -12,11 +12,9 @@
   const booksContainer = shelf.querySelector('.books-list');
 
   const posts = [
-    { title: '我的第一篇博客', date: '2026-07-01', excerpt: '你好世界，这是我的个人博客的第一篇文章，记录生活的点滴。', url: 'blog.html', color: '#6366f1' },
-    { title: '关于独立开发', date: '2026-07-05', excerpt: '独立开发者的心路历程，从零到一的创造之旅。', url: 'blog.html', color: '#f59e0b' },
-    { title: '旅行摄影笔记', date: '2026-07-10', excerpt: '带着相机去探索未知，每一帧都是独特的风景。', url: 'blog.html', color: '#10b981' },
-    { title: 'AI 与创作', date: '2026-07-14', excerpt: '探索 AI 辅助写作的边界，人与机器的共创实验。', url: 'blog.html', color: '#ec4899' },
-    { title: '跑步随想', date: '2026-07-16', excerpt: '清晨 5 公里的思绪漫游，身体与心灵的双重对话。', url: 'blog.html', color: '#8b5cf6' },
+    { title: '我在等、等风、等你来。', date: '2026-07-17', excerpt: '我全部的好脾气，因为我爱你。愿世间万家灯火，有一盏灯独为你而亮。', url: 'posts/waiting-for-wind.html', color: '#ec4899' },
+    { title: '话没说完，也没关系', date: '2026-07-15', excerpt: '那句话就卡在喉咙里，像一颗没熟透的果子。真正重要的从来不是话本身。', url: 'posts/talk-unfinished.html', color: '#6366f1' },
+    { title: '你好，世界', date: '2026-07-15', excerpt: '这是我的第一篇博客。一个不知天高地厚的大学生，终于有了属于自己的小角落。', url: 'posts/hello-world.html', color: '#10b981' },
   ];
 
   booksContainer.innerHTML = posts.map((p, i) => `
@@ -52,8 +50,17 @@
   wrapper.addEventListener('mouseleave', () => { isDragging = false; wrapper.style.cursor = 'grab'; });
   wrapper.addEventListener('mouseup', (e) => { isDragging = false; wrapper.style.cursor = 'grab';
     const book = e.target.closest('.book-item');
-    if (book && Math.abs(e.pageX - startX) < 5) {
-      book.classList.toggle('book-open');
+    if (!book || Math.abs(e.pageX - startX) >= 5) return;
+    // 如果已经翻开，跳转到文章
+    if (book.classList.contains('book-open')) {
+      window.location.href = book.dataset.url;
+    } else {
+      book.classList.add('book-open');
+      setTimeout(function() {
+        if (book.classList.contains('book-open')) {
+          window.location.href = book.dataset.url;
+        }
+      }, 3000);
     }
   });
   wrapper.addEventListener('mousemove', (e) => {
@@ -78,16 +85,35 @@
     booksContainer.style.transform = 'rotateY(0deg)';
     const endX = e.changedTouches[0].pageX;
     const book = e.target.closest('.book-item');
-    if (book && Math.abs(endX - startX) < 10) {
-      book.classList.toggle('book-open');
+    if (!book || Math.abs(endX - startX) >= 10) return;
+    // 如果已经翻开，跳转到文章
+    if (book.classList.contains('book-open')) {
+      window.location.href = book.dataset.url;
+    } else {
+      book.classList.add('book-open');
+      setTimeout(function() {
+        if (book.classList.contains('book-open')) {
+          window.location.href = book.dataset.url;
+        }
+      }, 3000);
     }
   });
 
-  // Click to open book
+  // Click to open book or navigate
   booksContainer.addEventListener('click', (e) => {
     const book = e.target.closest('.book-item');
-    if (book && Math.abs(e.pageX - startX) < 5) {
-      book.classList.toggle('book-open');
+    if (!book || Math.abs(e.pageX - startX) >= 5) return;
+    // 如果已经翻开，跳转到文章
+    if (book.classList.contains('book-open')) {
+      window.location.href = book.dataset.url;
+    } else {
+      book.classList.add('book-open');
+      // 3秒后自动跳转
+      setTimeout(function() {
+        if (book.classList.contains('book-open')) {
+          window.location.href = book.dataset.url;
+        }
+      }, 3000);
     }
   });
 })();
