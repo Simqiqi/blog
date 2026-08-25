@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - 柒柒的博客</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/widgets.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     .not-found {
@@ -87,8 +88,10 @@
       font-size: 0.85rem;
     }
   </style>
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
 <body>
+  <div class="progress-bar" id="progressBar"></div>
   <canvas id="particles"></canvas>
 
   <nav class="navbar">
@@ -165,5 +168,11 @@
       document.getElementById('nfDecor').textContent = decor[idx];
     })();
   </script>
+  <button class="back-to-top" id="backToTop" title="回到顶部">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script src="js/widget.js"></script>
+
 </body>
 </html>
