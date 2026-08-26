@@ -1186,56 +1186,6 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
   color: var(--text-dim);
 }
 
-/* 主题切换按钮 */
-.theme-toggle {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
-  margin-left: 12px;
-}
-
-.theme-toggle:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
-}
-
-.theme-toggle i {
-  font-size: 1rem;
-  color: var(--accent);
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
-}
-
-.theme-toggle .fa-sun {
-  position: absolute;
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
-.theme-toggle .fa-moon {
-  position: absolute;
-  opacity: 0;
-  transform: rotate(90deg) scale(0.5);
-}
-
-[data-theme="light"] .theme-toggle .fa-sun {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0.5);
-}
-
-[data-theme="light"] .theme-toggle .fa-moon {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
 /* ===== 回到顶部火箭 ===== */
 .rocket-to-top {
   position: fixed;
