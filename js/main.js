@@ -776,14 +776,14 @@ function hideWechat() {
   var ctx = null, masterGain = null, oscillators = [], audioEl = null, playing = false;
   var trackIdx = 0;
 
-  // 氛围音乐预设：音阶、情绪
+  // 氛围音乐预设：音阶、情绪（Web Audio 本地合成，零外部依赖，优先保证可播放）
   var tracks = [
-    { name: '把回忆拼好给你', mood: '王贰浪 · 回忆', url: 'https://music.163.com/song/media/outer/url?id=1403318151.mp3', type: 'audio' },
     { name: '星空漫步', mood: '安静 · 治愈', freqs: [261.6, 329.6, 392.0, 523.2], delay: 2.2 },
     { name: '雨后清晨', mood: '清新 · 放松', freqs: [293.7, 349.2, 440.0, 587.3], delay: 1.8 },
     { name: '海浪低语', mood: '温柔 · 冥想', freqs: [196.0, 246.9, 329.6, 392.0], delay: 2.8 },
     { name: '萤火之森', mood: '梦幻 · 自然', freqs: [349.2, 440.0, 523.2, 659.3], delay: 1.5 },
     { name: '月光独白', mood: '沉静 · 舒缓', freqs: [220.0, 277.2, 329.6, 440.0], delay: 3.0 },
+    { name: '把回忆拼好给你', mood: '王贰浪 · 回忆', url: 'https://music.163.com/song/media/outer/url?id=1403318151.mp3', type: 'audio' },
   ];
 
   function stopAllNotes() {
@@ -795,19 +795,38 @@ function hideWechat() {
     if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; audioEl = null; }
   }
 
+  // 外部音频加载/播放失败时，自动回退到 Web Audio 合成曲目（零外部依赖，必有声）
+  function audioFallback() {
+    var guard = 0;
+    while (tracks[trackIdx] && tracks[trackIdx].type === 'audio' && guard < tracks.length) {
+      trackIdx = (trackIdx + 1) % tracks.length;
+      guard++;
+    }
+    trackName.textContent = tracks[trackIdx].name;
+    trackMood.textContent = tracks[trackIdx].mood;
+    startAmbient();
+  }
+
   function startAmbient() {
     stopAllNotes();
     var t = tracks[trackIdx];
 
-    // 真实音频文件
+    // 真实音频文件（失败自动回退到本地合成曲目，避免无声的“播放中”状态）
     if (t.type === 'audio' && t.url) {
       audioEl = new Audio();
       audioEl.src = t.url;
       audioEl.loop = true;
       audioEl.volume = parseFloat(volSlider ? volSlider.value : 0.15);
-      audioEl.play().catch(function(e) {
+      audioEl.addEventListener('error', function() {
+        console.warn('Audio load error, fallback to ambient track');
+        audioEl = null;
+        audioFallback();
+      });
+      var pp = audioEl.play();
+      if (pp && pp.catch) pp.catch(function(e) {
         console.warn('Audio play failed:', e.message);
         audioEl = null;
+        audioFallback();
       });
       return;
     }
@@ -878,8 +897,9 @@ function hideWechat() {
     toggle.classList.remove('playing');
   }
 
-  // 播放/暂停
-  playBtn.addEventListener('click', function() {
+  // 播放/暂停（stopPropagation 避免冒泡触发 document 上的自动播放逻辑造成双重播放）
+  playBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
     if (playing) pause(); else play();
   });
 
@@ -905,10 +925,12 @@ function hideWechat() {
     if (audioEl) audioEl.volume = parseFloat(volSlider.value);
   });
 
-  // 面板开关
+  // 面板开关（首次打开面板时若未播放则自动开始播放，点击音乐按钮即有声音）
   toggle.addEventListener('click', function(e) {
     e.stopPropagation();
+    var wasOpen = panel.classList.contains('open');
     panel.classList.toggle('open');
+    if (!wasOpen && !playing) play();
   });
   document.addEventListener('click', function(e) {
     if (!panel.contains(e.target) && !toggle.contains(e.target)) {
@@ -916,16 +938,16 @@ function hideWechat() {
     }
   });
 
-  // 自动播放：等待首次用户交互（浏览器策略要求）
+  // 自动播放：等待首次有效用户手势（浏览器策略要求；scroll 不算有效手势且会抢占状态，故移除）
   var autoPlayDone = false;
   function autoPlay() {
     if (autoPlayDone) return;
     autoPlayDone = true;
-    // 强制播放，跳过 playing 状态检查
-    playing = false;
+    // 已在播放则跳过，避免与播放按钮点击重复触发
+    if (playing) return;
     play();
   }
-  ['click', 'touchstart', 'scroll'].forEach(function(evt) {
+  ['click', 'touchstart'].forEach(function(evt) {
     document.addEventListener(evt, autoPlay, { once: true });
   });
 })();
