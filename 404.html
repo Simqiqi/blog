@@ -38,54 +38,278 @@
       50% { background-position: 100% 50%; }
     }
 
-    .nf-decor {
-      font-size: 3rem;
-      animation: nfBounce 2s ease-in-out infinite;
-      margin-bottom: 20px;
+    /* ============================================================
+       太空漂流 404（space-drift）—— 配合 js/space-404.js
+       ============================================================ */
+    .space-drift {
+      position: relative;
+      overflow: hidden;
+      min-height: calc(100vh - 64px);
+      isolation: isolate;
     }
 
-    @keyframes nfBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+    #spaceCanvas404 {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
     }
 
-    .nf-message {
-      font-size: 1.1rem;
-      color: var(--text);
-      margin-bottom: 8px;
-      min-height: 1.6em;
-    }
-
-    .nf-sub {
-      font-size: 0.82rem;
-      color: var(--text-dim);
-      margin-bottom: 32px;
-    }
-
-    .nf-btn {
-      display: inline-flex;
+    .sd-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 12px 28px;
+      padding: 56px 16px 72px;
+      max-width: 620px;
+      width: 100%;
+    }
+
+    .sd-kicker {
+      font-size: 0.8rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .sd-404 {
+      font-size: clamp(4.6rem, 12vw, 7.5rem);
+      margin-bottom: 4px;
+      filter: drop-shadow(0 8px 30px rgba(99, 102, 241, 0.35));
+    }
+
+    .sd-bottle-wrap {
+      position: relative;
+      margin: 18px 0 12px;
+      animation: sdSway 6s ease-in-out infinite;
+      transform-origin: 50% 100%;
+    }
+
+    @keyframes sdSway {
+      0%, 100% { transform: rotate(-3.5deg); }
+      50% { transform: rotate(3.5deg); }
+    }
+
+    .sd-bottle {
+      width: 132px;
+      height: 165px;
+      display: block;
+      filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.18));
+    }
+
+    .sd-glass-body {
+      fill: rgba(160, 220, 255, 0.16);
+      stroke: rgba(190, 235, 255, 0.6);
+      stroke-width: 2;
+    }
+
+    [data-theme="light"] .sd-glass-body {
+      fill: rgba(99, 102, 241, 0.05);
+      stroke: rgba(99, 102, 241, 0.5);
+    }
+
+    .sd-cork {
+      fill: #b98a5a;
+      stroke: rgba(255, 255, 255, 0.35);
+      stroke-width: 1.2;
+    }
+
+    [data-theme="light"] .sd-cork {
+      fill: #c49a6c;
+      stroke: rgba(0, 0, 0, 0.12);
+    }
+
+    .bstar {
+      fill: #fff;
+      opacity: 0.95;
+      animation: bstarTw 2.6s ease-in-out infinite;
+    }
+
+    [data-theme="light"] .bstar {
+      fill: #6366f1;
+    }
+
+    .bstar.s2 { animation-delay: 0.7s; }
+    .bstar.s3 { animation-delay: 1.4s; animation-duration: 3.4s; }
+
+    @keyframes bstarTw {
+      0%, 100% { opacity: 0.25; transform: scale(0.7); transform-origin: center; }
+      50% { opacity: 1; transform: scale(1.25); transform-origin: center; }
+    }
+
+    .sd-glow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 240px;
+      height: 240px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(167, 139, 250, 0.1) 40%, transparent 70%);
+      animation: sdGlowPulse 4.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sdGlowPulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.9; }
+    }
+
+    .sd-message {
+      position: relative;
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: var(--text);
+      min-height: 4.2em;
+      max-width: 520px;
+      margin: 0 auto 4px;
+      padding: 0 4px;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      transition: color 0.3s;
+    }
+
+    .sd-message.typing::after {
+      content: '▍';
+      margin-left: 2px;
+      animation: sdCaret 0.9s step-end infinite;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    @keyframes sdCaret {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .sd-source {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      min-height: 1.4em;
+      margin-bottom: 22px;
+      letter-spacing: 0.06em;
+    }
+
+    .sd-sub {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    .sd-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 460px;
+      margin-bottom: 14px;
+    }
+
+    .sd-input {
+      flex: 1 1 220px;
+      min-width: 0;
+      padding: 12px 18px;
       border-radius: 30px;
       border: 1px solid var(--border);
       background: var(--bg-card);
       color: var(--text);
-      text-decoration: none;
       font-size: 0.92rem;
+      outline: none;
       transition: all 0.3s;
       backdrop-filter: blur(8px);
     }
 
-    .nf-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+    .sd-input::placeholder {
+      color: var(--text-dim);
     }
 
-    .nf-btn i {
+    .sd-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+    }
+
+    .sd-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 26px;
+      border-radius: 30px;
+      border: 1px solid var(--accent);
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      color: #fff;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.28);
+      white-space: nowrap;
+    }
+
+    .sd-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(99, 102, 241, 0.4);
+    }
+
+    .sd-btn:active {
+      transform: translateY(0);
+    }
+
+    .sd-btn i {
       font-size: 0.85rem;
+    }
+
+    .sd-tip {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      min-height: 1.3em;
+      opacity: 0.85;
+    }
+
+    /* 小飞船 */
+    .sd-ship {
+      position: absolute;
+      left: 50%;
+      top: 62%;
+      z-index: 6;
+      font-size: 56px;
+      line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 0 18px rgba(99, 102, 241, 0.55));
+      will-change: transform, opacity;
+    }
+
+    .sd-ship.fly {
+      animation: sdFly 1.06s cubic-bezier(0.24, 0.6, 0.3, 1) forwards;
+    }
+
+    @keyframes sdFly {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate(0, 90px) scale(0.2) rotate(0deg);
+      }
+      10% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate(0, 30px) scale(0.6) rotate(-8deg);
+      }
+      45% {
+        transform: translate(-50%, -50%) translate(-12vw, -22vh) scale(1.05) rotate(-26deg);
+      }
+      100% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) translate(-58vw, -68vh) scale(1.35) rotate(-40deg);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .sd-inner { padding: 40px 12px 64px; }
+      .sd-message { min-height: 5.2em; font-size: 1rem; }
+      .sd-actions { flex-direction: column; }
+      .sd-btn { width: 100%; justify-content: center; }
     }
   </style>
   <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -117,14 +341,36 @@
       </div></div>
   </nav>
 
-  <main class="not-found">
-    <div class="nf-code">404</div>
-    <div class="nf-decor" id="nfDecor">🧭</div>
-    <p class="nf-message" id="nfMessage"></p>
-    <p class="nf-sub">你来到了宇宙的边界，这里什么都没有。</p>
-    <a href="index.html" class="nf-btn">
-      <i class="fa-solid fa-house"></i> 返回首页
-    </a>
+  <main class="not-found space-drift" id="spaceDrift">
+    <canvas id="spaceCanvas404" aria-hidden="true"></canvas>
+    <div class="sd-glow" aria-hidden="true"></div>
+    <div class="sd-ship" id="sdShip" aria-hidden="true">🚀</div>
+
+    <div class="sd-inner">
+      <p class="sd-kicker">space · drift bottle</p>
+      <div class="nf-code sd-404">404</div>
+
+      <div class="sd-bottle-wrap">
+        <svg class="sd-bottle" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect class="sd-cork" x="44" y="26" width="32" height="16" rx="6"/>
+          <rect class="sd-glass-body" x="43" y="40" width="34" height="22" rx="6"/>
+          <rect class="sd-glass-body" x="30" y="60" width="60" height="72" rx="18"/>
+          <circle class="bstar s1" cx="52" cy="90" r="2.6"/>
+          <circle class="bstar s2" cx="66" cy="100" r="2.2"/>
+          <circle class="bstar s3" cx="58" cy="114" r="1.7"/>
+        </svg>
+      </div>
+
+      <p class="sd-message" id="sdMessage"></p>
+      <p class="sd-source" id="sdSource"></p>
+      <p class="sd-sub">这片星海没有你要找的页面，却漂来了一只装着一句星语的瓶子。</p>
+
+      <div class="sd-actions">
+        <input class="sd-input" id="sdInput" type="text" maxlength="24" placeholder="输入任意字，按下回车…" autocomplete="off" aria-label="漂流信内容">
+        <button class="sd-btn" id="sdGo" type="button"><i class="fa-solid fa-rocket"></i> 启程返航</button>
+      </div>
+      <p class="sd-tip" id="sdTip">输入任意字，或点击按钮——小飞船会载你穿过星海回家</p>
+    </div>
   </main>
 
   <footer>
@@ -143,26 +389,8 @@
     <i class="fa-solid fa-rocket"></i>
   </button>
 
-  <script>
-    (function() {
-      var messages = [
-        '这个页面被风吹走了...',
-        '你好像迷路了，要喝杯茶吗？',
-        '404：柒柒也不知道这页在哪',
-        '该页已开启隐身模式',
-        '你是不是在找不存在的东西？',
-        '这里只有回声...回声...声...',
-        '恭喜你发现了一个黑洞',
-        '页面去流浪了，还没回来',
-        '此处有猫，但没有页面',
-        '访问的页面已人间蒸发'
-      ];
-      var decor = ['🧭', '🗺️', '🌌', '🪐', '☄️', '🎈', '🕳️', '🔮', '🐱', '☕'];
-      var idx = Math.floor(Math.random() * messages.length);
-      document.getElementById('nfMessage').textContent = messages[idx];
-      document.getElementById('nfDecor').textContent = decor[idx];
-    })();
-  </script>
+  <script src="js/space-404.js"></script>
+
   <button class="back-to-top" id="backToTop" title="回到顶部">
     <i class="fa-solid fa-arrow-up"></i>
   </button>

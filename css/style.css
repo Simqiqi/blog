@@ -3109,4 +3109,30 @@ body {
   }
 }
 
+/* ==================== 首页文字粒子魔法（particle-magic.js） ==================== */
+#magicNameText {
+  position: relative;
+}
+
+#magicNameCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 粒子化成功后，隐藏原渐变文字（仅占位），视觉交给粒子 Canvas */
+#magicNameText.magic-active {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  animation: none !important;
+}
+
+
 
