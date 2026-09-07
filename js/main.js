@@ -14,7 +14,7 @@
   // 动态从 posts.json 加载文章列表
   let posts = [];
   try {
-    const resp = await fetch('../posts.json');
+    const resp = await fetch('posts.json');
     if (resp.ok) posts = await resp.json();
   } catch(e) {
     console.warn('无法加载 posts.json, 使用空列表', e);
