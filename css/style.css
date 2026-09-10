@@ -3111,3 +3111,89 @@ body {
 
 
 
+
+
+/* ============================================================
+   阅读尽头彩蛋 · Reading End Easter Egg
+   由 js/reading-easter-egg.js 在文章阅读页动态注入
+   ============================================================ */
+.reading-egg {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translate(-50%, 26px);
+  z-index: 960;
+  max-width: min(86vw, 460px);
+  padding: 18px 28px;
+  border-radius: 18px;
+  text-align: center;
+  background: rgba(10, 12, 26, 0.72);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.75s;
+}
+
+.reading-egg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.6;
+}
+
+.reading-egg.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.reading-egg.is-leaving {
+  transition-duration: 0.45s;
+}
+
+.reading-egg-quote {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.reading-egg-sign {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+[data-theme="light"] .reading-egg {
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 46px rgba(31, 41, 55, 0.16);
+}
+
+@media (max-width: 640px) {
+  .reading-egg {
+    bottom: 104px;
+    max-width: 88vw;
+    padding: 15px 20px;
+  }
+  .reading-egg-quote {
+    font-size: 0.88rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-egg {
+    transform: translate(-50%, 0);
+    transition: opacity 0.4s ease, visibility 0.4s;
+  }
+}
