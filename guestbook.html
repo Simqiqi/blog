@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="来都来了，留句话再走。柒柒会认真看每一条留言。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="柒柒的个人博客">
+  <meta property="og:title" content="留言墙 - 柒柒的个人博客">
+  <meta property="og:description" content="来都来了，留句话再走。柒柒会认真看每一条留言。">
+  <meta property="og:url" content="https://simqiqi.github.io/blog/guestbook.html">
+  <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="留言墙 - 柒柒的个人博客">
+  <meta name="twitter:description" content="来都来了，留句话再走。柒柒会认真看每一条留言。">
+  <meta name="twitter:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
   <title>留言墙 - 柒柒的个人博客</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/widgets.css">
@@ -197,6 +208,15 @@
     .gb-empty i { font-size: 52px; display: block; margin-bottom: 16px; opacity: 0.2; }
     .gb-empty p { font-size: 15px; }
 
+    /* ========== 共享留言区 ========== */
+    .gb-shared { margin-top: 56px; }
+    .gb-shared-hint {
+      text-align: center; font-size: 13px; color: var(--text-muted);
+      margin: -6px 0 20px; line-height: 1.6;
+    }
+    .gb-shared-hint i { color: #6366f1; margin-right: 4px; }
+    .gb-shared .giscus, .gb-shared .giscus-frame { width: 100%; }
+
     /* ========== 移动端适配 ========== */
     @media (max-width: 480px) {
       .guestbook-page { padding: 72px 14px 80px; }
@@ -251,25 +271,7 @@
       <div class="msg-count" id="msgCount">💬 1 条留言</div>
     </div>
 
-    <div class="gb-form" id="gbForm">
-      <div class="form-row">
-        <label>你的名字</label>
-        <input type="text" id="gbNick" placeholder="怎么称呼你？" maxlength="30">
-      </div>
-      <div class="form-row">
-        <label>想说点什么</label>
-        <textarea id="gbMsg" placeholder="友善交流，禁止广告和人身攻击~" maxlength="500" oninput="document.getElementById('charCount').textContent=this.value.length"></textarea>
-        <div class="char-count"><span id="charCount">0</span>/500</div>
-      </div>
-      <div class="submit-row">
-        <button class="submit-btn" id="gbSubmit" onclick="submitMessage()">
-          <i class="fa-solid fa-bottle-water"></i> 扔出瓶子
-        </button>
-        <span class="submit-msg" id="submitMsg"></span>
-      </div>
-    </div>
-
-    <div class="gb-list-header">全部留言</div>
+    <div class="gb-list-header">时光留言</div>
     <div class="gb-list" id="gbList">
       <!-- 硬编码第一条 -->
       <div class="gb-item-wrap"><div class="gb-item-inner">
@@ -284,6 +286,16 @@
         <div class="gb-item-back">🌌<small>点击返回</small></div>
       </div></div>
     </div>
+
+    <!-- 共享留言区（GitHub Discussions 驱动，全访客可见） -->
+    <section class="gb-shared">
+      <div class="gb-list-header">写一条新留言</div>
+      <p class="gb-shared-hint">
+        <i class="fa-brands fa-github"></i>
+        用 GitHub 账号即可留言，所有访客都能看到 · 支持 Markdown 和表情回应
+      </p>
+      <div data-giscus></div>
+    </section>
   </main>
 
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -292,9 +304,7 @@
   <script>
     const REPO = 'Simqiqi/blog';
     const LABEL = 'guestbook';
-    // 安全提示：原内嵌的 GitHub Token 已移除，防止凭据泄露。
-    // 如需恢复留言墙写入功能，请在下方填入具备 Issues 写入权限的受限 Token。
-    const GB_TOKEN = '';
+    // 时光留言区为只读历史（公开 API 读取）；新留言请使用下方共享留言区。
     const AV_CLASSES = ['gb-avatar-c1','gb-avatar-c2','gb-avatar-c3','gb-avatar-c4','gb-avatar-c5','gb-avatar-c6'];
     const BACK_EMOJI = ['🌌','🌊','🏔️','🌸','🎆','🪐','🌈','🍃','🌙','⭐','🔥','💎'];
     const MAX_ITEMS = 6;
@@ -428,53 +438,6 @@
           list.innerHTML = '<div class="gb-empty"><p>加载失败，请刷新试试</p></div>';
         }
       }
-    }
-
-    /* ========== 漂流瓶提交 ========== */
-    async function submitMessage() {
-      const nick = document.getElementById('gbNick').value.trim();
-      const msg = document.getElementById('gbMsg').value.trim();
-      const btn = document.getElementById('gbSubmit');
-      const statusEl = document.getElementById('submitMsg');
-
-      if (!nick) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请填写名字'; return; }
-      if (!msg) { statusEl.className = 'submit-msg error'; statusEl.textContent = '请写点什么吧'; return; }
-
-      // 漂流瓶摇晃动画
-      btn.classList.add('bottle-shake');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-bottle-water"></i> 漂流中...';
-      statusEl.className = 'submit-msg';
-      statusEl.textContent = '瓶子正在漂向远方...';
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `token ${GB_TOKEN}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/vnd.github+json'
-          },
-          body: JSON.stringify({ title: `[留言] ${nick}`, body: msg, labels: [LABEL] })
-        });
-        if (!res.ok) throw new Error('提交失败');
-        const issue = await res.json();
-        await addMessageToDOM(issue);
-        document.getElementById('gbNick').value = '';
-        document.getElementById('gbMsg').value = '';
-        document.getElementById('charCount').textContent = '0';
-        statusEl.className = 'submit-msg success';
-        statusEl.textContent = '瓶子已送达！🎉';
-        // 烟花！
-        fireConfetti();
-        setTimeout(() => fireConfetti(), 300);
-      } catch (e) {
-        statusEl.className = 'submit-msg error';
-        statusEl.textContent = '瓶子碎了，请稍后再试';
-      }
-      btn.classList.remove('bottle-shake');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-bottle-water"></i> 扔出瓶子';
     }
 
     function escapeHtml(str) {

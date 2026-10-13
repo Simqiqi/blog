@@ -4080,6 +4080,33 @@ body {
   opacity: 0.85;
 }
 
+/* ===== 页脚「此刻」状态条 ===== */
+.footer-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+  padding: 4px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.06);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.footer-now.is-on {
+  opacity: 0.9;
+  transform: none;
+}
+
+.footer-now i {
+  color: #6366f1;
+  font-size: 0.68rem;
+}
+
 /* ===== 许愿星空 ===== */
 .wishes-page {
   position: relative;
@@ -4201,6 +4228,41 @@ body {
   color: var(--text-dim);
   margin-top: 16px;
   opacity: 0.8;
+}
+
+/* 星语墙（共享心愿区） */
+.wish-shared {
+  max-width: 720px;
+  margin: 48px auto 0;
+  padding: 0 4px;
+}
+
+.wish-shared-title {
+  text-align: center;
+  font-size: 1.15rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.wish-shared-title i {
+  color: #f59e0b;
+  margin-right: 6px;
+  letter-spacing: 0;
+}
+
+.wish-shared-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.wish-shared .giscus,
+.wish-shared .giscus-frame {
+  width: 100%;
 }
 
 /* 许愿弹窗 */

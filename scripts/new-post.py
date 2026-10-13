@@ -226,6 +226,7 @@ def main():
             .replace("{{DATE}}", date)
             .replace("{{TAGS_TEXT}}", " · ".join(tags) if tags else "随笔")
             .replace("{{SLUG}}", slug)
+            .replace("{{EXCERPT}}", excerpt.replace('"', "&quot;"))
             .replace("{{BODY}}", body_html))
     out_path.write_text(html, encoding="utf-8")
 
