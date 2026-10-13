@@ -1357,19 +1357,40 @@ body, .navbar, .hero-card, .post-card, .moment-inner, .about-card, .thanks-card,
   transform: scale(1.08);
 }
 
-.music-toggle i {
-  font-size: 1.1rem;
-  color: var(--accent);
+.music-toggle .bgm-disc {
+  width: 24px;
+  height: 24px;
+  transform-origin: center center;
   transition: transform 0.3s;
 }
 
-.music-toggle.playing i {
-  animation: musicPulse 1.5s ease-in-out infinite;
+.music-toggle .bgm-disc-outer {
+  fill: rgba(0, 229, 255, 0.14);
+  stroke: var(--accent);
+  stroke-width: 1.3;
 }
 
-@keyframes musicPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+.music-toggle .bgm-disc-groove {
+  fill: none;
+  stroke: var(--accent);
+  stroke-opacity: 0.35;
+  stroke-width: 0.9;
+}
+
+.music-toggle .bgm-disc-label {
+  fill: var(--accent);
+}
+
+.music-toggle .bgm-disc-hole {
+  fill: var(--text);
+}
+
+.music-toggle.playing .bgm-disc {
+  animation: bgmDiscSpin 3.4s linear infinite;
+}
+
+@keyframes bgmDiscSpin {
+  to { transform: rotate(360deg); }
 }
 
 .music-panel {
