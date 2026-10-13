@@ -1,34 +1,50 @@
 [
   {
-    "title": "银河落山岗",
-    "src": "images/gallery/galaxy.jpg",
+    "title": "海面燃烧的云",
+    "src": "images/gallery/clouds.jpg",
     "date": "2026-10-13",
-    "category": "星空",
-    "note": "整片银河，都跌进了山里。",
+    "category": "天空",
+    "note": "晚霞把整条海街都点着了。",
     "type": "image"
   },
   {
-    "title": "黄昏海灯塔",
-    "src": "images/gallery/sunset-sea.jpg",
+    "title": "窝在被子里的伙伴",
+    "src": "images/gallery/plush.jpg",
     "date": "2026-10-13",
-    "category": "晚霞",
-    "note": "海把天烧了，灯塔在等夜色。",
+    "category": "小窝",
+    "note": "床上的小家伙们，陪我读了一半的书。",
     "type": "image"
   },
   {
-    "title": "雨后街角",
-    "src": "images/gallery/rainy-street.jpg",
+    "title": "风从海上来",
+    "src": "images/gallery/sea-portrait.jpg",
     "date": "2026-10-13",
-    "category": "街头",
-    "note": "雨停之后，城市学会了发光。",
+    "category": "人像",
+    "note": "海风吹乱头发的时候，心反而最安静。",
     "type": "image"
   },
   {
-    "title": "林间晨光",
-    "src": "images/gallery/forest-mist.jpg",
+    "title": "夕阳落在肩上",
+    "src": "images/gallery/sunset-girl.jpg",
     "date": "2026-10-13",
-    "category": "森林",
-    "note": "光，是穿过树缝寄来的信。",
+    "category": "人像",
+    "note": "落日把最后一缕光，留在了这条路上。",
+    "type": "image"
+  },
+  {
+    "title": "鲨鱼帽与银杏叶",
+    "src": "images/gallery/leaves-cat.jpg",
+    "date": "2026-10-13",
+    "category": "喵星人",
+    "note": "深秋的雨天，和一只不太高兴的鲨鱼。",
+    "type": "image"
+  },
+  {
+    "title": "睡成一小团",
+    "src": "images/gallery/kitten-sleep.jpg",
+    "date": "2026-10-13",
+    "category": "喵星人",
+    "note": "家里最会享受生活的那一位。",
     "type": "image"
   },
   {
