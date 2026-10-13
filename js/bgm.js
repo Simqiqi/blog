@@ -16,7 +16,7 @@
   // 本地文件：放到仓库 audio/ 目录，写相对路径，如 'audio/bgm.mp3'
   // 外链：填一个允许直链/热链的音频 URL（注意版权与防盗链）
   const BGM_TRACKS = [
-    { name: '嘿嘿', mood: '背景音乐', src: 'audio/bgm.mp3' }
+    { name: '嘿嘿', mood: '背景音乐', src: 'https://simqiqi.github.io/blog/audio/bgm.mp3' }
   ];
   const BGM_DEFAULT_VOLUME = 0.15; // 0~0.5，和 slider 上限一致
   // ===============================
