@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="柒柒的博客留言弹幕墙：把每一条留言变成飘浮的星光。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="柒柒的个人博客">
+  <meta property="og:title" content="留言弹幕墙 - 柒柒的个人博客">
+  <meta property="og:description" content="把每一条留言变成飘浮的星光 ✨">
+  <meta property="og:url" content="https://simqiqi.github.io/blog/danmaku.html">
+  <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="comments-server" content="https://simqiqi-blog.vercel.app">
+  <title>留言弹幕墙 - 柒柒的个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="css/danmaku.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>document.documentElement.style.opacity='1';</script>
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="gallery.html">光影集</a>
+        <a href="review.html">时间胶囊</a>
+        <a href="wishes.html">许愿星空</a>
+        <a href="guestbook.html">留言墙</a>
+        <a href="danmaku.html" class="active">弹幕墙</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span>
+    </div>
+  </nav>
+
+  <div id="dm-root" class="dm-auto"></div>
+
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/danmaku.js"></script>
+</body>
+</html>

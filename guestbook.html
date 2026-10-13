@@ -18,6 +18,7 @@
   <title>留言墙 - 柒柒的个人博客</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="css/danmaku.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     /* ========== 页面布局 ========== */
@@ -218,6 +219,40 @@
     .gb-shared-hint i { color: #6366f1; margin-right: 4px; }
     .gb-shared .giscus, .gb-shared .giscus-frame { width: 100%; }
 
+    /* ========== 弹幕墙入口 CTA ========== */
+    .gb-danmaku-cta {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(180,74,255,0.10));
+      border: 1px solid var(--border); border-radius: 18px;
+      padding: 18px 22px; margin-bottom: 28px; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; flex-wrap: wrap;
+    }
+    .gb-danmaku-cta:hover {
+      transform: translateY(-2px); border-color: #00e5ff;
+      box-shadow: 0 10px 40px rgba(0,229,255,0.12);
+    }
+    .gb-danmaku-cta-text { display: flex; align-items: center; gap: 14px; }
+    .gb-danmaku-cta-text i {
+      font-size: 30px;
+      background: linear-gradient(135deg, #00e5ff, #b44aff);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .gb-danmaku-cta-text strong { display: block; font-size: 15px; color: var(--text); }
+    .gb-danmaku-cta-text span { font-size: 12.5px; color: var(--text-muted); }
+    .gb-danmaku-btn {
+      background: linear-gradient(135deg, #00e5ff, #b44aff); color: #fff; border: none;
+      padding: 11px 22px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,229,255,0.3); white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .gb-danmaku-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(180,74,255,0.4); }
+    .gb-danmaku-btn:active { transform: scale(0.96); }
+    @media (max-width: 560px) {
+      .gb-danmaku-cta { padding: 16px; }
+      .gb-danmaku-cta-text i { font-size: 24px; }
+      .gb-danmaku-btn { width: 100%; }
+    }
+
     /* ========== 移动端适配 ========== */
     @media (max-width: 480px) {
       .guestbook-page { padding: 72px 14px 80px; }
@@ -270,6 +305,18 @@
       </svg>
       <p class="subtitle">来都来了，留句话再走 ✨ 你的每一条留言我都会认真看</p>
       <div class="msg-count" id="msgCount">💬 1 条时光留言</div>
+    </div>
+
+    <!-- 弹幕墙入口 -->
+    <div class="gb-danmaku-cta" id="openDanmaku" role="button" tabindex="0">
+      <div class="gb-danmaku-cta-text">
+        <i class="fa-solid fa-comment-dots"></i>
+        <div>
+          <strong>把留言变成飘浮的星光</strong>
+          <span>点击开启「留言弹幕墙」，让所有悄悄话在夜空里流动 ✨</span>
+        </div>
+      </div>
+      <button class="gb-danmaku-btn" type="button">🎆 开启弹幕墙</button>
     </div>
 
     <div class="gb-list-header">时光留言</div>
@@ -458,6 +505,18 @@
 
   <script src="js/widget.js"></script>
   <script src="js/comments.js"></script>
+  <script src="js/danmaku.js"></script>
+  <script>
+    (function () {
+      var cta = document.getElementById('openDanmaku');
+      if (cta && window.DanmakuWall) {
+        cta.addEventListener('click', function () { window.DanmakuWall.openOverlay(); });
+        cta.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.DanmakuWall.openOverlay(); }
+        });
+      }
+    })();
+  </script>
 
   <script src="js/bgm.js"></script>
 </body>
