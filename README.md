@@ -33,6 +33,7 @@
 
 1. 把照片丢进 `images/gallery/`（影像丢进 `assets/videos/`）
 2. 在 `gallery.json` 里追加一条记录（标题、路径、日期、分类、一句话注释）
+3. 删除照片只需删掉对应文件并从 `gallery.json` 移除该条记录
 
 ## 本地预览
 
