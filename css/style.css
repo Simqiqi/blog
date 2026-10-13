@@ -4265,6 +4265,124 @@ body {
   width: 100%;
 }
 
+/* ===== 匿名留言组件（comments.js） ===== */
+.comments {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.cm-form {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(8px);
+}
+.cm-nick-input,
+.cm-text-input {
+  width: 100%;
+  background: rgba(10, 14, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.cm-nick-input { margin-bottom: 10px; }
+.cm-text-input { min-height: 84px; line-height: 1.6; }
+.cm-nick-input:focus,
+.cm-text-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+}
+.cm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.cm-count {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.cm-send {
+  background: linear-gradient(135deg, #00e5ff, #7c83ff);
+  color: #06121f;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 22px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.cm-send:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0, 229, 255, 0.3); }
+.cm-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.cm-status {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  min-height: 1em;
+  color: var(--text-dim);
+}
+.cm-status.ok { color: #4ade80; }
+.cm-status.err { color: #f87171; }
+.cm-list {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cm-item {
+  display: flex;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.cm-avatar {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #06121f;
+  font-weight: 800;
+  font-size: 1rem;
+}
+.cm-body { flex: 1 1 auto; min-width: 0; }
+.cm-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+.cm-nick { font-weight: 700; color: var(--text); font-size: 0.92rem; }
+.cm-time { font-size: 0.72rem; color: var(--text-dim); }
+.cm-text { font-size: 0.9rem; color: var(--text); line-height: 1.65; word-break: break-word; }
+.cm-empty { text-align: center; color: var(--text-dim); font-size: 0.85rem; padding: 18px; }
+
+/* 让留言墙区域的列表更宽一点 */
+.gb-shared .comments { max-width: 760px; }
+
+[data-theme="light"] .cm-form {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .cm-nick-input,
+[data-theme="light"] .cm-text-input {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1a2233;
+}
+[data-theme="light"] .cm-item {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
 /* 许愿弹窗 */
 .wish-modal {
   position: fixed;

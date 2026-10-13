@@ -10,6 +10,7 @@
   <meta property="og:description" content="每一颗星星都是一句心愿。放一颗自己的星，也看看别人的愿望。">
   <meta property="og:url" content="https://simqiqi.github.io/blog/wishes.html">
   <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="comments-server" content="">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="许愿星空 - 柒柒的个人博客">
   <meta name="twitter:description" content="每一颗星星都是一句心愿。放一颗自己的星，也看看别人的愿望。">
@@ -78,11 +79,11 @@
 
     <p class="wish-note">放出的星只亮在你自己的夜空里；想让心愿被所有人看到，就写在下方的星语墙吧。</p>
 
-    <!-- 星语墙（GitHub Discussions 驱动，全访客共享） -->
+    <!-- 星语墙（匿名留言，无需登录） -->
     <section class="wish-shared">
       <h3 class="wish-shared-title"><i class="fa-solid fa-meteor"></i> 星 语 墙</h3>
-      <p class="wish-shared-hint">这里的每一条心愿，所有路过的旅人都能看见 · 用 GitHub 账号即可写下</p>
-      <div data-giscus></div>
+      <p class="wish-shared-hint">这里的每一条心愿，所有路过的旅人都能看见 · 不用登录，填个昵称（可不填）就能写下</p>
+      <div class="comments" data-page="wishes"></div>
     </section>
   </main>
 
@@ -127,7 +128,7 @@
   <script src="js/now.js"></script>
   <!-- 许愿星空 -->
   <script src="js/wishes.js"></script>
-  <script src="js/giscus-embed.js"></script>
+  <script src="js/comments.js"></script>
 
   <button class="back-to-top" id="backToTop" title="回到顶部">
     <i class="fa-solid fa-arrow-up"></i>

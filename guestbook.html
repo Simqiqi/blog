@@ -10,6 +10,7 @@
   <meta property="og:description" content="来都来了，留句话再走。柒柒会认真看每一条留言。">
   <meta property="og:url" content="https://simqiqi.github.io/blog/guestbook.html">
   <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="comments-server" content="">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="留言墙 - 柒柒的个人博客">
   <meta name="twitter:description" content="来都来了，留句话再走。柒柒会认真看每一条留言。">
@@ -287,14 +288,14 @@
       </div></div>
     </div>
 
-    <!-- 共享留言区（GitHub Discussions 驱动，全访客可见） -->
+    <!-- 共享留言区（匿名留言，无需登录） -->
     <section class="gb-shared">
       <div class="gb-list-header">写一条新留言</div>
       <p class="gb-shared-hint">
-        <i class="fa-brands fa-github"></i>
-        用 GitHub 账号即可留言，所有访客都能看到 · 支持 Markdown 和表情回应
+        <i class="fa-solid fa-feather-pointed"></i>
+        不用登录，填个昵称（可不填）就能留言，所有访客都能看到 · 友善交流哦
       </p>
-      <div data-giscus></div>
+      <div class="comments" data-page="guestbook"></div>
     </section>
   </main>
 
@@ -456,7 +457,7 @@
   </button>
 
   <script src="js/widget.js"></script>
-  <script src="js/giscus-embed.js"></script>
+  <script src="js/comments.js"></script>
 
 </body>
 </html>
