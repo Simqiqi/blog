@@ -1,0 +1,93 @@
+/* ===== 顶部信息带 (模块② 状态+导航+数据 / 模块③ 跑马灯) ===== */
+.topband {
+  position: relative;
+  z-index: 4;
+  background: rgba(10, 12, 24, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* —— 模块③：顶部动态跑马灯 —— */
+.topband-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+  background: linear-gradient(90deg, rgba(0, 229, 255, 0.04), rgba(180, 74, 255, 0.04));
+}
+.topband-marquee-track {
+  display: inline-block;
+  padding: 7px 0;
+  animation: tbMarquee 32s linear infinite;
+  font-size: 13px;
+}
+.tb-mq-item { margin: 0 26px; color: var(--text); }
+.tb-mq-item::before { content: "·"; margin-right: 26px; color: var(--accent); }
+@keyframes tbMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* —— 模块②：状态 + 快捷入口 + 数据胶囊 —— */
+.topband-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.topband-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.topband-status [data-now] { color: var(--accent); }
+.tb-live { display: inline-flex; align-items: center; gap: 6px; }
+.tb-live .fa-location-dot { color: var(--accent2); }
+.tb-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+.topband-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.topband-nav a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--bg-card);
+  transition: all 0.25s;
+}
+.topband-nav a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+.topband-stats { margin-left: auto; display: flex; gap: 18px; }
+.tb-stat { text-align: center; min-width: 54px; }
+.tb-num {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.tb-label { display: block; font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+@media (max-width: 768px) {
+  .topband-inner { gap: 12px; padding: 10px 16px; }
+  .topband-status { width: 100%; }
+  .topband-stats {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+}

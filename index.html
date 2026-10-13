@@ -17,6 +17,7 @@
   <title>柒柒的个人博客</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="css/topband.css">
   <link rel="alternate" type="application/rss+xml" title="柒柒的博客 RSS" href="rss.xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>document.documentElement.style.opacity='1';</script>
@@ -55,6 +56,32 @@
         </div>
       </div></div>
   </nav>
+
+  <!-- ===== 顶部信息带（模块② 状态+导航+数据 / 模块③ 跑马灯） ===== -->
+  <div class="topband" id="topband">
+    <div class="topband-marquee">
+      <div class="topband-marquee-track" id="topbandMarqueeTrack"></div>
+    </div>
+    <div class="topband-inner">
+      <div class="topband-status">
+        <span class="tb-live"><i class="fa-solid fa-location-dot"></i> <span data-now hidden></span></span>
+        <span class="tb-time" id="topbandClock">--:--:--</span>
+      </div>
+      <nav class="topband-nav" aria-label="快捷入口">
+        <a href="blog.html">文章</a>
+        <a href="guestbook.html">留言墙</a>
+        <a href="danmaku.html">弹幕墙</a>
+        <a href="wishes.html">许愿星空</a>
+        <a href="about.html">关于</a>
+      </nav>
+      <div class="topband-stats" id="topbandStats">
+        <div class="tb-stat"><span class="tb-num" id="tbDays">--</span><span class="tb-label">运行天</span></div>
+        <div class="tb-stat"><span class="tb-num" id="tbPosts">--</span><span class="tb-label">篇文章</span></div>
+        <div class="tb-stat"><span class="tb-num" id="tbMsgs">--</span><span class="tb-label">条留言</span></div>
+        <div class="tb-stat"><span class="tb-num" id="tbVisits">--</span><span class="tb-label">总访客</span></div>
+      </div>
+    </div>
+  </div>
 
   <main class="hero">
     <div class="spotlight" id="spotlight"></div>
@@ -296,6 +323,7 @@
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <script src="js/main.js"></script>
   <script src="js/now.js"></script>
+  <script src="js/topband.js"></script>
 
   <button class="back-to-top" id="backToTop" title="回到顶部">
     <i class="fa-solid fa-arrow-up"></i>
