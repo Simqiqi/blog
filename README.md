@@ -61,6 +61,21 @@ excerpt: 一句话摘要      # 可选，默认取第一段
 3. 可选：运行 `python3 scripts/optimize-images.py` 生成 WebP 副本（需 Pillow，约省 60%~85% 体积；不跑也能正常显示）
 4. 删除照片只需删掉对应文件并从 `gallery.json` 移除该条记录
 
+## 匿名留言（Waline）
+
+留言墙与星语墙使用 [Waline](https://waline.js.org/)：访客只需昵称即可留言，无需任何账号。
+
+**首次部署（约 10 分钟，一次性）：**
+
+1. 注册 [LeanCloud 国际版](https://console.leancloud.app/) → 创建应用（开发版免费）
+   → 进入 设置 → 应用凭证，记下 `App ID`、`App Key`、`Master Key`
+2. 打开 [Vercel 一键部署](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwalinejs%2Fwaline%2Ftree%2Fmain%2Fexample)，
+   环境变量填：`LEAN_ID`=App ID、`LEAN_KEY`=App Key、`LEAN_MASTER_KEY`=Master Key
+3. 部署完成得到 `https://xxx.vercel.app` 地址
+4. 把该地址填入 `js/waline-embed.js` 顶部的 `CONFIG.serverURL`，提交推送即可
+
+**管理留言**：浏览器打开 `https://xxx.vercel.app/ui` 注册管理员（首个注册者即管理员）。
+
 ## 本地预览
 
 ```bash
