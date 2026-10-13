@@ -91,6 +91,9 @@ export default async function handler(req, res) {
     let data;
     try { data = JSON.parse(raw); } catch { return send(res, 400, { error: '格式错误' }, origin); }
 
+    // 页面标识由前端放在请求体里（POST 不带查询参数），据此打标签
+    const target = clean(data.page, 120) || 'home';
+
     const ip = req.headers['x-forwarded-for'] || 'unknown';
     if (rateLimited(ip)) return send(res, 429, { error: '太快了，稍等一下' }, origin);
 
@@ -104,9 +107,9 @@ export default async function handler(req, res) {
       const r = await gh(`/repos/${REPO}/issues`, {
         method: 'POST',
         body: JSON.stringify({
-          title: `💬 ${page}`,
+          title: `💬 ${target}`,
           body: JSON.stringify({ nick, text, ua: data.ua || '' }),
-          labels: [LABEL + page]
+          labels: [LABEL + target]
         })
       });
       if (!r.ok) {
