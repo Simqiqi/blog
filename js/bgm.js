@@ -104,7 +104,13 @@
       const p = audio.play();
       if (p && p.catch) {
         p.catch(function () {
-          // 被自动播放策略拦截 —— 等首次用户交互再播
+          // 出声自动播放被浏览器策略拦截：退而求其次用「静音自动播放」，
+          // 保证打开网页即开始播放（UI 显示播放中），首次交互再取消静音出声
+          try {
+            audio.muted = true;
+            const p2 = audio.play();
+            if (p2 && p2.catch) p2.catch(function () {});
+          } catch (e) {}
           armFirstInteraction();
         });
       }
@@ -132,6 +138,7 @@
       armed = true;
       const go = function () {
         if (localStorage.getItem(LS_ENABLED) === '0') return; // 用户关过，不自动开
+        audio.muted = false; // 取消静音，真正出声
         play();
         document.removeEventListener('click', go);
         document.removeEventListener('touchstart', go);
