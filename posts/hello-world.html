@@ -21,6 +21,8 @@
         <a href="../index.html">首页</a>
         <a href="../blog.html">博客</a>
         <a href="../gallery.html">光影集</a>
+        <a href="../review.html">时间胶囊</a>
+        <a href="../wishes.html">许愿星空</a>
         <a href="../guestbook.html">留言墙</a>
         <a href="../about.html">关于</a>
         <a href="../thanks.html">致谢</a>
@@ -38,11 +40,18 @@
       </div></div>
   </nav>
 
-  <article class="article-page">
+  <article class="article-page" data-slug="hello-world">
     <div class="article-date">2026-07-15</div>
     <h1>你好，世界</h1>
     <div class="article-meta">柒柒 · 生活随笔</div>
+    <div class="article-reading" id="articleReading"></div>
     <div class="article-views" id="articleViews"></div>
+
+    <!-- 目录（h2/h3 不少于 2 个时自动生成） -->
+    <aside class="article-toc" id="articleToc" hidden>
+      <div class="toc-title"><i class="fa-solid fa-list-ul"></i> 目录</div>
+      <nav class="toc-list" id="tocList"></nav>
+    </aside>
 
     <div class="article-body">
       <p>
@@ -100,22 +109,13 @@
   </article>
 
   <!-- 上一篇/下一篇导航 -->
-  <nav class="article-nav">
-    <a href="talk-unfinished.html" class="nav-prev">
-      <i class="fa-solid fa-chevron-left nav-icon"></i>
-      <div class="nav-info">
-        <span class="nav-label">上一篇</span>
-        <span class="nav-title">话没说完，也没关系</span>
-      </div>
-    </a>
-    <a href="waiting-for-wind.html" class="nav-next">
-      <div class="nav-info">
-        <span class="nav-label">下一篇</span>
-        <span class="nav-title">我在等、等风、等你来。</span>
-      </div>
-      <i class="fa-solid fa-chevron-right nav-icon"></i>
-    </a>
-  </nav>
+  <nav class="article-nav" id="articleNav"></nav>
+
+  <!-- 相关阅读（js/article.js 按标签自动生成） -->
+  <section class="related-posts" id="relatedPosts" hidden>
+    <h3 class="related-title">相关阅读</h3>
+    <div class="related-list" id="relatedList"></div>
+  </section>
 
     <section class="globe-section">
     <div class="globe-label">VISITORS AROUND THE WORLD</div>
@@ -135,6 +135,7 @@
     <a href="mailto:simqiqi@example.com" class="ft-email" title="邮箱"><i class="fa-solid fa-envelope"></i></a>
   </div>
     <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <p class="footer-stats">本站总访问 <span id="busuanzi_value_site_pv">-</span> 次 · 访客 <span id="busuanzi_value_site_uv">-</span> 人</p>
     <div class="runtime" id="siteRuntime"></div>
   </footer>
 
@@ -148,7 +149,9 @@
     </div>
   </div>
 
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <script src="../js/main.js"></script>
+  <script src="../js/article.js"></script>
   <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
     <i class="fa-solid fa-rocket"></i>
   </button>

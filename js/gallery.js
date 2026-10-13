@@ -57,17 +57,30 @@
 
   /* ---------- 瀑布流 ---------- */
   function renderGrid() {
-    grid.innerHTML = items.map((it, i) => `
+    grid.innerHTML = items.map((it, i) => {
+      const webp = it.type !== 'video' ? it.src.replace(/\.(jpe?g|png)$/i, '.webp') : '';
+      return `
       <figure class="g-card" data-index="${i}" tabindex="0" role="button" aria-label="查看 ${esc(it.title)}">
         ${it.type === 'video'
           ? `<video src="${esc(it.src)}" muted playsinline preload="metadata"></video>
              <span class="g-badge"><i class="fa-solid fa-play"></i> 影像</span>`
-          : `<img src="${esc(it.src)}" alt="${esc(it.title)}" loading="lazy">`}
+          : `<picture>
+               <source srcset="${esc(webp)}" type="image/webp">
+               <img src="${esc(it.src)}" alt="${esc(it.title)}" loading="lazy" class="g-blur-load">
+             </picture>`}
         <figcaption class="g-card-cap">
           <span class="g-card-title">${esc(it.title)}</span>
           <span class="g-card-meta">${esc(it.date)} · ${esc(it.category)}</span>
         </figcaption>
-      </figure>`).join('');
+      </figure>`;
+    }).join('');
+
+    // 模糊占位 → 加载完成后渐变清晰
+    grid.querySelectorAll('.g-blur-load').forEach(img => {
+      const reveal = () => img.classList.add('loaded');
+      if (img.complete && img.naturalWidth > 0) reveal();
+      else img.addEventListener('load', reveal, { once: true });
+    });
 
     grid.addEventListener('click', e => {
       const card = e.target.closest('.g-card');
@@ -103,7 +116,10 @@
     if (it.type === 'video') {
       lbVideo.src = it.src;
     } else {
-      lbImg.src = it.src;
+      // 灯箱同样 webp 优先（浏览器不支持时回退 jpg）
+      const webp = it.src.replace(/\.(jpe?g|png)$/i, '.webp');
+      lbImg.src = webp;
+      lbImg.onerror = () => { lbImg.onerror = null; lbImg.src = it.src; };
       lbImg.alt = it.title;
     }
 
