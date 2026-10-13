@@ -25,6 +25,10 @@
     return;
   }
 
+  // 同步首页「篇文章」统计
+  const postCount = document.getElementById('postCount');
+  if (postCount) postCount.textContent = posts.length;
+
   booksContainer.innerHTML = posts.map((p, i) => `
     <div class="book-item" style="--book-color:${p.color};--book-i:${i};" data-url="${p.url}">
       <div class="book-spine"></div>
