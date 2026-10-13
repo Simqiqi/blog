@@ -92,7 +92,6 @@
   });
 })();
 
-
 /* ==================== 3. 时光隧道时间线 ==================== */
 (function timeTunnel() {
   const tunnel = document.getElementById('timeTunnel');
@@ -172,7 +171,6 @@
     });
   }
 })();
-
 
 /* ==================== 4. 星光手写签名板 ==================== */
 (function starSignCanvas() {
@@ -347,7 +345,6 @@
   draw();
 })();
 
-
 /* ==================== 保留：入场动画 ==================== */
 (function entranceAnimation() {
   const hero = document.querySelector('.hero');
@@ -357,7 +354,6 @@
     hero.classList.add('hero-entrance-active');
   }, 300);
 })();
-
 
 /* ==================== 保留：锦鲤 ==================== */
 (function koiFish() {
@@ -372,7 +368,6 @@
     });
   }
 })();
-
 
 /* ==================== 保留：头像震动 ==================== */
 (function avatarShake() {
@@ -419,7 +414,6 @@
   }
 })();
 
-
 /* ==================== 保留：滚动入场 ==================== */
 (function scrollReveal() {
   const observer = new IntersectionObserver((entries) => {
@@ -439,7 +433,6 @@
   document.querySelectorAll('.scroll-reveal, .reveal').forEach(el => observer.observe(el));
 })();
 
-
 /* ==================== 保留：滚动进度条 ==================== */
 (function progressBar() {
   const bar = document.getElementById('progressBar');
@@ -451,7 +444,6 @@
     bar.style.width = pct + '%';
   });
 })();
-
 
 /* ==================== 保留：回到顶部按钮 ==================== */
 (function backToTop() {
@@ -488,7 +480,6 @@
   if (rocket) rocket.addEventListener('click', scrollTop);
 })();
 
-
 /* ==================== 保留：滚动提示隐藏 ==================== */
 (function scrollHint() {
   const hint = document.querySelector('.scroll-hint');
@@ -498,7 +489,6 @@
   });
 })();
 
-
 /* ==================== 保留：微信二维码弹窗 ==================== */
 function showWechat() {
   document.getElementById('wechatModal').classList.add('active');
@@ -506,7 +496,6 @@ function showWechat() {
 function hideWechat() {
   document.getElementById('wechatModal').classList.remove('active');
 }
-
 
 /* ==================== 保留：打字机效果 ==================== */
 (function typewriter() {
@@ -541,7 +530,6 @@ function hideWechat() {
   tick();
 })();
 
-
 /* ==================== 保留：状态文本 ==================== */
 (function statusText() {
   const el = document.getElementById('statusText');
@@ -554,7 +542,6 @@ function hideWechat() {
     setTimeout(() => { el.textContent = statuses[idx]; el.style.opacity = '1'; }, 350);
   }, 4000);
 })();
-
 
 /* ==================== 保留：实时时钟 ==================== */
 (function liveClock() {
@@ -588,7 +575,6 @@ function hideWechat() {
   setInterval(update, 1000);
 })();
 
-
 /* ==================== 保留：此刻换签 ==================== */
 (function momentCard() {
   const card = document.getElementById('momentCard');
@@ -615,7 +601,6 @@ function hideWechat() {
   });
 })();
 
-
 /* ==================== 保留：在线天数 ==================== */
 (function daysCount() {
   const el = document.getElementById('daysCount');
@@ -624,7 +609,6 @@ function hideWechat() {
   const days = Math.floor((Date.now() - start) / 86400000);
   el.textContent = days;
 })();
-
 
 /* ==================== 保留：网站运行时间 ==================== */
 (function siteRuntime() {
@@ -641,7 +625,6 @@ function hideWechat() {
   update();
   setInterval(update, 60000);
 })();
-
 
 /* ==================== 保留：访客足迹 ==================== */
 (function visitorTrail() {
@@ -660,7 +643,6 @@ function hideWechat() {
     setTimeout(() => { el.textContent = t; el.style.opacity = '0.55'; }, 500);
   }, 8000);
 })();
-
 
 /* ==================== 保留：搜索 ==================== */
 (function searchUI() {
@@ -681,7 +663,6 @@ function hideWechat() {
     }
   });
 })();
-
 
 /* ==================== 保留：主题切换 ==================== */
 (function themeToggle() {
@@ -711,7 +692,6 @@ function hideWechat() {
   }, 1500);
 })();
 
-
 /* ==================== 保留：导航栏 ==================== */
 (function navbar() {
   const navbar = document.querySelector('.navbar');
@@ -720,7 +700,6 @@ function hideWechat() {
     navbar.classList.toggle('scrolled', window.scrollY > 60);
   });
 })();
-
 
 /* ==================== 保留：音乐播放器 ==================== */
 (function musicPlayer() {
@@ -865,7 +844,6 @@ function hideWechat() {
   });
 })();
 
-
 /* ==================== 保留：鼠标光晕 ==================== */
 (function spotlight() {
   const el = document.getElementById('spotlight');
@@ -876,7 +854,6 @@ function hideWechat() {
     el.style.top = e.clientY + 'px';
   });
 })();
-
 
 /* ==================== 保留：3D 卡片倾斜 ==================== */
 (function cardTilt() {
@@ -895,7 +872,6 @@ function hideWechat() {
     });
   });
 })();
-
 
 /* ==================== 保留：粒子背景 ==================== */
 (function bgParticles() {
@@ -1022,7 +998,6 @@ function hideWechat() {
   draw();
 })();
 
-
 /* ==================== 保留：头条跑马灯 ==================== */
 (function marquee() {
   const track = document.querySelector('.marquee-track');
@@ -1034,7 +1009,6 @@ function hideWechat() {
   const html = items.map(t => `<span>${t}</span><span class="marquee-sep">✦</span>`).join('');
   track.innerHTML = html + html;
 })();
-
 
 /* ==================== 保留：导航一言 ==================== */
 (function navMotto() {
@@ -1223,89 +1197,6 @@ function hideWechat() {
   });
 })();
 
-/* ==================== 时间结晶 ==================== */
-(function timeCrystal() {
-  var container = document.createElement('div');
-  container.id = 'timeCrystal';
-  container.style.cssText = 'position:fixed;bottom:90px;right:24px;z-index:9998;width:70px;height:70px;cursor:pointer;transition:opacity 0.5s;';
-  
-  var canvas = document.createElement('canvas');
-  canvas.width = 140; canvas.height = 140;
-  canvas.style.width = '70px'; canvas.style.height = '70px';
-  container.appendChild(canvas);
-  
-  var tooltip = document.createElement('div');
-  tooltip.style.cssText = 'position:absolute;bottom:78px;right:0;background:var(--card-bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
-  container.appendChild(tooltip);
-  
-  container.addEventListener('mouseenter', function(){ tooltip.style.opacity = '1'; });
-  container.addEventListener('mouseleave', function(){ tooltip.style.opacity = '0'; });
-  document.body.appendChild(container);
-
-  var ctx = canvas.getContext('2d');
-  var startTime = Date.now();
-
-  function draw() {
-    var elapsed = (Date.now() - startTime) / 1000; // seconds
-    var mins = Math.floor(elapsed / 60);
-    var secs = Math.floor(elapsed % 60);
-    var hours = Math.floor(mins / 60);
-    mins = mins % 60;
-    var timeStr = hours + 'h ' + mins + 'm ' + secs + 's';
-    tooltip.textContent = '✨ 博客已陪伴 ' + timeStr;
-
-    // 光泽随时间和秒数脉动
-    var pulse = 0.7 + 0.3 * Math.sin(elapsed * 0.8);
-    var ageGlow = Math.min(1, elapsed / 1800); // 30分钟后光泽达到最大
-
-    ctx.clearRect(0, 0, 140, 140);
-    var cx = 70, cy = 70, r = 55;
-
-    // 外光环
-    var outerGlow = ctx.createRadialGradient(cx, cy, r * 0.85, cx, cy, r * 1.2);
-    outerGlow.addColorStop(0, 'rgba(139,92,246,' + (0.3 * pulse * ageGlow) + ')');
-    outerGlow.addColorStop(0.5, 'rgba(99,102,241,' + (0.1 * pulse * ageGlow) + ')');
-    outerGlow.addColorStop(1, 'rgba(99,102,241,0)');
-    ctx.fillStyle = outerGlow;
-    ctx.beginPath(); ctx.arc(cx, cy, r * 1.2, 0, Math.PI * 2); ctx.fill();
-
-    // 水晶球主体
-    var crystal = ctx.createRadialGradient(cx - 12, cy - 15, r * 0.05, cx, cy, r);
-    crystal.addColorStop(0, 'rgba(196,167,255,' + (0.9 + 0.1 * pulse) + ')');
-    crystal.addColorStop(0.35, 'rgba(139,92,246,' + (0.55 + 0.15 * pulse) + ')');
-    crystal.addColorStop(0.7, 'rgba(76,29,149,' + (0.4 + 0.1 * pulse) + ')');
-    crystal.addColorStop(1, 'rgba(46,16,101,0.7)');
-    ctx.fillStyle = crystal;
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-
-    // 高光反射
-    var highlight = ctx.createRadialGradient(cx - 18, cy - 18, r * 0.02, cx - 15, cy - 12, r * 0.5);
-    highlight.addColorStop(0, 'rgba(255,255,255,' + (0.6 * pulse) + ')');
-    highlight.addColorStop(0.3, 'rgba(255,255,255,0.15)');
-    highlight.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = highlight;
-    ctx.beginPath(); ctx.arc(cx - 18, cy - 18, r * 0.55, 0, Math.PI * 2); ctx.fill();
-
-    // 内部星光粒子
-    var t = elapsed * 0.5;
-    for (var i = 0; i < 4; i++) {
-      var angle = t + i * Math.PI / 2;
-      var dist = r * 0.35 + Math.sin(elapsed * 1.3 + i) * r * 0.12;
-      var sx = cx + Math.cos(angle) * dist;
-      var sy = cy + Math.sin(angle) * dist * 0.6;
-      var sparkle = ctx.createRadialGradient(sx, sy, 0, sx, sy, 4);
-      sparkle.addColorStop(0, 'rgba(255,255,255,' + (0.7 * pulse * ageGlow) + ')');
-      sparkle.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = sparkle;
-      ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
-    }
-
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ==================== 月相小挂件 ==================== */
 (function moonPhase() {
   var container = document.createElement('div');
   container.id = 'moonWidget';
