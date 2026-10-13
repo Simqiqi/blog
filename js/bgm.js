@@ -23,6 +23,7 @@
 
   const LS_ENABLED = 'bgm_enabled';
   const LS_VOLUME = 'bgm_volume';
+  const LS_TIME = 'bgm_time';
 
   function buildPlayer() {
     const wrap = document.createElement('div');
@@ -70,7 +71,7 @@
     const tracks = BGM_TRACKS.filter(Boolean);
     const single = tracks.length <= 1;
 
-    function loadTrack(i, autoplay) {
+    function loadTrack(i, autoplay, resumeTime) {
       idx = (i + tracks.length) % tracks.length;
       const t = tracks[idx];
       audio.src = t.src;
@@ -79,6 +80,13 @@
       if (single) {
         if (prevBtn) prevBtn.disabled = true;
         if (nextBtn) nextBtn.disabled = true;
+      }
+      if (resumeTime && resumeTime > 0.5) {
+        const seek = function () {
+          try { audio.currentTime = resumeTime; } catch (e) {}
+          audio.removeEventListener('loadedmetadata', seek);
+        };
+        audio.addEventListener('loadedmetadata', seek);
       }
       if (autoplay) play();
     }
@@ -154,10 +162,24 @@
     audio.addEventListener('play', function () { setPlayingUI(true); });
     audio.addEventListener('pause', function () { setPlayingUI(false); });
 
-    // 初始加载（不自动播，交给下面的自动播放逻辑）
-    loadTrack(0, false);
+    // 跨页续播：把进度记下来，离开页面前再补存一次最新位置
+    let lastSave = 0;
+    audio.addEventListener('timeupdate', function () {
+      const now = Date.now();
+      if (now - lastSave > 2000) {
+        lastSave = now;
+        try { localStorage.setItem(LS_TIME, String(audio.currentTime)); } catch (e) {}
+      }
+    });
+    window.addEventListener('beforeunload', function () {
+      try { localStorage.setItem(LS_TIME, String(audio.currentTime)); } catch (e) {}
+    });
 
-    // 自动播放：默认开启状态才尝试
+    // 初始加载：有上次进度则从断点续播，而非从头
+    const savedTime = parseFloat(localStorage.getItem(LS_TIME) || '0') || 0;
+    loadTrack(0, false, savedTime > 0.5 ? savedTime : 0);
+
+    // 自动播放：默认开启状态才尝试（会从断点处继续）
     const enabled = localStorage.getItem(LS_ENABLED);
     if (enabled !== '0') {
       play(); // 若被拦截，play() 内部会挂首次交互回退
