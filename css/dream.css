@@ -1,12 +1,12 @@
 /* ========== 我的梦：左地图 / 右卡片 两栏布局 ========== */
 .dream-cols {
   display: flex;
-  gap: 28px;
+  gap: 30px;
   align-items: flex-start;
   margin-top: 6px;
 }
 .dream-map-col {
-  flex: 0 0 47%;
+  flex: 0 0 56%;
   position: sticky;
   top: 92px;
 }
@@ -22,7 +22,7 @@
     radial-gradient(120% 90% at 50% 0%, rgba(56,63,80,0.35), rgba(20,23,30,0.55));
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 18px 16px 14px;
+  padding: 22px 18px 16px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0,0,0,0.25);
 }
@@ -47,6 +47,22 @@
   transition: fill 0.3s ease;
 }
 .china-map-wrap .province:hover { fill: #4b5570; }
+
+/* 已点亮的足迹省份：霓虹发光 */
+.china-map-wrap .province.lit {
+  fill: url(#litGrad);
+  stroke: #e6fbff;
+  stroke-width: 0.9;
+  filter: drop-shadow(0 0 5px rgba(34,211,238,0.85)) drop-shadow(0 0 9px rgba(124,58,237,0.45));
+  animation: litPulse 2.6s ease-in-out infinite;
+}
+.china-map-wrap .province.lit:hover { fill: #5ef0ff; }
+@keyframes litPulse {
+  0%, 100% { opacity: 0.92; }
+  50% { opacity: 1; }
+}
+/* 点亮省份的线性渐变（青→紫，呼应霓虹风） */
+.china-map-wrap .map-defs { position: absolute; width: 0; height: 0; }
 
 /* 国界轮廓（静止淡描边） */
 .china-map-wrap .map-outline {

@@ -14,12 +14,37 @@
     svg.setAttribute('viewBox', data.viewBox || '0 0 1000 1000');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-    // 省份（灰色填充）
-    data.provinces.forEach(function (d) {
-      if (!d) return;
+    // 点亮省份的渐变（青→紫）
+    var defs = document.createElementNS(svgNS, 'defs');
+    var grad = document.createElementNS(svgNS, 'linearGradient');
+    grad.setAttribute('id', 'litGrad');
+    grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+    grad.setAttribute('x2', '1'); grad.setAttribute('y2', '1');
+    var s1 = document.createElementNS(svgNS, 'stop');
+    s1.setAttribute('offset', '0%'); s1.setAttribute('stop-color', '#22d3ee');
+    var s2 = document.createElementNS(svgNS, 'stop');
+    s2.setAttribute('offset', '100%'); s2.setAttribute('stop-color', '#a855f7');
+    grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad);
+    svg.appendChild(defs);
+
+    // 已点亮的足迹省份（DataV 官方全称）
+    var LIT = {
+      '宁夏回族自治区': '宁夏', '北京市': '北京', '陕西省': '陕西', '上海市': '上海',
+      '浙江省': '浙江', '广东省': '广东', '香港特别行政区': '香港', '福建省': '福建',
+      '湖南省': '湖南', '湖北省': '湖北', '甘肃省': '甘肃'
+    };
+
+    // 省份：未点亮为灰色，已点亮为霓虹发光
+    data.provinces.forEach(function (pr) {
+      if (!pr || !pr.d) return;
+      var lit = LIT.hasOwnProperty(pr.name);
       var p = document.createElementNS(svgNS, 'path');
-      p.setAttribute('class', 'province');
-      p.setAttribute('d', d);
+      p.setAttribute('class', 'province' + (lit ? ' lit' : ''));
+      p.setAttribute('d', pr.d);
+      // hover 显示省名（含别名）
+      var title = document.createElementNS(svgNS, 'title');
+      title.textContent = lit ? (pr.name + '（我的足迹 ✦ ' + LIT[pr.name] + '）') : pr.name;
+      p.appendChild(title);
       svg.appendChild(p);
     });
 
