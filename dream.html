@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="有些梦很小，有些梦很大。柒柒把那些还没熄灭的，轻轻收在这里。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="柒柒的个人博客">
+  <meta property="og:title" content="梦想 - 柒柒的个人博客">
+  <meta property="og:description" content="有些梦很小，有些梦很大。柒柒把那些还没熄灭的，轻轻收在这里。">
+  <meta property="og:url" content="https://simqiqi.github.io/blog/dream.html">
+  <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="梦想 - 柒柒的个人博客">
+  <meta name="twitter:description" content="有些梦很小，有些梦很大。柒柒把那些还没熄灭的，轻轻收在这里。">
+  <meta name="twitter:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <title>梦想 - 柒柒的个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ========== 页面布局 ========== */
+    .guestbook-page { max-width: 680px; margin: 0 auto; padding: 80px 20px 100px; overflow-x: hidden; }
+
+    /* ========== SVG 手写体标题动画 ========== */
+    .gb-hero { text-align: center; margin-bottom: 36px; }
+    .gb-hero .title-svg { width: 180px; height: 52px; display: block; margin: 0 auto 10px; }
+    .gb-hero .title-svg text {
+      font-size: 36px; font-weight: 900; fill: none;
+      stroke: url(#dreamGrad); stroke-width: 2;
+      stroke-dasharray: 300; stroke-dashoffset: 300;
+      animation: handwrite 2s ease-out forwards;
+    }
+    @keyframes handwrite { to { stroke-dashoffset: 0; } }
+    .gb-hero .title-svg .fill-layer {
+      fill: url(#dreamGrad); stroke: none;
+      animation: fillIn 0.6s ease-out 1.8s forwards; opacity: 0;
+    }
+    @keyframes fillIn { to { opacity: 1; } }
+    .gb-hero .subtitle { color: var(--text-muted); font-size: 14px; line-height: 1.7; max-width: 520px; margin: 0 auto; }
+    .gb-hero .dream-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(139,92,246,0.1); color: #a78bfa;
+      padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      margin-top: 14px;
+    }
+
+    /* ========== 引言 ========== */
+    .dream-intro {
+      background: var(--card-bg); border-radius: 20px; padding: 24px 26px;
+      margin-bottom: 40px; border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(139,92,246,0.06);
+      position: relative; overflow: hidden; color: var(--text-secondary);
+      font-size: 15px; line-height: 1.9;
+    }
+    .dream-intro::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #8b5cf6, #6366f1, #22d3ee);
+    }
+    .dream-intro i { color: #a78bfa; }
+
+    /* ========== 卡片列表 ========== */
+    .gb-list-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+      font-size: 16px; font-weight: 700; color: var(--text-secondary);
+    }
+    .gb-list-header::before, .gb-list-header::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+    .gb-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .gb-item-wrap { perspective: 800px; animation: gbFadeIn 0.4s ease-out both; }
+    .gb-item-wrap:nth-child(odd) .gb-item-front { border-radius: 16px 16px 16px 4px; }
+    .gb-item-wrap:nth-child(even) .gb-item-front { border-radius: 16px 16px 4px 16px; }
+    .gb-item-wrap:nth-child(1) { animation-delay: 0.05s; }
+    .gb-item-wrap:nth-child(2) { animation-delay: 0.1s; }
+    .gb-item-wrap:nth-child(3) { animation-delay: 0.15s; }
+    @keyframes gbFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .gb-item-front {
+      padding: 20px; position: relative;
+      border-radius: 16px; border: 1px solid var(--border);
+      background: var(--card-bg);
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .gb-item-wrap:hover .gb-item-front {
+      border-color: #8b5cf6; transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(139,92,246,0.08);
+    }
+
+    .gb-item-front .gb-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .gb-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(139,92,246,0.2);
+    }
+    .gb-avatar-c1 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .gb-avatar-c2 { background: linear-gradient(135deg, #6366f1, #818cf8); }
+    .gb-avatar-c3 { background: linear-gradient(135deg, #22d3ee, #38bdf8); }
+    .gb-avatar-c4 { background: linear-gradient(135deg, #f0abfc, #c084fc); }
+    .gb-avatar-c5 { background: linear-gradient(135deg, #a78bfa, #7c83ff); }
+    .gb-avatar-c6 { background: linear-gradient(135deg, #60a5fa, #818cf8); }
+    .gb-name { font-weight: 700; font-size: 15px; color: var(--text); }
+    .gb-time { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .gb-body {
+      font-size: 15px; line-height: 1.75; color: var(--text);
+      margin-left: 4px; word-break: break-word; min-height: 1.5em;
+    }
+
+    .dream-hint { text-align: center; font-size: 12.5px; color: var(--text-muted); margin-top: 28px; line-height: 1.7; }
+    .dream-hint i { color: #a78bfa; margin-right: 4px; }
+
+    /* ========== 移动端适配 ========== */
+    @media (max-width: 480px) {
+      .guestbook-page { padding: 72px 14px 80px; }
+      .gb-hero .title-svg { width: 150px; height: 44px; }
+      .dream-intro { padding: 20px 16px; border-radius: 18px; }
+      .gb-item-front { padding: 16px 14px; }
+      .gb-body { font-size: 14px; }
+    }
+  </style>
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="gallery.html">光影集</a>
+        <a href="review.html">时间胶囊</a>
+        <a href="wishes.html">许愿星空</a>
+        <a href="guestbook.html">留言墙</a>
+        <a href="dream.html" class="active">梦想</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+      </div>
+      <span class="nav-clock" id="navClock"></span></div>
+  </nav>
+
+  <main class="guestbook-page">
+    <div class="gb-hero">
+      <svg class="title-svg" viewBox="0 0 180 52">
+        <defs>
+          <linearGradient id="dreamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8b5cf6"/>
+            <stop offset="50%" stop-color="#6366f1"/>
+            <stop offset="100%" stop-color="#22d3ee"/>
+          </linearGradient>
+        </defs>
+        <text x="50%" y="40" text-anchor="middle" dominant-baseline="middle">梦想</text>
+        <text class="fill-layer" x="50%" y="40" text-anchor="middle" dominant-baseline="middle">梦想</text>
+      </svg>
+      <p class="subtitle">有些梦很小，小到只是一顿热乎的晚饭；有些梦很大，大到要去很远的地方看看。把那些还没熄灭的，轻轻收在这里 🌙</p>
+      <div class="dream-badge">✨ 一些还没说出口的梦</div>
+    </div>
+
+    <div class="dream-intro">
+      <i class="fa-solid fa-quote-left"></i>
+      一直觉得，「梦想」这两个字不该被说得太重。它可以是很轻的东西——某个想再去一次的便利店、一句想对谁说的话、一个明年要完成的微小的约定。这里收着的，是我还愿意相信会成真的那些。如果你也有，欢迎去 <a href="guestbook.html" style="color:#a78bfa;text-decoration:underline;text-underline-offset:2px">留言墙</a> 悄悄告诉我。
+    </div>
+
+    <div class="gb-list-header">我的梦</div>
+    <div class="gb-list" id="dreamList">
+      <div class="gb-item-wrap"><div class="gb-item-front">
+        <div class="gb-header">
+          <div class="gb-avatar gb-avatar-c1">柒</div>
+          <span class="gb-name">柒柒</span>
+          <span class="gb-time">一直都在</span>
+        </div>
+        <div class="gb-body">想去一次真正的雪国，看屋檐挂满冰凌，脚踩进雪里咯吱响，呼出的白气像小小的一朵云。</div>
+      </div></div>
+
+      <div class="gb-item-wrap"><div class="gb-item-front">
+        <div class="gb-header">
+          <div class="gb-avatar gb-avatar-c3">柒</div>
+          <span class="gb-name">柒柒</span>
+          <span class="gb-time">一直都在</span>
+        </div>
+        <div class="gb-body">希望有一天能写出那样的句子——在某人深夜睡不着时，被轻轻地、不动声色地接住。</div>
+      </div></div>
+
+      <div class="gb-item-wrap"><div class="gb-item-front">
+        <div class="gb-header">
+          <div class="gb-avatar gb-avatar-c2">柒</div>
+          <span class="gb-name">柒柒</span>
+          <span class="gb-time">一直都在</span>
+        </div>
+        <div class="gb-body">攒够钱，带爸妈看一次海。他们这半辈子忙着把我托起来，还没好好吹过咸咸的风。</div>
+      </div></div>
+    </div>
+
+    <p class="dream-hint">
+      <i class="fa-solid fa-pen-ruler"></i>
+      上面这些只是示例卡片，你可以随时在 <code>dream.html</code> 里换成自己的梦 ✍️
+    </p>
+  </main>
+
+  <button class="back-to-top" id="backToTop" title="回到顶部">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
+    <i class="fa-solid fa-rocket"></i>
+  </button>
+
+  <script src="js/widget.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/bgm.js"></script>
+</body>
+</html>
