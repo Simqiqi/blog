@@ -961,7 +961,39 @@ footer {
   font-size: 1rem;
   line-height: 1.9;
   color: #c0c0cc;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", "STSong", serif;
+  letter-spacing: 0.01em;
 }
+
+/* ===== 文章点赞 / 评论区 强化 ===== */
+.article-page .article-like .like-btn.liked {
+  color: #ff5e8a;
+  border-color: rgba(255, 94, 138, 0.5);
+}
+.article-page .article-like .like-btn.liked i {
+  animation: likePop 0.4s ease;
+}
+@keyframes likePop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+.comments-section {
+  margin-top: 56px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.comments-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text, #d4d4dc);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.comments-title i { color: var(--accent, #00e5ff); }
 
 .article-page .article-body p {
   margin-bottom: 20px;

@@ -1290,3 +1290,41 @@ function hideWechat() {
 
 /* ==================== 页面淡入 ==================== */
 document.documentElement.style.opacity = '1';
+
+/* ==================== PWA + 站点结构化数据 ==================== */
+(function pwaAndSeo() {
+  // 站点级 JSON-LD（WebSite + Person）
+  try {
+    var siteJson = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': '柒柒的个人博客',
+      'url': 'https://simqiqi.github.io/blog/',
+      'description': '记录生活、思考与热爱。',
+      'author': { '@type': 'Person', 'name': '柒柒', 'url': 'https://simqiqi.github.io/blog/' }
+    };
+    var s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify(siteJson);
+    document.head.appendChild(s);
+  } catch (e) {}
+
+  // PWA：manifest 链接 + 主题色 + Service Worker 注册（仅在支持时，线上 /blog/ 路径生效）
+  try {
+    var ml = document.createElement('link');
+    ml.rel = 'manifest';
+    ml.href = '/blog/manifest.webmanifest';
+    document.head.appendChild(ml);
+
+    var tm = document.createElement('meta');
+    tm.name = 'theme-color';
+    tm.content = '#00e5ff';
+    document.head.appendChild(tm);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/blog/sw.js', { scope: '/blog/' }).catch(function () {});
+      });
+    }
+  } catch (e) {}
+})();

@@ -129,3 +129,95 @@
     }
   })();
 })();
+
+/* ===== 以下为文章页强化功能（点赞 / 结构化数据 / 独立评论） ===== */
+
+/* ---------- 点赞 / 喜欢（本地存储，无需后端） ---------- */
+(function likePost() {
+  var btn = document.getElementById('likeBtn');
+  var countEl = document.getElementById('likeCount');
+  if (!btn || !countEl) return;
+  var article = document.querySelector('.article-page');
+  var slug = (article && article.getAttribute('data-slug')) || location.pathname;
+  var keyLiked = 'like:' + slug + ':liked';
+  var keyCount = 'like:' + slug + ':count';
+  var liked = localStorage.getItem(keyLiked) === '1';
+  var count = parseInt(localStorage.getItem(keyCount) || '0', 10);
+
+  function render() {
+    countEl.textContent = count;
+    btn.classList.toggle('liked', liked);
+    var span = btn.querySelector('span');
+    if (span) span.textContent = liked ? '已喜欢' : '喜欢';
+  }
+  render();
+
+  btn.addEventListener('click', function () {
+    if (liked) { liked = false; count = Math.max(0, count - 1); }
+    else { liked = true; count += 1; }
+    localStorage.setItem(keyLiked, liked ? '1' : '0');
+    localStorage.setItem(keyCount, String(count));
+    render();
+  });
+})();
+
+/* ---------- 文章级结构化数据（JSON-LD） ---------- */
+(function articleJsonLd() {
+  var article = document.querySelector('.article-page');
+  if (!article) return;
+  var h1 = document.querySelector('.article-page h1');
+  var dateEl = document.querySelector('.article-date');
+  var descEl = document.querySelector('meta[name="description"]');
+  var data = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': h1 ? h1.textContent.trim() : document.title,
+    'datePublished': dateEl ? dateEl.textContent.trim() : '',
+    'dateModified': dateEl ? dateEl.textContent.trim() : '',
+    'author': { '@type': 'Person', 'name': '柒柒' },
+    'description': descEl ? (descEl.getAttribute('content') || '') : '',
+    'url': location.href,
+    'publisher': { '@type': 'Organization', 'name': '柒柒的个人博客' }
+  };
+  var s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.textContent = JSON.stringify(data);
+  document.head.appendChild(s);
+})();
+
+/* ---------- 每篇文章独立评论区（复用 GitHub Issues 后端） ---------- */
+(function injectComments() {
+  var article = document.querySelector('.article-page');
+  if (!article) return;
+  if (document.querySelector('.comments')) return; // 已存在则不重复
+
+  var slug = (article.getAttribute('data-slug')) ||
+             location.pathname.split('/').pop().replace(/\.html$/, '');
+
+  // 文章页可能缺失 comments-server meta，补上（指向 Vercel 后端）
+  if (!document.querySelector('meta[name="comments-server"]')) {
+    var meta = document.createElement('meta');
+    meta.name = 'comments-server';
+    meta.content = 'https://simqiqi-blog.vercel.app';
+    document.head.appendChild(meta);
+  }
+
+  // 评论区容器：插在「相关阅读」之后
+  var box = document.createElement('section');
+  box.className = 'comments-section';
+  box.innerHTML = '<h3 class="comments-title"><i class="fa-regular fa-comments"></i> 这篇文章的留言</h3>' +
+                  '<div class="comments" data-page="post:' + slug + '"></div>';
+  var related = document.getElementById('relatedPosts');
+  if (related && related.parentNode) {
+    related.parentNode.insertBefore(box, related.nextSibling);
+  } else {
+    article.parentNode.insertBefore(box, article.nextSibling);
+  }
+
+  // 懒加载评论脚本（文章页默认未引入 comments.js）
+  if (!document.querySelector('script[src*="comments.js"]')) {
+    var sc = document.createElement('script');
+    sc.src = '../js/comments.js';
+    document.body.appendChild(sc);
+  }
+})();
