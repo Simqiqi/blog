@@ -29,10 +29,9 @@
 
   const LS_ENABLED = 'bgm_enabled';
   const LS_VOLUME = 'bgm_volume';
-  // 当前会话正在播放的曲目下标与续播位置（用 sessionStorage：
-  // 同一标签页内翻页保持同一首并续播；关掉标签页再进站点 = 重新随机一首）
-  const SS_IDX = 'bgm_idx';
-  const SS_TIME = 'bgm_time';
+  const LS_LAST = 'bgm_last_idx';   // 上次退出前播放的曲目（localStorage，跨会话保留）
+  const SS_IDX = 'bgm_idx';         // 当前标签页曲目（sessionStorage，翻页/刷新续播同一首）
+  const SS_TIME = 'bgm_time';       // 当前标签页续播进度
 
   function buildPlayer() {
     const wrap = document.createElement('div');
@@ -83,6 +82,7 @@
     function loadTrack(i, autoplay, resumeTime) {
       idx = (i + tracks.length) % tracks.length;
       try { sessionStorage.setItem(SS_IDX, String(idx)); } catch (e) {}
+      try { localStorage.setItem(LS_LAST, String(idx)); } catch (e) {}
       const t = tracks[idx];
       audio.src = t.src;
       if (nameEl) nameEl.textContent = t.name || '背景音乐';
@@ -192,17 +192,27 @@
       try { sessionStorage.setItem(SS_TIME, String(audio.currentTime)); } catch (e) {}
     });
 
-    // 初始加载：同一会话内翻页续播同一首；新开标签页（每次进入站点）则随机挑一首
-    let startIdx;
+    // 初始加载：
+    //  - 同标签页内翻页 / 刷新：sessionStorage 有记录 → 续播同一首并续播进度
+    //  - 退出博客后重新进入（新标签页）：sessionStorage 为空 → 随机挑一首，
+    //    且刻意避开上一次退出前播放的曲目（localStorage 记录），保证「重进换新歌」
+    let startIdx, resumeTime = 0;
     try {
       const s = sessionStorage.getItem(SS_IDX);
-      startIdx = (s !== null && tracks[+s]) ? +s : Math.floor(Math.random() * tracks.length);
+      if (s !== null && tracks[+s]) {
+        startIdx = +s;
+        resumeTime = parseFloat(sessionStorage.getItem(SS_TIME) || '0') || 0;
+      } else {
+        const last = parseInt(localStorage.getItem(LS_LAST) || '-1', 10);
+        let r;
+        do { r = Math.floor(Math.random() * tracks.length); }
+        while (tracks.length > 1 && r === last);
+        startIdx = r;
+      }
     } catch (e) {
       startIdx = Math.floor(Math.random() * tracks.length);
     }
-    let savedTime = 0;
-    try { savedTime = parseFloat(sessionStorage.getItem(SS_TIME) || '0') || 0; } catch (e) {}
-    loadTrack(startIdx, false, savedTime > 0.5 ? savedTime : 0);
+    loadTrack(startIdx, false, resumeTime > 0.5 ? resumeTime : 0);
 
     // 自动播放：默认开启状态才尝试（会从断点处继续）
     const enabled = localStorage.getItem(LS_ENABLED);
