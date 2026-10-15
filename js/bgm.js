@@ -12,18 +12,23 @@
 (function () {
   'use strict';
 
-  // ===== 配置：在这里改音频源 =====
+  // ===== 配置：在这里改音频源 / 增删曲目 =====
   // 本地文件：放到仓库 audio/ 目录，写相对路径，如 'audio/bgm.mp3'
   // 外链：填一个允许直链/热链的音频 URL（注意版权与防盗链）
+  // 想加歌：往数组里再 push 一项即可；每次进入站点（新开标签页）会随机挑一首播放。
   const BGM_TRACKS = [
     { name: '嘿嘿', mood: '背景音乐', src: 'https://simqiqi.github.io/blog/audio/bgm.mp3' }
+    // 示例：, { name: '歌曲名', mood: '心情描述', src: 'audio/xxx.mp3' }
   ];
   const BGM_DEFAULT_VOLUME = 0.15; // 0~0.5，和 slider 上限一致
   // ===============================
 
   const LS_ENABLED = 'bgm_enabled';
   const LS_VOLUME = 'bgm_volume';
-  const LS_TIME = 'bgm_time';
+  // 当前会话正在播放的曲目下标与续播位置（用 sessionStorage：
+  // 同一标签页内翻页保持同一首并续播；关掉标签页再进站点 = 重新随机一首）
+  const SS_IDX = 'bgm_idx';
+  const SS_TIME = 'bgm_time';
 
   function buildPlayer() {
     const wrap = document.createElement('div');
@@ -73,6 +78,7 @@
 
     function loadTrack(i, autoplay, resumeTime) {
       idx = (i + tracks.length) % tracks.length;
+      try { sessionStorage.setItem(SS_IDX, String(idx)); } catch (e) {}
       const t = tracks[idx];
       audio.src = t.src;
       if (nameEl) nameEl.textContent = t.name || '背景音乐';
@@ -175,16 +181,24 @@
       const now = Date.now();
       if (now - lastSave > 2000) {
         lastSave = now;
-        try { localStorage.setItem(LS_TIME, String(audio.currentTime)); } catch (e) {}
+        try { sessionStorage.setItem(SS_TIME, String(audio.currentTime)); } catch (e) {}
       }
     });
     window.addEventListener('beforeunload', function () {
-      try { localStorage.setItem(LS_TIME, String(audio.currentTime)); } catch (e) {}
+      try { sessionStorage.setItem(SS_TIME, String(audio.currentTime)); } catch (e) {}
     });
 
-    // 初始加载：有上次进度则从断点续播，而非从头
-    const savedTime = parseFloat(localStorage.getItem(LS_TIME) || '0') || 0;
-    loadTrack(0, false, savedTime > 0.5 ? savedTime : 0);
+    // 初始加载：同一会话内翻页续播同一首；新开标签页（每次进入站点）则随机挑一首
+    let startIdx;
+    try {
+      const s = sessionStorage.getItem(SS_IDX);
+      startIdx = (s !== null && tracks[+s]) ? +s : Math.floor(Math.random() * tracks.length);
+    } catch (e) {
+      startIdx = Math.floor(Math.random() * tracks.length);
+    }
+    let savedTime = 0;
+    try { savedTime = parseFloat(sessionStorage.getItem(SS_TIME) || '0') || 0; } catch (e) {}
+    loadTrack(startIdx, false, savedTime > 0.5 ? savedTime : 0);
 
     // 自动播放：默认开启状态才尝试（会从断点处继续）
     const enabled = localStorage.getItem(LS_ENABLED);
