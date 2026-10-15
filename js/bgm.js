@@ -17,8 +17,12 @@
   // 外链：填一个允许直链/热链的音频 URL（注意版权与防盗链）
   // 想加歌：往数组里再 push 一项即可；每次进入站点（新开标签页）会随机挑一首播放。
   const BGM_TRACKS = [
-    { name: '嘿嘿', mood: '背景音乐', src: 'https://simqiqi.github.io/blog/audio/bgm.mp3' }
-    // 示例：, { name: '歌曲名', mood: '心情描述', src: 'audio/xxx.mp3' }
+    { name: '爱情讯息', mood: '在电波里悄悄心动', src: 'https://simqiqi.github.io/blog/audio/aiqing-xunxi.mp3' },
+    { name: '跳楼机', mood: '坐上心跳的过山车', src: 'https://simqiqi.github.io/blog/audio/tiaolou-ji.mp3' },
+    { name: '那个女孩', mood: '藏在回忆里的侧脸', src: 'https://simqiqi.github.io/blog/audio/nage-nvhai.mp3' },
+    { name: '好久不见', mood: '时光里的老朋友', src: 'https://simqiqi.github.io/blog/audio/haojiu-bujian.mp3' },
+    { name: '若是月亮还没来', mood: '等夜色给的温柔', src: 'https://simqiqi.github.io/blog/audio/ruguo-yueliang.mp3' }
+    // 想加歌：往数组里再 push 一项即可；每次进入站点（新开标签页）会随机挑一首播放。
   ];
   const BGM_DEFAULT_VOLUME = 0.15; // 0~0.5，和 slider 上限一致
   // ===============================
