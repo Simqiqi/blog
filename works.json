@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Echo云音乐",
+    "desc": "macOS 上原生的网易云音乐桌面客户端，Go 绘制界面、不用 WebView；液态玻璃、黑胶唱机、逐字歌词与听歌周报。",
+    "url": "https://simqiqiecho.dpdns.org",
+    "source": "https://github.com/Simqiqi/simqiqi-music",
+    "icon": "fa-solid fa-compact-disc",
+    "color": "#ff5a7a",
+    "tags": ["Go", "macOS", "桌面客户端", "网易云音乐", "液态玻璃"],
+    "category": "桌面应用",
+    "status": "online",
+    "year": "2026",
+    "featured": true
+  },
+  {
+    "name": "星空的梦想",
+    "desc": "一个会慢慢长大的宇宙网页，先把太阳系搬进浏览器：行星沿轨道运行，边看边读实时科普。",
+    "url": "https://simqiqi.github.io/solar-system/",
+    "source": "https://github.com/Simqiqi/solar-system",
+    "icon": "fa-solid fa-sun",
+    "color": "#7a8cff",
+    "tags": ["Three.js", "WebGL", "Canvas", "交互科普"],
+    "category": "Web 应用",
+    "status": "online",
+    "year": "2026"
+  }
+]

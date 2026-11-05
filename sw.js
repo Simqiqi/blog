@@ -2,14 +2,18 @@
  * 策略：导航 network-first（带回退到缓存首页），静态资源 cache-first。
  * 注意：本文件位于 /blog/ 子路径，scope 已固定为 /blog/。
  */
-const CACHE = 'qigi-blog-v1';
+const CACHE = 'qigi-blog-v3';
 const PRECACHE = [
   '/blog/',
   '/blog/index.html',
+  '/blog/works.html',
   '/blog/css/style.css',
   '/blog/css/widgets.css',
+  '/blog/css/works.css',
   '/blog/js/main.js',
   '/blog/js/article.js',
+  '/blog/js/works.js',
+  '/blog/js/now.js',
   '/blog/manifest.webmanifest'
 ];
 
@@ -44,6 +48,20 @@ self.addEventListener('fetch', (event) => {
           return res;
         })
         .catch(() => caches.match(req).then((r) => r || caches.match('/blog/index.html')))
+    );
+    return;
+  }
+
+  // 作品数据：始终优先取网络，否则新增作品会被旧缓存挡住
+  if (url.pathname.endsWith('/works.json')) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy));
+        }
+        return res;
+      }).catch(() => caches.match(req))
     );
     return;
   }

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="柒柒的作品集：做过的网站、小工具和还在折腾的实验项目，点开就能去逛逛。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="柒柒的个人博客">
+  <meta property="og:title" content="我的作品 - 柒柒的个人博客">
+  <meta property="og:description" content="柒柒的作品集：做过的网站、小工具和还在折腾的实验项目。">
+  <meta property="og:url" content="https://simqiqi.github.io/blog/works.html">
+  <meta property="og:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="我的作品 - 柒柒的个人博客">
+  <meta name="twitter:description" content="柒柒的作品集：做过的网站、小工具和还在折腾的实验项目。">
+  <meta name="twitter:image" content="https://simqiqi.github.io/blog/images/gallery/clouds.jpg">
+  <title>我的作品 | 柒柒的个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/widgets.css">
+  <link rel="stylesheet" href="css/works.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body class="page-works">
+  <div class="progress-bar" id="progressBar"></div>
+  <canvas id="particles"></canvas>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">柒柒<span class="logo-dot">.</span></a>
+      <span class="nav-motto" id="navMotto"></span>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="works.html" class="active">作品</a>
+        <a href="gallery.html">光影集</a>
+        <a href="review.html">时间胶囊</a>
+        <a href="wishes.html">许愿星空</a>
+        <a href="guestbook.html">留言墙</a>
+        <a href="dream.html">梦想</a>
+        <a href="meaning.html">人生意义</a>
+        <a href="about.html">关于</a>
+        <a href="thanks.html">致谢</a>
+        <a href="friends.html">友链</a>
+      </div>
+      <div class="nav-clock-wrap">
+        <span class="nav-clock" id="navClock"></span>
+        <span class="nav-tagline">A little spark of curiosity.</span>
+      </div>
+      <div class="nav-search">
+        <button class="search-toggle" id="searchToggle" aria-label="搜索">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="search-dropdown" id="searchDropdown">
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索文章...">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div></div>
+  </nav>
+
+  <main class="works-page">
+    <!-- ===== 页头 ===== -->
+    <header class="works-hero">
+      <div class="works-hero-glow"></div>
+      <p class="works-eyebrow"><span class="works-eyebrow-dot"></span> Selected Works · 造物档案</p>
+      <h1 class="works-title">我造过的<span>小东西</span></h1>
+      <p class="works-lead">除了写字和拍照，我也偶尔写点代码。<br>这里收着我做过的网站、小工具，和那些还没做完的实验——点开就能去逛逛。</p>
+      <div class="works-stats">
+        <div class="works-stat"><b class="is-accent" id="worksCount">0</b><small>件作品</small></div>
+        <div class="works-stat"><b id="worksOnline">0</b><small>正在运行</small></div>
+        <div class="works-stat"><b id="worksLatest">—</b><small>最近更新</small></div>
+      </div>
+    </header>
+
+    <!-- 站长编辑模式提示（仅 ?edit=1 显示） -->
+    <div class="works-edit-bar" id="worksEditBar" hidden>
+      <span><strong>编辑模式</strong> · 现在展示的是本机草稿，改动只保存在这个浏览器里；正式上线请导出 works.json 并提交到仓库。</span>
+      <a href="works.html">退出编辑模式 →</a>
+    </div>
+
+    <!-- ===== 筛选栏 ===== -->
+    <div class="works-toolbar">
+      <div class="works-filters" id="worksFilters"></div>
+      <label class="works-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="worksSearch" placeholder="搜作品名、标签或域名..." autocomplete="off">
+      </label>
+    </div>
+    <p class="works-result-line" id="worksResultLine"></p>
+
+    <!-- ===== 作品卡片 ===== -->
+    <section class="works-grid" id="worksGrid" aria-live="polite"></section>
+
+    <div class="works-empty" id="worksEmpty" hidden>
+      <i class="fa-regular fa-folder-open"></i>
+      <h3>这里暂时空空的</h3>
+      <p>没有符合条件的作品，换个关键词或分类再看看。</p>
+    </div>
+
+    <!-- ===== 页尾 ===== -->
+    <section class="works-outro">
+      <div class="works-outro-text">
+        <h3>还有别的？去仓库里翻翻</h3>
+        <p>一些没打磨完的草稿、随手写的脚本，都躺在 GitHub 上。</p>
+      </div>
+      <div class="works-outro-links">
+        <a class="works-outro-btn primary" href="https://github.com/Simqiqi" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+        <a class="works-outro-btn" href="index.html"><i class="fa-solid fa-house"></i> 回到首页</a>
+      </div>
+    </section>
+
+    <!-- ===== 可视化录入（仅编辑模式） ===== -->
+    <section class="works-editor" id="worksEditor" hidden>
+      <h2><i class="fa-solid fa-pen-to-square"></i> 添加一件作品</h2>
+      <p class="editor-hint">填好表单点「加入草稿」，上方卡片会立刻更新。录入完成后用「复制 / 下载 works.json」把结果覆盖到仓库根目录并推送，访客就能看到了。网址可以省略 https://；草稿只存在本机浏览器。</p>
+
+      <form class="editor-form" id="editorForm">
+        <div class="editor-field">
+          <label for="edName">作品名称 *</label>
+          <input type="text" id="edName" placeholder="例如：星空的梦想" required>
+        </div>
+        <div class="editor-field">
+          <label for="edUrl">作品网址 *</label>
+          <input type="text" id="edUrl" placeholder="https://your-site.com" required>
+        </div>
+        <div class="editor-field full">
+          <label for="edDesc">一句话介绍</label>
+          <input type="text" id="edDesc" placeholder="它是做什么的，用一句话说清楚">
+        </div>
+        <div class="editor-field">
+          <label for="edCategory">分类</label>
+          <input type="text" id="edCategory" placeholder="Web 应用 / 小工具 / 实验项目">
+        </div>
+        <div class="editor-field">
+          <label for="edStatus">状态</label>
+          <select id="edStatus">
+            <option value="online">在线</option>
+            <option value="wip">开发中</option>
+            <option value="archived">已归档</option>
+          </select>
+        </div>
+        <div class="editor-field">
+          <label for="edIcon">图标（Font Awesome 类名）</label>
+          <input type="text" id="edIcon" placeholder="fa-solid fa-rocket">
+        </div>
+        <div class="editor-field">
+          <label for="edColor">主题色</label>
+          <input type="text" id="edColor" placeholder="#00e5ff">
+        </div>
+        <div class="editor-field">
+          <label for="edTags">标签（逗号分隔）</label>
+          <input type="text" id="edTags" placeholder="Vue, Canvas, 开源">
+        </div>
+        <div class="editor-field">
+          <label for="edYear">年份</label>
+          <input type="text" id="edYear" placeholder="2026">
+        </div>
+        <div class="editor-field">
+          <label for="edSource">源码地址（可选）</label>
+          <input type="text" id="edSource" placeholder="https://github.com/...">
+        </div>
+        <div class="editor-field full" style="grid-column:1/-1">
+          <button type="submit" class="editor-btn primary" style="align-self:flex-start"><i class="fa-solid fa-plus"></i> 加入草稿</button>
+        </div>
+      </form>
+
+      <div class="editor-actions">
+        <button type="button" class="editor-btn" id="edLoad"><i class="fa-solid fa-file-import"></i> 载入线上数据</button>
+        <button type="button" class="editor-btn" id="edCopy"><i class="fa-regular fa-copy"></i> 复制 works.json</button>
+        <button type="button" class="editor-btn" id="edDownload"><i class="fa-solid fa-download"></i> 下载 works.json</button>
+        <button type="button" class="editor-btn danger" id="edClear"><i class="fa-solid fa-trash-can"></i> 清空草稿</button>
+      </div>
+
+      <div class="editor-list" id="editorList"></div>
+      <p class="editor-msg" id="editorMsg"></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-social">
+      <a href="https://github.com/Simqiqi" target="_blank" class="ft-github" title="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://weibo.com/u/7878583139" target="_blank" class="ft-weibo" title="微博"><i class="fa-brands fa-weibo"></i></a>
+      <a href="https://space.bilibili.com" target="_blank" class="ft-bilibili" title="B站"><i class="fa-brands fa-bilibili"></i></a>
+      <a href="mailto:simqiqi@example.com" class="ft-email" title="邮箱"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <p>&copy; 2026 柒柒. Powered by curiosity.</p>
+    <p class="footer-stats">本站总访问 <span id="busuanzi_value_site_pv">-</span> 次 · 访客 <span id="busuanzi_value_site_uv">-</span> 人</p>
+    <p class="footer-now" data-now hidden></p>
+    <div class="runtime" id="siteRuntime"></div>
+  </footer>
+
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/now.js"></script>
+
+  <button class="back-to-top" id="backToTop" title="回到顶部">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <button class="rocket-to-top" id="rocketToTop" aria-label="回到顶部">
+    <i class="fa-solid fa-rocket"></i>
+  </button>
+
+  <!-- 迷你音乐播放器 -->
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" aria-label="音乐播放器">
+      <svg class="bgm-disc" viewBox="0 0 24 24" aria-hidden="true">
+        <circle class="bgm-disc-outer" cx="12" cy="12" r="11"></circle>
+        <circle class="bgm-disc-groove" cx="12" cy="12" r="8.3"></circle>
+        <circle class="bgm-disc-groove" cx="12" cy="12" r="6.3"></circle>
+        <circle class="bgm-disc-label" cx="12" cy="12" r="3.7"></circle>
+        <circle class="bgm-disc-hole" cx="12" cy="12" r="1.2"></circle>
+      </svg>
+    </button>
+    <div class="music-panel" id="musicPanel">
+      <div class="track-info">
+        <div class="track-name" id="trackName">星空漫步</div>
+        <div class="track-mood" id="trackMood">安静 · 治愈</div>
+      </div>
+      <div class="music-controls">
+        <button class="ctrl-btn" id="musicPrev"><i class="fa-solid fa-backward"></i></button>
+        <button class="ctrl-btn main-btn" id="musicPlay"><i class="fa-solid fa-play"></i></button>
+        <button class="ctrl-btn" id="musicNext"><i class="fa-solid fa-forward"></i></button>
+      </div>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="0.5" step="0.01" value="0.15">
+    </div>
+  </div>
+
+  <script src="js/widget.js"></script>
+  <script src="js/bgm.js"></script>
+  <script src="js/works.js"></script>
+</body>
+</html>

@@ -19,6 +19,7 @@
 
 - **首页**：粒子背景、打字机、3D 书架、时光隧道、星光签名板
 - **博客**：文章列表动态读取 `posts.json`，支持标签筛选与年份归档时间线
+- **我的作品**：作品集页面（`works.html`），读取 `works.json` 渲染卡片，支持分类筛选、关键词搜索、一键复制链接；`works.html?edit=1` 可可视化录入并导出 JSON
 - **阅读页**：目录 TOC、阅读时长/字数、动态上下篇、相关阅读推荐
 - **光影集**：照片/影像瀑布流相册（灯箱预览、分类筛选、WebP 加速、模糊加载）
 - **时间胶囊**：年度回顾页，按月份回看写过的字和拍过的光
@@ -26,7 +27,7 @@
 - **留言墙**：上方为只读的时光留言，下方共享留言区支持所有访客留言
 - **共享留言**：由 [giscus](https://giscus.app/zh-CN) 驱动（GitHub Discussions 当数据库，免服务器），配置在 `js/giscus-embed.js`
 - 暗夜模式、阅读进度条、读到底彩蛋、迷你音乐播放器、太空 404 页、不蒜子访客统计
-- 页脚「此刻」状态条：城市实时天气（Open-Meteo 免费 API）+ 状态文案，配置在 `js/now.js`
+- 页脚「此刻」状态条：按访问者公网 IP 自动定位城市（ipwho.is，备用 ipapi.co）+ Open-Meteo 实时天气，中文城市名由 Open-Meteo 地理编码转换；定位失败只显示状态文案，不会显示错误城市。配置在 `js/now.js`
 - 全站 SEO/分享卡片（Open Graph + Twitter Card），链接分享自带预览图
 
 ## 发布新文章
@@ -60,6 +61,54 @@ excerpt: 一句话摘要      # 可选，默认取第一段
 2. 在 `gallery.json` 里追加一条记录（标题、路径、日期、分类、一句话注释）
 3. 可选：运行 `python3 scripts/optimize-images.py` 生成 WebP 副本（需 Pillow，约省 60%~85% 体积；不跑也能正常显示）
 4. 删除照片只需删掉对应文件并从 `gallery.json` 移除该条记录
+
+## 新增 / 管理作品
+
+作品页 `works.html` 的数据全部来自根目录的 `works.json`，改数据不用碰 HTML。
+
+**方式一：可视化录入（推荐）**
+
+1. 本地起服务后打开 `works.html?edit=1`，会多出一个编辑面板（访客正常访问看不到）
+2. 填表点「加入草稿」，上方卡片即时预览；草稿存在浏览器 localStorage，可删可改
+3. 点「复制 works.json」或「下载 works.json」，用导出的内容覆盖根目录的 `works.json`
+4. `git add -A && git commit && git push` 上线
+
+初次使用点「载入线上数据」把现有条目拿进草稿，再增删改。
+
+**方式二：直接改 `works.json`**
+
+每条作品是一个对象：
+
+```json
+{
+  "name": "Echo云音乐",
+  "desc": "macOS 上原生的网易云音乐桌面客户端，Go 绘制界面、不用 WebView",
+  "url": "https://simqiqiecho.dpdns.org",
+  "source": "https://github.com/Simqiqi/simqiqi-music",
+  "icon": "fa-solid fa-compact-disc",
+  "color": "#ff5a7a",
+  "tags": ["Go", "macOS", "桌面客户端"],
+  "category": "桌面应用",
+  "status": "online",
+  "year": "2026",
+  "featured": true
+}
+```
+
+| 字段 | 说明 |
+| --- | --- |
+| `name` / `desc` | 名称与一句话简介（必填） |
+| `url` | 作品网址，可省略 `https://`（必填） |
+| `source` | 源码地址，可选，填了卡片右下角出现 GitHub 按钮 |
+| `icon` | Font Awesome 类名，如 `fa-solid fa-rocket`，默认 `fa-solid fa-cube` |
+| `color` | 卡片主题色（十六进制），默认青色 `#00e5ff` |
+| `tags` | 技术标签数组 |
+| `category` | 分类，用于页面顶部筛选栏，会自动去重生成分类按钮 |
+| `status` | `online` 在线 / `wip` 开发中 / `archived` 已归档 |
+| `year` | 年份，用于卡片编号旁与顶部「最近更新」统计 |
+| `featured` | 可选，`true` 时显示「★ 精选」角标 |
+
+页面样式在 `css/works.css`，逻辑在 `js/works.js`，两者都不依赖框架；亮色/暗色主题、移动端布局已适配。
 
 ## 匿名留言（免登录）
 
