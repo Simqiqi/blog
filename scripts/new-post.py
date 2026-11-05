@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts" / "post-template.html"
 POSTS_JSON = ROOT / "posts.json"
 RSS_XML = ROOT / "rss.xml"
-SITE_URL = "https://simqiqi.github.io/blog"
+SITE_URL = "https://blog.simqiqiecho.dpdns.org"
 
 # ---------------- Markdown → HTML ----------------
 

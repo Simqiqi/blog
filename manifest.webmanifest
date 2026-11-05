@@ -3,15 +3,15 @@
   "short_name": "柒柒博客",
   "description": "记录生活、思考与热爱。",
   "lang": "zh-CN",
-  "start_url": "/blog/",
-  "scope": "/blog/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#05050c",
   "theme_color": "#00e5ff",
   "icons": [
     {
-      "src": "/blog/images/icon.svg",
+      "src": "./images/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

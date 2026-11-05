@@ -145,7 +145,7 @@ python3 -m http.server 8000
 
 ## 链接
 
-- 博客地址：[simqiqi.github.io/blog](https://simqiqi.github.io/blog)
+- 博客地址：[blog.simqiqiecho.dpdns.org](https://blog.simqiqiecho.dpdns.org)
 - GitHub：[Simqiqi/blog](https://github.com/Simqiqi/blog)
 
 ## License

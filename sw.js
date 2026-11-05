@@ -1,20 +1,21 @@
 /* 柒柒的博客 · Service Worker
  * 策略：导航 network-first（带回退到缓存首页），静态资源 cache-first。
- * 注意：本文件位于 /blog/ 子路径，scope 已固定为 /blog/。
+ * 注意：站点前缀由注册 scope 推导，同时兼容 /blog/ 项目页与自定义域名根路径。
  */
-const CACHE = 'qigi-blog-v3';
+const CACHE = 'qigi-blog-v4';
+const BASE = new URL(self.registration.scope).pathname; // '/blog/' 或 '/'
 const PRECACHE = [
-  '/blog/',
-  '/blog/index.html',
-  '/blog/works.html',
-  '/blog/css/style.css',
-  '/blog/css/widgets.css',
-  '/blog/css/works.css',
-  '/blog/js/main.js',
-  '/blog/js/article.js',
-  '/blog/js/works.js',
-  '/blog/js/now.js',
-  '/blog/manifest.webmanifest'
+  BASE,
+  BASE + 'index.html',
+  BASE + 'works.html',
+  BASE + 'css/style.css',
+  BASE + 'css/widgets.css',
+  BASE + 'css/works.css',
+  BASE + 'js/main.js',
+  BASE + 'js/article.js',
+  BASE + 'js/works.js',
+  BASE + 'js/now.js',
+  BASE + 'manifest.webmanifest'
 ];
 
 self.addEventListener('install', (event) => {
@@ -47,7 +48,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match(req).then((r) => r || caches.match('/blog/index.html')))
+        .catch(() => caches.match(req).then((r) => r || caches.match(BASE + 'index.html')))
     );
     return;
   }

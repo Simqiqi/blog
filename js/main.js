@@ -1299,9 +1299,9 @@ document.documentElement.style.opacity = '1';
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       'name': '柒柒的个人博客',
-      'url': 'https://simqiqi.github.io/blog/',
+      'url': 'https://blog.simqiqiecho.dpdns.org/',
       'description': '记录生活、思考与热爱。',
-      'author': { '@type': 'Person', 'name': '柒柒', 'url': 'https://simqiqi.github.io/blog/' }
+      'author': { '@type': 'Person', 'name': '柒柒', 'url': 'https://blog.simqiqiecho.dpdns.org/' }
     };
     var s = document.createElement('script');
     s.type = 'application/ld+json';
@@ -1309,11 +1309,13 @@ document.documentElement.style.opacity = '1';
     document.head.appendChild(s);
   } catch (e) {}
 
-  // PWA：manifest 链接 + 主题色 + Service Worker 注册（仅在支持时，线上 /blog/ 路径生效）
+  // PWA：manifest 链接 + 主题色 + Service Worker 注册
+  // 自动适配 /blog/（GitHub Pages 项目页）与自定义域名的根路径
   try {
+    var siteBase = location.pathname.indexOf('/blog/') === 0 ? '/blog/' : '/';
     var ml = document.createElement('link');
     ml.rel = 'manifest';
-    ml.href = '/blog/manifest.webmanifest';
+    ml.href = siteBase + 'manifest.webmanifest';
     document.head.appendChild(ml);
 
     var tm = document.createElement('meta');
@@ -1323,7 +1325,7 @@ document.documentElement.style.opacity = '1';
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/blog/sw.js', { scope: '/blog/' }).catch(function () {});
+        navigator.serviceWorker.register(siteBase + 'sw.js', { scope: siteBase }).catch(function () {});
       });
     }
   } catch (e) {}
